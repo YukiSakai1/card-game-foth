@@ -145,6 +145,50 @@
   }
   var nextDrawOverride = null;
 
+  // 自分で操作モードでの相手（CPU）ドローキュー（既存のカード画像から組み合わせたデッキ）
+  var cpuDrawQueue = [];
+  function resetCpuDrawQueue() {
+    cpuDrawQueue = [
+      function () { return forceCard(); },       // 1手番目: フォース（走破コスト補充）
+      function () { return doDeuce(); },         // 2手番目: ドウデュース（走破5の強力馬）
+      function () { return whip(); },            // 3手番目: 鞭（走破ボーナス+1）
+      function () { return forceCard(); },       // 4手番目: フォース
+      function () { return veterinarian(); },    // 5手番目: 獣医師（ファーム回収）
+      function () { return forceCard(); },       // 6手番目: フォース
+      function () { return goldShip(); },        // 7手番目: ゴールドシップ
+      function () { return kutsuwa(); },         // 8手番目: 口輪
+      function () { return forceCard(); },       // 9手番目: フォース
+      function () { return rousham(); },         // 10手番目: ローシャムパーク
+      function () { return forceCard(); },       // 11手番目: フォース
+      function () { return eliteJockey(); },     // 12手番目: エリートジョッキー
+      function () { return seferRasiel(); },     // 13手番目: セファーラジエル
+      function () { return forceCard(); }        // 14手番目: フォース
+    ];
+  }
+
+  function getNextCpuDrawCard() {
+    if (cpuDrawQueue && cpuDrawQueue.length > 0) {
+      return cpuDrawQueue.shift()();
+    }
+    var maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
+    return maker();
+  }
+
+  function initCpuHandAndDeck() {
+    // 相手の手札7枚（馬カード2枚、フォースカード3枚、アイテム2枚：既存カード画像で構成）
+    cpuHand = [
+      seiunSky(),      // セイウンスカイ (逃げ・先行 / 中・長, cost: 2, run: 3)
+      silkMobius(),    // シルクメビウス (先行・差し / マイル・中, cost: 2, run: 3)
+      forceCard(),     // フォースカード
+      forceCard(),     // フォースカード
+      forceCard(),     // フォースカード
+      whip(),          // 鞭 (走破数+1)
+      eliteJockey()    // エリートジョッキー (走破数+1, ガード+1)
+    ];
+    opponentHandCount = cpuHand.length;
+    resetCpuDrawQueue();
+  }
+
   /* ===================== game state ===================== */
   var hand = [];
   var farm = [];
@@ -238,6 +282,8 @@
   var cpuRunValue = 0;
   var cpuHorseCard = null; // CPU側が今の走破で使用している馬カード（自分の手札から選ばれる）
   var cpuHand = []; // CPU側の実際の手札（表には出さないが、走破できるかの判定に使う）
+  var cpuRunBonus = 0; // CPUのアイテム等による走破ボーナス
+  var cpuItemGuardBonus = 0; // CPUのアイテム等によるガードボーナス
   var guardValue = 0;
   var itemGuardBonus = 0; // guard_bonus アイテムの効果を一時的に積んでおく変数
   var isCpuTurn = false;
@@ -961,6 +1007,31 @@
     return dummy;
   }
 
+  function makeCpuCardDummy(card, startRect) {
+    var el = buildCardEl(card);
+    el.classList.add('ghost-cpu-card');
+    el.style.position = 'fixed';
+    el.style.left = (startRect.left || 200) + 'px';
+    el.style.top = (startRect.top || 40) + 'px';
+    el.style.width = '64px';
+    el.style.height = '90px';
+    el.style.zIndex = '950';
+    el.style.boxShadow = '0 6px 18px rgba(0, 0, 0, 0.55)';
+    el.style.pointerEvents = 'none';
+    el.style.transform = 'none';
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function flyCpuCard(card, destRect, scale) {
+    var handEl = $('opponent-hand-display') || $('zone-opponent');
+    var startRect = handEl ? handEl.getBoundingClientRect() : { left: 200, top: 40, width: 80, height: 30 };
+    var dummy = makeCpuCardDummy(card, startRect);
+    var p = flyGhost(dummy, destRect, scale || 0.85);
+    dummy.remove();
+    return p;
+  }
+
   /* ===================== explanation step ===================== */
   function explainStep(targetEl, zoneId, text) {
     if (zoneId) setZoneActive(zoneId, true);
@@ -1264,21 +1335,37 @@
     return cpuHand.filter(function (c) { return c.type === type; }).length;
   }
 
-  // CPU側が自分のターンの初めに1枚引く（自分自身の山札の残りが無ければ引かない）
-  // CPU が走破しやすくなるよう、フォースカードと馬カードを重点的に引かせる
-  var CPU_HORSE_DRAW_POOL = [goldShip, rousham, seferRasiel, silkMobius, seiunSky, doDeuce];
+  // CPU側が山札からカードを1枚引く（アニメーション付き）
+  async function cpuDrawOneCardWithAnimation() {
+    if (!cpuCurrentLane()) {
+      showOpponentBubble('山札がありません');
+      return null;
+    }
+    var deckRect = cpuDeckSourceRect();
+    var oppHandEl = $('opponent-hand-display') || $('zone-opponent');
+    var oppHandRect = oppHandEl ? oppHandEl.getBoundingClientRect() : { left: 200, top: 40, width: 80, height: 30 };
+
+    var dummy = makeSmallCardDummy(deckRect);
+    if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+    var p = flyGhost(dummy, oppHandRect, 0.6);
+    dummy.remove();
+    await p;
+
+    var card = getNextCpuDrawCard();
+    cpuHand.push(card);
+    opponentHandCount = cpuHand.length;
+    cpuDrawOneFromDeck();
+    lastDrawer = 'cpu';
+
+    renderAll();
+    showOpponentBubble('ドロー！');
+    if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+    return card;
+  }
+
   function cpuDrawOneCard() {
     if (!cpuCurrentLane()) return null;
-    var maker;
-    var roll = Math.random();
-    if (roll < 0.45) {
-      maker = forceCard;
-    } else if (roll < 0.85) {
-      maker = CPU_HORSE_DRAW_POOL[Math.floor(Math.random() * CPU_HORSE_DRAW_POOL.length)];
-    } else {
-      maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
-    }
-    var card = maker();
+    var card = getNextCpuDrawCard();
     cpuHand.push(card);
     opponentHandCount = cpuHand.length;
     cpuDrawOneFromDeck();
@@ -1289,7 +1376,12 @@
   function cpuPickRunnableHorse() {
     var horses = cpuHand.filter(function (c) { return c.type === 'horse'; });
     if (!horses.length) return null;
-    horses.sort(function (a, b) { return (b.run || 0) - (a.run || 0); }); // 走破値が高い馬を優先
+    // 走破値が高い馬、または適性が合う馬を優先
+    horses.sort(function (a, b) {
+      var runA = effectiveRun(a, cpuRunBonus);
+      var runB = effectiveRun(b, cpuRunBonus);
+      return runB - runA;
+    });
     for (var i = 0; i < horses.length; i++) {
       var h = horses[i];
       if (cpuHandCountOfType('force') >= (h.cost || 2)) return h;
@@ -1297,72 +1389,180 @@
     return null;
   }
 
-  function cpuTurn() {
-    itemGuardBonus = 0;
-    cpuDrawOneCard();
-    renderAll();
+  // CPUが手札のアイテムカードを使用するロジック（アニメーション・消費付き）
+  async function cpuPlayItemIfApplicable() {
+    var runnableHorse = cpuPickRunnableHorse();
+    var cpuItem = null;
 
-    // CPUが使えるアイテム（回復薬や獣医師など）があれば使用する
-    var cpuItem = cpuHand.find(function (c) {
-      return c.type === 'item' && (c.effectType === 'draw' || c.effectType === 'farm_recovery');
-    });
-    if (cpuItem) {
-      cpuHand = cpuHand.filter(function (c) { return c.id !== cpuItem.id; });
-      oppFarm.push(cpuItem);
-      applyItemEffect(cpuItem);
-      renderAll();
+    if (runnableHorse) {
+      // 走破できる馬がいる場合は、走破ボーナスを高める鞭やエリートジョッキーを優先
+      cpuItem = cpuHand.find(function (c) {
+        return c.type === 'item' || c.type === 'jockey';
+      });
+    } else {
+      // 走破できる馬がいない場合、獣医師があればファームからフォースや馬を回収して走破を狙う
+      cpuItem = cpuHand.find(function (c) {
+        return c.effectType === 'farm_recovery' && oppFarm.some(function (fc) { return fc.type === 'force' || fc.type === 'horse'; });
+      });
     }
 
-    sleep(600).then(function () {
-      var horseCard = cpuPickRunnableHorse();
-      if (!horseCard) {
-        setNarrator('🧠 相手は走破できる馬がいないため、ターンを終了しました。（相手の手札: ' + cpuHand.length + '枚）');
-        sleep(900).then(function () {
-          showTurnChange('あなたのターン').then(function () {
-            showCommandBar(true);
-            isCpuTurn = false;
-            canDraw = true;
-            phase = 'idle';
-            hasRunThisTurn = false;
-            cpuHorseCard = null;
-            renderAll();
-            checkVictory();
-            if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
-          });
-        });
-        return;
-      }
+    if (!cpuItem) return;
 
-      // 選んだ馬とコスト分のフォースカードを、CPUの手札から消費する
-      var cost = horseCard.cost || 2;
-      cpuHand = cpuHand.filter(function (c) { return c.id !== horseCard.id; });
-      for (var i = 0; i < cost; i++) {
-        var idx = -1;
-        for (var j = 0; j < cpuHand.length; j++) { if (cpuHand[j].type === 'force') { idx = j; break; } }
-        if (idx >= 0) cpuHand.splice(idx, 1);
-      }
-      opponentHandCount = cpuHand.length;
+    // 手札から実際に消費
+    var idx = cpuHand.findIndex(function (c) { return c.id === cpuItem.id; });
+    if (idx >= 0) cpuHand.splice(idx, 1);
+    opponentHandCount = cpuHand.length;
+    updateOpponentHandDisplay();
 
-      cpuHorseCard = horseCard;
-      cpuRunValue = effectiveRun(horseCard, 0);
-      var cpuMods = runModifiers(horseCard).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
-      setNarrator('🧠 相手が「<b>' + horseCard.name + '</b>」で走破を宣言！ 基礎 ' + horseCard.run + '、' + cpuMods + ' → 実効走破 <b>' + cpuRunValue + '</b>');
+    showOpponentBubble('アイテム「' + cpuItem.name + '」！');
+    setNarrator('相手が手札からアイテム「<b>' + cpuItem.name + '</b>」を使用！');
+
+    // 手札からファームへアイテムが飛ぶ演出
+    var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+    var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+    if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+    await flyCpuCard(cpuItem, farmRect, 0.75);
+
+    oppFarm.push(cpuItem);
+    renderOppFarm();
+
+    // アイテム効果の適用
+    if (cpuItem.effectType === 'run_bonus') {
+      cpuRunBonus += cpuItem.effectValue;
+      showToast('相手の走破ボーナス +' + cpuItem.effectValue, 'info', 2200);
+    } else if (cpuItem.effectType === 'elite_jockey') {
+      cpuRunBonus += 1;
+      cpuItemGuardBonus += 1;
+      showToast('相手の走破+1、ガード+1！', 'info', 2200);
+    } else if (cpuItem.effectType === 'farm_recovery') {
+      var recovered = null;
+      var fIdx = oppFarm.findIndex(function (c) { return c.type === 'force' && c.id !== cpuItem.id; });
+      if (fIdx >= 0) {
+        recovered = oppFarm.splice(fIdx, 1)[0];
+      } else {
+        var hIdx = oppFarm.findIndex(function (c) { return c.type === 'horse' && c.id !== cpuItem.id; });
+        if (hIdx >= 0) recovered = oppFarm.splice(hIdx, 1)[0];
+      }
+      if (recovered) {
+        var oppHandEl = $('opponent-hand-display') || $('zone-opponent');
+        var oppHandRect = oppHandEl.getBoundingClientRect();
+        var dummy = makeCpuCardDummy(recovered, farmRect);
+        var pRec = flyGhost(dummy, oppHandRect, 0.65);
+        dummy.remove();
+        await pRec;
+        cpuHand.push(recovered);
+        opponentHandCount = cpuHand.length;
+        renderAll();
+        showOpponentBubble('手札に回収！');
+      }
+    } else if (cpuItem.effectType === 'guard_bonus') {
+      cpuItemGuardBonus += cpuItem.effectValue;
+    }
+
+    renderAll();
+    await sleep(500);
+  }
+
+  // CPUが手札からフォースカードを支払って馬カードを走破させるロジック（アニメーション・消費付き）
+  async function cpuPlayHorseIfApplicable() {
+    var horseCard = cpuPickRunnableHorse();
+    if (!horseCard) {
+      setNarrator('🧠 相手は走破できる馬カードとフォースが揃っていないため、ターンを終了しました。（相手の手札: ' + cpuHand.length + '枚）');
+      showOpponentBubble('ターンエンド');
+      await sleep(1000);
+      showTurnChange('あなたのターン').then(function () {
+        showCommandBar(true);
+        isCpuTurn = false;
+        canDraw = true;
+        phase = 'idle';
+        hasRunThisTurn = false;
+        cpuHorseCard = null;
+        renderAll();
+        checkVictory();
+        if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+      });
+      return;
+    }
+
+    var cost = horseCard.cost || 2;
+    showOpponentBubble('「' + horseCard.name + '」で走破！');
+    setNarrator('🧠 相手が手札からフォースカード ' + cost + '枚 を支払い、「<b>' + horseCard.name + '</b>」で走破を宣言！');
+    showToast('相手が「' + horseCard.name + '」で走破宣言！', 'info', 2400);
+
+    // 1. コスト分のフォースカードを手札から消費し、相手ファームへ送る演出
+    var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+    var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+
+    for (var i = 0; i < cost; i++) {
+      var fIdx = cpuHand.findIndex(function (c) { return c.type === 'force'; });
+      if (fIdx >= 0) {
+        var fc = cpuHand.splice(fIdx, 1)[0];
+        opponentHandCount = cpuHand.length;
+        updateOpponentHandDisplay();
+        if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+        await flyCpuCard(fc, farmRect, 0.7);
+        oppFarm.push(fc);
+        renderOppFarm();
+        await sleep(200);
+      }
+    }
+
+    // 2. 馬カードを手札から消費し、相手フィールドへ出す演出
+    var hIdx = cpuHand.findIndex(function (c) { return c.id === horseCard.id; });
+    if (hIdx >= 0) cpuHand.splice(hIdx, 1);
+    opponentHandCount = cpuHand.length;
+    updateOpponentHandDisplay();
+
+    var oppFieldEl = $('field-body-opp') || $('zone-field');
+    var fieldRect = oppFieldEl ? oppFieldEl.getBoundingClientRect() : { left: 240, top: 140, width: 70, height: 100 };
+    if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+    await flyCpuCard(horseCard, fieldRect, 0.88);
+
+    cpuHorseCard = horseCard;
+    renderField();
+
+    cpuRunValue = effectiveRun(horseCard, cpuRunBonus);
+    var cpuMods = runModifiers(horseCard).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
+    setNarrator('🧠 相手の「<b>' + horseCard.name + '</b>」 基礎 ' + horseCard.run + (cpuRunBonus ? '、アイテム +' + cpuRunBonus : '') + '、' + cpuMods + ' → 実効走破 <b>' + cpuRunValue + '</b>');
+    renderAll();
+
+    if (cpuRunValue <= 0) {
+      setNarrator('🧠 相手の実効走破値が0以下のため走破失敗。あなたの番です。');
+      showOpponentBubble('走破失敗…');
+      oppFarm.push(cpuHorseCard);
+      cpuHorseCard = null;
       renderAll();
+      await sleep(800);
+      showTurnChange('あなたのターン').then(function () {
+        isCpuTurn = false; hasRunThisTurn = false; showCommandBar(true); renderAll();
+        cmdDraw();
+      });
+      return;
+    }
 
-      if (cpuRunValue <= 0) {
-        setNarrator('🧠 相手の実効走破値が0以下のため走破失敗。あなたの番です。');
-        sleep(600).then(function () {
-          showTurnChange('あなたのターン').then(function () {
-            isCpuTurn = false; hasRunThisTurn = false; cpuHorseCard = null; showCommandBar(true); renderAll();
-            cmdDraw();
-          });
-        });
-        return;
-      }
+    // バナー表示後、プレイヤーのガード選択ポップアップを表示
+    await showBanner('相手が走破宣言！', 2400, horseCard, '「' + horseCard.name + '」 実効走破: ' + cpuRunValue);
+    showGuardPopup(cpuRunValue, horseCard);
+  }
 
-      // 相手の走破馬カードとガードポップアップを一緒に表示
-      showGuardPopup(cpuRunValue, horseCard);
-    });
+  async function cpuTurn() {
+    itemGuardBonus = 0;
+    cpuRunBonus = 0;
+    cpuItemGuardBonus = 0;
+
+    // 1. 相手のドロー演出（山札から手札へ実カードをドロー）
+    await sleep(300);
+    await cpuDrawOneCardWithAnimation();
+
+    await sleep(600);
+
+    // 2. アイテムカードの使用判断と演出（手札のアイテムを実際に消費）
+    await cpuPlayItemIfApplicable();
+
+    await sleep(600);
+
+    // 3. フォースカードを使った馬カードの走破（手札のフォースと馬を実際に消費）
+    await cpuPlayHorseIfApplicable();
   }
 
   function showGuardPopup(runValue, horseCard) {
@@ -1456,24 +1656,45 @@
     var actualDraw = Math.max(0, drawCount);
     if (actualDraw <= 0) {
       setNarrator('🛡️ ガードで相手の走破を完全に防いだ！ 相手は1枚も引けなかった！');
-      sleep(800).then(function () {
-        showTurnChange('あなたのターン').then(function () {
-          showCommandBar(true);
-          isCpuTurn = false;
-          hasRunThisTurn = false;
+      showOpponentBubble('防がれたか…！');
+      var pHorse = Promise.resolve();
+      if (cpuHorseCard) {
+        var oppFieldEl = document.querySelector('#field-body-opp .field-mini') || $('field-body-opp');
+        var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+        var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+        if (oppFieldEl) {
+          pHorse = flyGhost(oppFieldEl, farmRect, 0.9).then(function () {
+            oppFarm.push(cpuHorseCard);
+            cpuHorseCard = null;
+            renderAll();
+          });
+        } else {
+          oppFarm.push(cpuHorseCard);
           cpuHorseCard = null;
           renderAll();
-          checkVictory();
-          if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+        }
+      }
+      pHorse.then(function () {
+        sleep(800).then(function () {
+          showTurnChange('あなたのターン').then(function () {
+            showCommandBar(true);
+            isCpuTurn = false;
+            hasRunThisTurn = false;
+            cpuHorseCard = null;
+            renderAll();
+            checkVictory();
+            if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+          });
         });
       });
       return;
     }
     var maxDraw = Math.min(actualDraw, cpuTotalDeck());
     setNarrator('相手（CPU）は走破に成功しました。山札から ' + maxDraw + ' 枚引きます。（走破 ' + cpuRunValue + ' - ガード ' + guardValue + ' = ' + actualDraw + '）');
+    showOpponentBubble('走破成功！');
 
     var horse = cpuHorseCard || goldShip();
-    showBanner('走破成功！', 3000, horse, '相手（CPU）は走破に成功しました').then(function () {
+    showBanner('走破成功！', 2600, horse, '相手（CPU）は走破に成功しました').then(function () {
       var chain = Promise.resolve();
       var handEl = $('opponent-hand-display') || $('zone-opponent');
       var opponentRect = handEl ? handEl.getBoundingClientRect() : { left: 200, top: 20, width: 80, height: 30 };
@@ -1485,18 +1706,14 @@
             var p = flyGhost(dummy, opponentRect, 0.6);
             dummy.remove();
             return p.then(function () {
-              var rewardMaker;
-              var rewardRoll = Math.random();
-              if (rewardRoll < 0.45) rewardMaker = forceCard;
-              else if (rewardRoll < 0.85) rewardMaker = CPU_HORSE_DRAW_POOL[Math.floor(Math.random() * CPU_HORSE_DRAW_POOL.length)];
-              else rewardMaker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
-              var card = rewardMaker();
+              var card = getNextCpuDrawCard();
               cpuHand.push(card);
               opponentHandCount = cpuHand.length;
               cpuDrawOneFromDeck();
               lastDrawer = 'cpu';
               renderAll();
-              return sleep(120);
+              if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+              return sleep(140);
             });
           });
         })();
@@ -1681,9 +1898,20 @@
         var thinkingPopup = $('opponent-thinking-popup');
         thinkingPopup.style.display = 'flex';
         setNarrator('🤔 相手プレイヤーはガードをするか考えています。');
-        return sleep(1400).then(function () {
+        return sleep(1200).then(function () {
           thinkingPopup.style.display = 'none';
-          if (Math.random() < 0.5) {
+
+          // 相手の手札に、現在の距離適性に合う馬カードがあるか確認
+          var distKey = raceDistanceKey(race.distance);
+          var guardHorses = cpuHand.filter(function (c) {
+            return c.type === 'horse' && (c.dist || '').indexOf(distKey) >= 0;
+          });
+
+          // ガード馬があり、相手の手札温存等を考慮したガード判断（走破値が2以上、または高確率でガード）
+          var shouldGuard = guardHorses.length > 0 && (totalRun >= 2 || Math.random() < 0.7);
+
+          if (!shouldGuard) {
+            showOpponentBubble('ガードしません');
             if (totalRun <= 0) {
               return showBanner('走破失敗').then(function () {
                 setNarrator('❌ 実効走破値 ' + totalRun + ' はガード値 0 を上回れず、走破失敗。');
@@ -1695,20 +1923,37 @@
               return continueRunLogic(totalRun, false, 0);
             });
           } else {
-            var guardHorse = CPU_HORSE_POOL[Math.floor(Math.random() * CPU_HORSE_POOL.length)]();
-            var guardVal = guardHorse.guard || 0;
-            fieldGuard = guardHorse;
-            renderField();
-            var guardText = '相手がガード！ ' + guardHorse.name + ' / ガード ' + guardVal;
-            return showBanner(guardText, 3000, guardHorse).then(function () {
-              if (totalRun <= guardVal) {
-                setNarrator('❌ 走破失敗。実効走破値 ' + totalRun + ' は実効ガード値 ' + guardVal + ' を上回れなかった。');
-                return sendHorseToFarmAndReset();
-              } else {
-                var runDistance = totalRun - guardVal;
-                setNarrator('🛡️ 実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。');
-                return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
-              }
+            // ガード値の高い馬、または走破値が控えめな馬を優先してガードに使用
+            guardHorses.sort(function (a, b) { return (b.guard || 0) - (a.guard || 0); });
+            var guardHorse = guardHorses[0];
+
+            // 相手の手札から実際に消費
+            var ghIdx = cpuHand.findIndex(function (c) { return c.id === guardHorse.id; });
+            if (ghIdx >= 0) cpuHand.splice(ghIdx, 1);
+            opponentHandCount = cpuHand.length;
+            updateOpponentHandDisplay();
+
+            showOpponentBubble('「' + guardHorse.name + '」でガード！');
+
+            // 相手手札からフィールドへガード馬が飛ぶ演出
+            var oppFieldEl = $('field-body-opp') || $('zone-field');
+            var fieldRect = oppFieldEl ? oppFieldEl.getBoundingClientRect() : { left: 240, top: 140, width: 70, height: 100 };
+            return flyCpuCard(guardHorse, fieldRect, 0.85).then(function () {
+              fieldGuard = guardHorse;
+              renderField();
+              var guardVal = (guardHorse.guard || 0) + cpuItemGuardBonus;
+              cpuItemGuardBonus = 0;
+              var guardText = '相手がガード！ ' + guardHorse.name + ' / ガード ' + guardVal;
+              return showBanner(guardText, 3000, guardHorse).then(function () {
+                if (totalRun <= guardVal) {
+                  setNarrator('❌ 走破失敗。実効走破値 ' + totalRun + ' は実効ガード値 ' + guardVal + ' を上回れなかった。');
+                  return sendHorseToFarmAndReset();
+                } else {
+                  var runDistance = totalRun - guardVal;
+                  setNarrator('🛡️ 実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。');
+                  return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
+                }
+              });
             });
           }
         });
@@ -1771,9 +2016,16 @@
       var farmRect = $('zone-farm').getBoundingClientRect();
       var fieldEl = document.querySelector('#field-body .field-mini');
       var p = (field && fieldEl) ? flyGhost(fieldEl, farmRect) : Promise.resolve();
+      if (fieldGuard) {
+        var oppFarmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+        var oppFarmRect = oppFarmZone ? oppFarmZone.getBoundingClientRect() : farmRect;
+        var guardEl = document.querySelector('#field-body-opp .field-mini') || document.querySelector('.field-guard-card');
+        var pG = (guardEl) ? flyGhost(guardEl, oppFarmRect) : Promise.resolve();
+        p = Promise.all([p, pG]);
+      }
       return p.then(function () {
         if (field) { farm.push(field); field = null; }
-        fieldGuard = null;
+        if (fieldGuard) { oppFarm.push(fieldGuard); fieldGuard = null; }
         phase = 'idle'; selectedHorse = null; selectedForces = []; runBonus = 0; canDraw = false;
         renderAll();
         checkVictory();
@@ -2714,13 +2966,13 @@
     selectedForces = [];
     runBonus = 0;
     itemGuardBonus = 0;
+    cpuRunBonus = 0;
+    cpuItemGuardBonus = 0;
     canDraw = true;
     isCpuTurn = false;
     hasRunThisTurn = false;
-    opponentHandCount = 0;
-    // 相手（CPU）にも自分と同じく初期手札7枚を配る（フォース・馬をバランスよく持たせ、序盤から走破できるようにする）
-    cpuHand = [forceCard(), forceCard(), forceCard(), silkMobius(), seiunSky(), doDeuce(), goldShip()];
-    opponentHandCount = cpuHand.length;
+    // 相手（CPU）の初期手札とデッキを既存カード画像から初期化
+    initCpuHandAndDeck();
     cpuHorseCard = null;
     if (cpuTotalDeck() <= 0) CPU_LANES.forEach(function (l) { l.count = 10; });
     renderRaceInfo();
@@ -2753,8 +3005,7 @@
     farm = [];
     oppFarm = [];
     hand = [];
-    cpuHand = [forceCard(), forceCard(), forceCard(), silkMobius(), seiunSky(), doDeuce(), goldShip()];
-    opponentHandCount = cpuHand.length;
+    initCpuHandAndDeck();
     field = null;
     fieldGuard = null;
     cpuHorseCard = null;
@@ -2765,6 +3016,8 @@
     selectedForces = [];
     runBonus = 0;
     itemGuardBonus = 0;
+    cpuRunBonus = 0;
+    cpuItemGuardBonus = 0;
     canDraw = false;
     isCpuTurn = false;
     hasRunThisTurn = false;
