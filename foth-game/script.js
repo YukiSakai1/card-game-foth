@@ -3432,21 +3432,38 @@
 
   })();
 
-  /* ===================== field theme switch (スライドスイッチ: サイバー / クラシック) ===================== */
+  /* ===================== field theme switch (Dark / White / Classic) ===================== */
   (function setupThemeSwitch() {
     var switchWrap = $('theme-switch');
     if (!switchWrap) return;
     var opts = switchWrap.querySelectorAll('.theme-opt');
 
     function applyTheme(theme) {
-      var isCyber = (theme === 'cyber');
-      document.body.classList.toggle('field-cyber', isCyber);
+      if (theme === 'white') {
+        document.body.classList.add('field-cyber');
+        document.body.classList.add('field-white');
+        document.body.dataset.theme = 'white';
+      } else if (theme === 'classic') {
+        document.body.classList.remove('field-cyber');
+        document.body.classList.remove('field-white');
+        document.body.dataset.theme = 'classic';
+      } else {
+        document.body.classList.add('field-cyber');
+        document.body.classList.remove('field-white');
+        document.body.dataset.theme = 'dark';
+      }
       opts.forEach(function (opt) {
-        opt.classList.toggle('active', opt.dataset.theme === theme);
+        var match = (opt.dataset.theme === theme) ||
+                    (theme === 'dark' && opt.dataset.theme === 'cyber') ||
+                    ((theme === 'cyber' || !theme) && opt.dataset.theme === 'dark');
+        opt.classList.toggle('active', match);
       });
+      try {
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: theme } }));
+      } catch (e) {}
     }
 
-    applyTheme('cyber'); // デフォルトはサイバー
+    applyTheme('dark');
 
     opts.forEach(function (opt) {
       opt.addEventListener('click', function () {

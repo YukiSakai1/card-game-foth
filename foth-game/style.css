@@ -559,16 +559,25 @@
     color: var(--rail);
   }
 
-  .theme-opt.active {
+  .theme-opt.active,
+  .theme-opt[data-theme="dark"].active {
     background: linear-gradient(135deg, #3ee0ff, #0ab8e0);
     color: #032530;
     font-weight: 700;
     box-shadow: 0 0 10px rgba(62, 224, 255, .6);
   }
 
+  .theme-opt[data-theme="white"].active {
+    background: linear-gradient(135deg, #00d2ff, #0284c7);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(0, 210, 255, .65);
+  }
+
   .theme-opt[data-theme="classic"].active {
     background: linear-gradient(135deg, #4ade80, #10b981);
     color: #042512;
+    font-weight: 700;
     box-shadow: 0 0 10px rgba(74, 222, 128, .6);
   }
 
@@ -5172,6 +5181,287 @@
 
   body.field-cyber .settings-group input[type=range]::-moz-range-thumb {
     background: var(--cyber-cyan);
+  }
+
+  /* ===================== White-based Cyber Theme (白ベース電脳テーマ) ===================== */
+  body.field-cyber.field-white {
+    background: #f0f5fa;
+    color: #1a2a3a;
+  }
+
+  body.field-cyber.field-white .app {
+    color: #1a2a3a;
+  }
+
+  body.field-cyber.field-white .topbar {
+    background: rgba(255, 255, 255, 0.88);
+    border-bottom: 1px solid rgba(0, 180, 235, 0.35);
+    box-shadow: 0 4px 18px rgba(0, 70, 140, 0.08);
+  }
+
+  body.field-cyber.field-white .brand {
+    color: #0c4a6e;
+    text-shadow: none;
+  }
+
+  body.field-cyber.field-white .brand span {
+    color: #0284c7;
+    text-shadow: none;
+  }
+
+  body.field-cyber.field-white .track-wrap {
+    background: rgba(235, 245, 255, 0.85);
+    border: 1px solid rgba(0, 180, 235, 0.35);
+  }
+
+  body.field-cyber.field-white .track {
+    background: rgba(215, 235, 250, 0.6);
+  }
+
+  body.field-cyber.field-white .track-grid {
+    background-size: 8px 100%;
+    background-image: linear-gradient(90deg, rgba(0, 180, 235, 0.25) 1px, transparent 1px);
+  }
+
+  body.field-cyber.field-white .step-label {
+    color: #0c4a6e;
+  }
+
+  body.field-cyber.field-white .step-current {
+    color: #0284c7;
+  }
+
+  body.field-cyber.field-white .settings-gear {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 180, 235, 0.45);
+    color: #0369a1;
+  }
+
+  body.field-cyber.field-white .settings-gear:hover {
+    background: #00d2ff;
+    color: #022b3a;
+    border-color: #00d2ff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.45);
+  }
+
+  body.field-cyber.field-white .opponent-strip {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 180, 235, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 70, 140, 0.08);
+  }
+
+  body.field-cyber.field-white .opp-name {
+    color: #0c4a6e;
+  }
+
+  body.field-cyber.field-white .opp-meta {
+    color: #475569;
+  }
+
+  body.field-cyber.field-white .hand-pill {
+    background: rgba(235, 245, 255, 0.9);
+    border-color: rgba(0, 180, 235, 0.4);
+    color: #0369a1;
+  }
+
+  body.field-cyber.field-white .settings-panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(242, 247, 253, 0.97));
+    border-left: 1px solid rgba(0, 180, 235, 0.35);
+    box-shadow: -10px 0 40px rgba(0, 40, 80, 0.15);
+  }
+
+  body.field-cyber.field-white .settings-title {
+    color: #0c4a6e;
+  }
+
+  body.field-cyber.field-white .settings-close {
+    color: #64748b;
+  }
+
+  body.field-cyber.field-white .settings-close:hover {
+    color: #0c4a6e;
+  }
+
+  body.field-cyber.field-white .settings-tabs {
+    border-bottom-color: rgba(0, 180, 235, 0.25);
+  }
+
+  body.field-cyber.field-white .settings-tab-btn {
+    border-color: rgba(0, 180, 235, 0.35);
+    background: rgba(240, 247, 255, 0.85);
+    color: #475569;
+  }
+
+  body.field-cyber.field-white .settings-tab-btn:hover {
+    color: #0c4a6e;
+    border-color: rgba(0, 180, 235, 0.6);
+  }
+
+  body.field-cyber.field-white .settings-tab-btn.active {
+    background: linear-gradient(135deg, #00d2ff, #0ab8e0);
+    border-color: #00d2ff;
+    color: #022b3a;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.45);
+  }
+
+  body.field-cyber.field-white .settings-label {
+    color: #334155;
+  }
+
+  body.field-cyber.field-white .settings-desc {
+    color: #64748b;
+  }
+
+  body.field-cyber.field-white .settings-row {
+    color: #334155;
+  }
+
+  body.field-cyber.field-white .settings-value {
+    color: #0284c7;
+  }
+
+  body.field-cyber.field-white .theme-switch,
+  body.field-cyber.field-white .mode-switch {
+    background: rgba(235, 245, 255, 0.95);
+    border-color: rgba(0, 180, 235, 0.35);
+  }
+
+  body.field-cyber.field-white .theme-opt,
+  body.field-cyber.field-white .mode-opt {
+    color: #475569;
+  }
+
+  body.field-cyber.field-white .theme-opt:hover,
+  body.field-cyber.field-white .mode-opt:hover {
+    color: #0c4a6e;
+  }
+
+  body.field-cyber.field-white .preset-btn,
+  body.field-cyber.field-white .settings-reset,
+  body.field-cyber.field-white .settings-bgm-toggle {
+    border-color: rgba(0, 180, 235, 0.35);
+    background: rgba(240, 247, 255, 0.85);
+    color: #334155;
+  }
+
+  body.field-cyber.field-white .preset-btn:hover,
+  body.field-cyber.field-white .settings-reset:hover,
+  body.field-cyber.field-white .settings-bgm-toggle:hover {
+    color: #0284c7;
+    border-color: #00d2ff;
+  }
+
+  body.field-cyber.field-white .preset-btn.active {
+    background: linear-gradient(135deg, #00d2ff, #0ab8e0);
+    border-color: #00d2ff;
+    color: #022b3a;
+  }
+
+  body.field-cyber.field-white .settings-group input[type=range] {
+    background: rgba(0, 180, 235, 0.25);
+  }
+
+  body.field-cyber.field-white .settings-group input[type=range]::-webkit-slider-thumb {
+    background: #00d2ff;
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.7);
+  }
+
+  /* ボード盤面マット：白ベース電脳テクスチャ */
+  body.field-cyber.field-white .field-splash-bg {
+    background:
+      radial-gradient(ellipse at 50% 130%, rgba(0, 180, 255, .15) 0%, rgba(14, 165, 233, .08) 40%, transparent 75%),
+      repeating-linear-gradient(0deg, rgba(0, 160, 240, .05) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(90deg, rgba(0, 160, 240, .05) 0 1px, transparent 1px 28px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(240, 248, 255, 0.90) 50%, rgba(230, 244, 255, 0.88) 100%);
+    box-shadow: inset 0 0 40px rgba(0, 140, 220, .10), 0 10px 30px rgba(0, 70, 140, 0.08);
+    border: 1.5px solid rgba(0, 180, 240, 0.35);
+  }
+
+  body.field-cyber.field-white .field-splash-bg::before {
+    background:
+      repeating-radial-gradient(circle at 50% 100%,
+        rgba(0, 180, 255, .04) 0px,
+        rgba(0, 180, 255, .04) 1.5px,
+        transparent 1.5px,
+        transparent 18px),
+      linear-gradient(0deg, rgba(0, 180, 255, .06) 0%, transparent 50%);
+    opacity: 0.85;
+  }
+
+  body.field-cyber.field-white .field-splash-canvas {
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+  }
+
+  /* フィールド枠・スロット：白背景に合わせて透明度と光彩を最適化 */
+  body.field-cyber.field-white .lane,
+  body.field-cyber.field-white .opp-lane,
+  body.field-cyber.field-white .field-body,
+  body.field-cyber.field-white .farm-pile,
+  body.field-cyber.field-white .zone-body {
+    border-color: rgba(0, 180, 245, 0.7);
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(0, 200, 255, .18), transparent 65%),
+      rgba(240, 248, 255, .88);
+    box-shadow: inset 0 0 14px rgba(0, 190, 255, .18), 0 2px 10px rgba(0, 70, 140, .12);
+  }
+
+  body.field-cyber.field-white .lane-card-back,
+  body.field-cyber.field-white .opp-lane .lane-card-back {
+    border-color: rgba(0, 180, 245, 0.75);
+    background: rgba(235, 246, 255, 0.7);
+    box-shadow: inset 0 0 10px rgba(0, 190, 255, 0.2), 0 2px 8px rgba(0, 70, 140, 0.12);
+  }
+
+  body.field-cyber.field-white .lane-label,
+  body.field-cyber.field-white .opp-lane .lane-label {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0c4a6e;
+    border-color: rgba(0, 180, 235, 0.8);
+    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.15);
+  }
+
+  body.field-cyber.field-white #zone-opp-farm .farm-pile,
+  body.field-cyber.field-white #zone-field .field-body-opp {
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(255, 120, 140, .18), transparent 65%),
+      rgba(255, 242, 245, .85);
+    box-shadow: inset 0 0 16px rgba(255, 100, 120, .18), 0 2px 10px rgba(255, 80, 100, .2);
+  }
+
+  body.field-cyber.field-white #zone-farm .farm-pile,
+  body.field-cyber.field-white #zone-field .field-body {
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(0, 200, 255, .18), transparent 65%),
+      rgba(238, 248, 255, .88);
+    box-shadow: inset 0 0 16px rgba(0, 190, 255, .2), 0 2px 10px rgba(0, 160, 240, .22);
+  }
+
+  body.field-cyber.field-white .field-placeholder {
+    color: rgba(2, 132, 199, 0.9);
+  }
+
+  body.field-cyber.field-white .field-placeholder-opp {
+    color: rgba(225, 29, 72, 0.9);
+  }
+
+  body.field-cyber.field-white .farm-pile:empty::before,
+  body.field-cyber.field-white .zone-body:empty::before {
+    color: rgba(2, 132, 199, 0.9);
+  }
+
+  body.field-cyber.field-white .opp-name,
+  body.field-cyber.field-white #opp-name {
+    color: #0c4a6e !important;
+  }
+
+  body.field-cyber.field-white .opp-meta,
+  body.field-cyber.field-white #opp-meta {
+    color: #475569 !important;
+  }
+
+  body.field-cyber.field-white #opp-hand-count {
+    color: #0284c7 !important;
   }
 
   /* ===================== 初期50枚カード配布（ディール演出）スタイル ===================== */
