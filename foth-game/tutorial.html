@@ -117,16 +117,16 @@
               <div class="settings-label">視点プリセット</div>
               <div class="preset-grid" id="tilt-select">
                 <button class="preset-btn tilt-opt" data-angle="0" type="button">0°(真上・平面)</button>
-                <button class="preset-btn tilt-opt" data-angle="10" type="button">10°(手前重視)</button>
-                <button class="preset-btn tilt-opt active" data-angle="25" type="button">25°(標準)</button>
+                <button class="preset-btn tilt-opt active" data-angle="10" type="button">10°(標準)</button>
+                <button class="preset-btn tilt-opt" data-angle="25" type="button">25°(奥行き)</button>
               </div>
             </div>
             <div class="settings-group">
               <div class="settings-row">
                 <span>3D TILT (傾き微調整)</span>
-                <span class="settings-value" id="tilt-value">25°</span>
+                <span class="settings-value" id="tilt-value">10°</span>
               </div>
-              <input type="range" id="tilt-range" min="0" max="60" value="25" step="1">
+              <input type="range" id="tilt-range" min="0" max="60" value="10" step="1">
             </div>
             <div class="settings-group">
               <div class="settings-row">
@@ -219,64 +219,64 @@
               <span class="slot-bracket bl"></span><span class="slot-bracket br"></span>
             </div>
           </div>
-          <!-- コマンドバー（状況カード置き場とデッキの間） -->
-          <div id="command-bar" hidden>
-            <div class="cmd-menu" id="cmd-menu">
-              <button class="cmd-menu-btn primary" data-cmd="run" type="button">
-                <div class="btn-text-wrap">
-                  <span class="btn-sub">コマンド</span>
-                  <span class="btn-label">走破</span>
-                </div>
-              </button>
-              <button class="cmd-menu-btn" data-cmd="situation" type="button">
-                <div class="btn-text-wrap">
-                  <span class="btn-sub">コマンド</span>
-                  <span class="btn-label">状況</span>
-                </div>
-              </button>
-              <button class="cmd-menu-btn" data-cmd="item" type="button">
-                <div class="btn-text-wrap">
-                  <span class="btn-sub">コマンド</span>
-                  <span class="btn-label">アイテム</span>
-                </div>
-              </button>
-              <button class="cmd-menu-btn" data-cmd="end" type="button">
-                <div class="btn-text-wrap">
-                  <span class="btn-sub">フェイズ切替</span>
-                  <span class="btn-label">ターンエンド</span>
-                </div>
-              </button>
-            </div>
-            <!-- デュエルリンクス風 丸型シルエット FAB -->
-            <button class="cmd-fab" id="cmd-fab" type="button" aria-label="コマンドメニュー">
-              <span class="cmd-fab-badge" id="cmd-fab-badge">COMMAND</span>
-              <span class="cmd-fab-icon-wrap">
-                <svg class="cmd-fab-arrow" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Dark shadow outline -->
-                  <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
-                    stroke="#000000" stroke-width="6" stroke-linecap="round" />
-                  <path d="M 4.2 27.5 L 9.8 20.2 L 15.8 28.5 Z" fill="#000000" stroke="#000000" stroke-width="2.6"
-                    stroke-linejoin="round" />
-                  <!-- White crisp arrow body -->
-                  <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
-                    stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" />
-                  <path d="M 4.8 27.2 L 9.8 20.8 L 15.2 28 Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.8"
-                    stroke-linejoin="round" />
-                </svg>
-              </span>
-            </button>
-          </div>
           <div class="overlay ov-deck" id="zone-deck">
             <div class="lanes" id="lanes"></div>
           </div>
         </div>
       </div>
 
+      <!-- コマンドバー（傾き・ズームの影響を受けない固定位置） -->
+      <div id="command-bar" hidden>
+        <div class="cmd-menu" id="cmd-menu">
+          <button class="cmd-menu-btn primary" data-cmd="run" type="button">
+            <div class="btn-text-wrap">
+              <span class="btn-sub">コマンド</span>
+              <span class="btn-label">走破</span>
+            </div>
+          </button>
+          <button class="cmd-menu-btn" data-cmd="situation" type="button">
+            <div class="btn-text-wrap">
+              <span class="btn-sub">コマンド</span>
+              <span class="btn-label">状況</span>
+            </div>
+          </button>
+          <button class="cmd-menu-btn" data-cmd="item" type="button">
+            <div class="btn-text-wrap">
+              <span class="btn-sub">コマンド</span>
+              <span class="btn-label">アイテム</span>
+            </div>
+          </button>
+          <button class="cmd-menu-btn" data-cmd="end" type="button">
+            <div class="btn-text-wrap">
+              <span class="btn-sub">フェイズ切替</span>
+              <span class="btn-label">ターンエンド</span>
+            </div>
+          </button>
+        </div>
+        <!-- デュエルリンクス風 丸型シルエット FAB -->
+        <button class="cmd-fab" id="cmd-fab" type="button" aria-label="コマンドメニュー">
+          <span class="cmd-fab-badge" id="cmd-fab-badge">COMMAND</span>
+          <span class="cmd-fab-icon-wrap">
+            <svg class="cmd-fab-arrow" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Dark shadow outline -->
+              <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
+                stroke="#000000" stroke-width="6" stroke-linecap="round" />
+              <path d="M 4.2 27.5 L 9.8 20.2 L 15.8 28.5 Z" fill="#000000" stroke="#000000" stroke-width="2.6"
+                stroke-linejoin="round" />
+              <!-- White crisp arrow body -->
+              <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
+                stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" />
+              <path d="M 4.8 27.2 L 9.8 20.8 L 15.2 28 Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.8"
+                stroke-linejoin="round" />
+            </svg>
+          </span>
+        </button>
+      </div>
+
       <footer class="narrator" id="narrator">
         <div class="narrator-portrait"><img src="images/narrator.png" alt="ナレーター"></div>
         <div class="narrator-bubble">
           <div class="narrator-text" id="narrator-text">読み込み中…</div>
-          <div class="narrator-tap-hint" id="narrator-tap-hint">タップで進む <span class="tap-arrow">▼</span></div>
         </div>
       </footer>
 
@@ -418,9 +418,10 @@
     composer.addPass(renderScene);
     composer.addPass(bloomPass);
 
-    // Procedural Seamless Digital Circuit Texture (Dark Navy & White Cyber with Fine Neon Circuitry)
+    // Procedural Seamless Digital Circuit Texture (Dark Navy, White Cyber, and Nature Green)
     function createCyberTexture(mode) {
       const isWhite = (mode === 'white');
+      const isNature = (mode === 'nature');
       const size = 2048;
       const canvas = document.createElement('canvas');
       canvas.width = size;
@@ -428,16 +429,28 @@
       const ctx = canvas.getContext('2d');
 
       // 1. Base Color
-      ctx.fillStyle = isWhite ? '#f0f5fa' : '#01050f';
+      if (isWhite) {
+        ctx.fillStyle = '#edf2f7';
+      } else if (isNature) {
+        ctx.fillStyle = '#010d06';
+      } else {
+        ctx.fillStyle = '#01050f';
+      }
       ctx.fillRect(0, 0, size, size);
 
       // Ambient light pools
       const ambientGlows = isWhite ? [
-        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 160, 255, 0.12)' },
-        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 180, 255, 0.10)' },
-        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(0, 140, 240, 0.11)' },
-        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(0, 170, 255, 0.10)' },
-        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(0, 130, 220, 0.08)' },
+        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 140, 240, 0.16)' },
+        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 180, 255, 0.14)' },
+        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(0, 140, 240, 0.14)' },
+        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(0, 170, 255, 0.12)' },
+        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(0, 130, 220, 0.12)' },
+      ] : isNature ? [
+        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(5, 120, 60, 0.30)' },
+        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(16, 185, 129, 0.26)' },
+        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(4, 90, 45, 0.26)' },
+        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(21, 128, 61, 0.24)' },
+        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(6, 95, 70, 0.22)' },
       ] : [
         { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 30, 95, 0.30)' },
         { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 45, 120, 0.28)' },
@@ -448,7 +461,7 @@
       ambientGlows.forEach(g => {
         const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
         rad.addColorStop(0, g.c);
-        rad.addColorStop(1, isWhite ? 'rgba(240, 245, 250, 0)' : 'rgba(1, 5, 15, 0)');
+        rad.addColorStop(1, isWhite ? 'rgba(237, 242, 247, 0)' : isNature ? 'rgba(1, 13, 6, 0)' : 'rgba(1, 5, 15, 0)');
         ctx.fillStyle = rad;
         ctx.fillRect(0, 0, size, size);
       });
@@ -466,7 +479,7 @@
 
             ctx.save();
             if (shadowGlow) {
-              ctx.shadowColor = shadowGlow.color || '#0099ff';
+              ctx.shadowColor = shadowGlow.color || (isWhite ? '#0077ee' : isNature ? '#10b981' : '#0099ff');
               ctx.shadowBlur = shadowGlow.blur || 4;
             }
             if (fillStyle) {
@@ -511,32 +524,35 @@
 
           const styleRoll = pseudoRand();
           if (styleRoll < 0.45) {
-            // Style 1: Subtle translucent plate with cyan trace
+            // Style 1: Subtle translucent plate
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(235, 244, 252, 0.90)' : 'rgba(0, 20, 60, 0.22)',
-              isWhite ? 'rgba(0, 140, 230, 0.35)' : 'rgba(0, 150, 255, 0.40)', 1.0, { color: isWhite ? '#0088ee' : '#0066dd', blur: 4 });
+              isWhite ? 'rgba(235, 244, 252, 0.90)' : isNature ? 'rgba(3, 30, 14, 0.25)' : 'rgba(0, 20, 60, 0.22)',
+              isWhite ? 'rgba(0, 140, 230, 0.45)' : isNature ? 'rgba(16, 185, 129, 0.40)' : 'rgba(0, 150, 255, 0.40)',
+              1.0, { color: isWhite ? '#0088ee' : isNature ? '#10b981' : '#0066dd', blur: 4 });
           } else if (styleRoll < 0.75) {
-            // Style 2: Micro-grid IC chip with fine pins
+            // Style 2: Micro-grid IC chip
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(228, 238, 250, 0.92)' : 'rgba(0, 14, 45, 0.28)',
-              isWhite ? 'rgba(0, 160, 255, 0.50)' : 'rgba(0, 190, 255, 0.55)', 1.2, { color: isWhite ? '#0099ff' : '#0088ff', blur: 5 });
+              isWhite ? 'rgba(228, 238, 250, 0.92)' : isNature ? 'rgba(2, 24, 12, 0.28)' : 'rgba(0, 14, 45, 0.28)',
+              isWhite ? 'rgba(0, 160, 255, 0.55)' : isNature ? 'rgba(34, 197, 94, 0.55)' : 'rgba(0, 190, 255, 0.55)',
+              1.2, { color: isWhite ? '#0099ff' : isNature ? '#22c55e' : '#0088ff', blur: 5 });
             if (pw > step * 1.5 && ph > step * 1.5) {
               drawWrapRect(px + 6, py + 6, pw - 12, ph - 12,
-                isWhite ? 'rgba(218, 232, 248, 0.85)' : 'rgba(0, 30, 80, 0.18)',
-                isWhite ? 'rgba(0, 140, 230, 0.35)' : 'rgba(0, 140, 230, 0.35)', 0.8);
+                isWhite ? 'rgba(218, 232, 248, 0.85)' : isNature ? 'rgba(1, 18, 8, 0.20)' : 'rgba(0, 30, 80, 0.18)',
+                isWhite ? 'rgba(0, 140, 230, 0.35)' : isNature ? 'rgba(16, 185, 129, 0.35)' : 'rgba(0, 140, 230, 0.35)',
+                0.8);
             }
           } else {
-            // Style 3: Accent Cyber Node Box
+            // Style 3: Accent Node Box
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(220, 240, 255, 0.92)' : 'rgba(0, 40, 110, 0.20)',
-              isWhite ? 'rgba(0, 180, 255, 0.65)' : 'rgba(60, 220, 255, 0.70)', 1.4, { color: '#00ccff', blur: 6 });
+              isWhite ? 'rgba(220, 240, 255, 0.92)' : isNature ? 'rgba(4, 40, 18, 0.20)' : 'rgba(0, 40, 110, 0.20)',
+              isWhite ? 'rgba(0, 180, 255, 0.70)' : isNature ? 'rgba(74, 222, 128, 0.70)' : 'rgba(60, 220, 255, 0.70)',
+              1.4, { color: isWhite ? '#00ccff' : isNature ? '#4ade80' : '#00ccff', blur: 6 });
           }
         }
       });
 
       // 3. Delicate Background Grid Lines
-      // Minor fine grid lines
-      ctx.strokeStyle = isWhite ? 'rgba(0, 120, 210, 0.14)' : 'rgba(0, 90, 190, 0.16)';
+      ctx.strokeStyle = isWhite ? 'rgba(0, 120, 210, 0.18)' : isNature ? 'rgba(16, 185, 129, 0.16)' : 'rgba(0, 90, 190, 0.16)';
       ctx.lineWidth = 0.8;
       for (let i = 0; i <= gridDivs; i++) {
         const p = i * step;
@@ -551,11 +567,11 @@
         ctx.stroke();
       }
 
-      // Major grid lines (Electric blue accent)
+      // Major grid lines
       ctx.save();
-      ctx.strokeStyle = isWhite ? 'rgba(0, 140, 235, 0.32)' : 'rgba(0, 150, 255, 0.32)';
+      ctx.strokeStyle = isWhite ? 'rgba(0, 140, 235, 0.38)' : isNature ? 'rgba(74, 222, 128, 0.35)' : 'rgba(0, 150, 255, 0.32)';
       ctx.lineWidth = 1.2;
-      ctx.shadowColor = '#0077ee';
+      ctx.shadowColor = isWhite ? '#0077ee' : isNature ? '#10b981' : '#0077ee';
       ctx.shadowBlur = 4;
       for (let i = 0; i <= gridDivs; i += 4) {
         const p = i * step;
@@ -583,10 +599,12 @@
 
         const isGlowTrace = pseudoRand() > 0.45;
         ctx.strokeStyle = isWhite
-          ? (isGlowTrace ? 'rgba(0, 160, 245, 0.82)' : 'rgba(0, 130, 225, 0.50)')
+          ? (isGlowTrace ? 'rgba(0, 160, 245, 0.85)' : 'rgba(0, 130, 225, 0.55)')
+          : isNature
+          ? (isGlowTrace ? 'rgba(74, 222, 128, 0.78)' : 'rgba(34, 197, 94, 0.45)')
           : (isGlowTrace ? 'rgba(0, 210, 255, 0.75)' : 'rgba(0, 140, 240, 0.45)');
         ctx.lineWidth = isGlowTrace ? 1.5 : 1.0;
-        ctx.shadowColor = isWhite ? '#0099ff' : (isGlowTrace ? '#00bbff' : '#0066dd');
+        ctx.shadowColor = isWhite ? '#0099ff' : isNature ? '#10b981' : (isGlowTrace ? '#00bbff' : '#0066dd');
         ctx.shadowBlur = isGlowTrace ? 5 : 3;
 
         for (let ox of [-size, 0, size]) {
@@ -603,20 +621,20 @@
             ctx.stroke();
 
             // Terminal solder pad
-            ctx.fillStyle = isWhite ? '#0284c7' : '#ffffff';
+            ctx.fillStyle = isWhite ? '#0284c7' : isNature ? '#4ade80' : '#ffffff';
             ctx.beginPath();
             ctx.arc(midX, endY, 2.2, 0, Math.PI * 2);
             ctx.fill();
 
             // Solder pad ring
-            ctx.strokeStyle = isWhite ? 'rgba(0, 170, 250, 0.85)' : 'rgba(0, 220, 255, 0.85)';
+            ctx.strokeStyle = isWhite ? 'rgba(0, 170, 250, 0.85)' : isNature ? 'rgba(74, 222, 128, 0.85)' : 'rgba(0, 220, 255, 0.85)';
             ctx.lineWidth = 1.0;
             ctx.beginPath();
             ctx.arc(midX, endY, 4.0, 0, Math.PI * 2);
             ctx.stroke();
 
             // Start node dot
-            ctx.fillStyle = isWhite ? 'rgba(0, 140, 230, 0.85)' : 'rgba(0, 180, 255, 0.80)';
+            ctx.fillStyle = isWhite ? 'rgba(0, 140, 230, 0.85)' : isNature ? 'rgba(52, 211, 153, 0.80)' : 'rgba(0, 180, 255, 0.80)';
             ctx.beginPath();
             ctx.arc(startX, startY, 1.8, 0, Math.PI * 2);
             ctx.fill();
@@ -626,7 +644,7 @@
       ctx.restore();
 
       // 5. Grid intersection node dots & Data junctions
-      ctx.fillStyle = isWhite ? 'rgba(0, 140, 220, 0.70)' : 'rgba(80, 200, 255, 0.70)';
+      ctx.fillStyle = isWhite ? 'rgba(0, 140, 220, 0.75)' : isNature ? 'rgba(52, 211, 153, 0.70)' : 'rgba(80, 200, 255, 0.70)';
       for (let i = 0; i <= gridDivs; i += 2) {
         for (let j = 0; j <= gridDivs; j += 2) {
           if (pseudoRand() > 0.60) {
@@ -648,6 +666,7 @@
 
     const darkTexture = createCyberTexture('dark');
     let whiteTexture = null;
+    let natureTexture = null;
 
     // Floor and Ceiling Planes (Symmetrical perspective expanding from center horizon)
     const planeGeo = new THREE.PlaneGeometry(8000, 8000);
@@ -687,24 +706,31 @@
     scene.add(horizonGlow);
 
     // Dynamic Background Theme Controller
-    let currentTheme = 'dark';
+    let currentTheme = 'cyber';
 
     function applyThreeTheme(t) {
-      currentTheme = t || 'dark';
-      if (t === 'nature' || t === 'classic') {
-        canvas.style.display = 'block';
-        floor.visible = false;
-        ceiling.visible = false;
-        horizonGlow.visible = false;
-        scene.background = null;
-        scene.fog = null;
-        renderer.setClearColor(0x000000, 0);
+      currentTheme = t || 'cyber';
+      canvas.style.display = 'block';
+      floor.visible = true;
+      ceiling.visible = true;
+      horizonGlow.visible = true;
+
+      if (t === 'nature') {
+        if (!natureTexture) natureTexture = createCyberTexture('nature');
+        planeMat.map = natureTexture;
+        planeMat.needsUpdate = true;
+        scene.background = new THREE.Color(0x010d06);
+        scene.fog = new THREE.Fog(0x010d06, 220, 1750);
+        horizonGlowMat.color.setHex(0x059669);
+        horizonGlowMat.opacity = 0.28;
+        bloomPass.strength = 0.42;
+        bloomPass.threshold = 0.35;
         for (let i = 0; i < particleCount; i++) {
           const pColor = new THREE.Color();
           if (Math.random() > 0.45) {
-            pColor.setHSL(0.12 + Math.random() * 0.06, 0.95, 0.70 + Math.random() * 0.25);
-          } else {
             pColor.setHSL(0.28 + Math.random() * 0.08, 0.90, 0.65 + Math.random() * 0.25);
+          } else {
+            pColor.setHSL(0.12 + Math.random() * 0.06, 0.95, 0.70 + Math.random() * 0.25);
           }
           colors[i * 3] = pColor.r;
           colors[i * 3 + 1] = pColor.g;
@@ -712,28 +738,21 @@
         }
         if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
       } else if (t === 'white') {
-        canvas.style.display = 'block';
-        floor.visible = true;
-        ceiling.visible = true;
-        horizonGlow.visible = true;
-        if (!scene.fog) scene.fog = new THREE.Fog(0xf0f5fa, 150, 1600);
         if (!whiteTexture) whiteTexture = createCyberTexture('white');
         planeMat.map = whiteTexture;
         planeMat.needsUpdate = true;
-        scene.background = new THREE.Color(0xf0f5fa);
-        scene.fog.color = new THREE.Color(0xf0f5fa);
-        scene.fog.near = 150;
-        scene.fog.far = 1600;
-        horizonGlowMat.color.setHex(0x00b0ff);
-        horizonGlowMat.opacity = 0.20;
-        bloomPass.strength = 0.24;
+        scene.background = new THREE.Color(0xedf2f7);
+        scene.fog = new THREE.Fog(0xedf2f7, 220, 1750);
+        horizonGlowMat.color.setHex(0x0099ff);
+        horizonGlowMat.opacity = 0.25;
+        bloomPass.strength = 0.26;
         bloomPass.threshold = 0.35;
         for (let i = 0; i < particleCount; i++) {
           const pColor = new THREE.Color();
           if (Math.random() > 0.4) {
-            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.70 + Math.random() * 0.25);
+            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.55 + Math.random() * 0.25);
           } else {
-            pColor.setRGB(0.95, 0.98, 1.0);
+            pColor.setRGB(0.1, 0.4, 0.8);
           }
           colors[i * 3] = pColor.r;
           colors[i * 3 + 1] = pColor.g;
@@ -741,17 +760,11 @@
         }
         if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
       } else {
-        canvas.style.display = 'block';
-        floor.visible = true;
-        ceiling.visible = true;
-        horizonGlow.visible = true;
-        if (!scene.fog) scene.fog = new THREE.Fog(HORIZON_DARK, 220, 1750);
+        // 'cyber' or 'dark'
         planeMat.map = darkTexture;
         planeMat.needsUpdate = true;
         scene.background = new THREE.Color(HORIZON_DARK);
-        scene.fog.color = new THREE.Color(HORIZON_DARK);
-        scene.fog.near = 220;
-        scene.fog.far = 1750;
+        scene.fog = new THREE.Fog(HORIZON_DARK, 220, 1750);
         horizonGlowMat.color.setHex(0x0033aa);
         horizonGlowMat.opacity = 0.28;
         bloomPass.strength = 0.42;
@@ -893,8 +906,8 @@
       particles.geometry.attributes.position.needsUpdate = true;
 
       // Tilt responsiveness matching board tilt angle
-      const tiltStr = getComputedStyle(document.body).getPropertyValue('--tilt-angle') || '25deg';
-      const currentDeg = parseFloat(tiltStr) || 25;
+      const tiltStr = getComputedStyle(document.body).getPropertyValue('--tilt-angle') || '10deg';
+      const currentDeg = parseFloat(tiltStr) || 10;
       const targetRotX = THREE.MathUtils.degToRad(-currentDeg * 0.40);
       const targetPosY = (currentDeg / 10) * 18;
 

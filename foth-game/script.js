@@ -746,9 +746,7 @@
 
   function showNextButton(show) {
     var narratorEl = $('narrator');
-    var hintEl = $('narrator-tap-hint');
     if (narratorEl) narratorEl.classList.toggle('can-advance', !!show);
-    if (hintEl) hintEl.classList.toggle('show', !!show);
     var oldBtn = $('narrator-next');
     if (oldBtn) oldBtn.style.display = 'none';
   }
@@ -3447,7 +3445,7 @@
     }
     var userAdjustedZoom = false;
     var userAdjustedDepth = false;
-    var DEFAULTS = { tilt: 25, depth: 1300, zoom: computeDefaultZoom() };
+    var DEFAULTS = { tilt: 10, depth: 1300, zoom: computeDefaultZoom() };
     var baseTilt = DEFAULTS.tilt;
 
     // ---- 傾き角度に連動した自動パースペクティブ計算 ----------------------
@@ -3459,7 +3457,7 @@
     // そこで「10°・1300px」を基準に sinθ/P の比が常に一定になるよう P を
     // 角度に応じて自動的に引き伸ばし、どの角度でも10°時と同じ縮み具合＝
     // 同じレイアウト比率を保つようにする。
-    var TILT_REF_DEG = DEFAULTS.tilt;
+    var TILT_REF_DEG = 10;
     var TILT_REF_PERSPECTIVE = DEFAULTS.depth;
     var TILT_REF_SIN = Math.sin(TILT_REF_DEG * Math.PI / 180);
     var DEPTH_MIN = 500;
@@ -3480,80 +3478,91 @@
 
       // 傾き角度（0°〜60°）に応じて余白・隙間ができないよう、
       // 3D遠近短縮（rotateX）に合わせてフィールド・ナレーター・手札を連続的・動的に引き上げる
+      // 傾き0度時と同じスペースが自動で詰まるようにシフト量を強化
       var shiftY;
+      var shiftYBottom;
       var nTop, nBottom;
       var hTop, hShift, hScale;
 
       if (isDesktop) {
-        // デスクトップ計算:
-        // 0°: shiftY=0, nTop=-10, nBottom=14, hTop=6, hShift=0 (gap ~22px)
-        // 10° (Flat): shiftY=-180, nTop=-20, nBottom=10, hTop=0, hShift=-10 (gap ~30px)
-        // 25° (Perspective): shiftY=-285, nTop=-30, nBottom=6, hTop=-8, hShift=-20 (gap ~32px)
-        // 60° (High Tilt): shiftY=-470, nTop=-48, nBottom=0, hTop=-24, hShift=-45 (gap ~38px)
+        // デスクトップ計算（強化版: 傾き角度に応じてより強く引き上げて隙間を詰める）:
+        // 0°: shiftY=0, shiftYBottom=0, nTop=-10, nBottom=14, hTop=6, hShift=0 (gap ~22px)
+        // 10° (標準): shiftY=-100, shiftYBottom=-5, nTop=-15, nBottom=12, hTop=2, hShift=-5 (gap ~22px 維持)
+        // 25° (Perspective): shiftY=-200, shiftYBottom=-10, nTop=-25, nBottom=8, hTop=-4, hShift=-15 (gap ~22px 維持)
+        // 60° (High Tilt): shiftY=-450, shiftYBottom=-25, nTop=-45, nBottom=0, hTop=-20, hShift=-40 (gap ~22px 維持)
         if (d <= 0) {
           shiftY = 0;
+          shiftYBottom = 0;
           nTop = -10;
           nBottom = 14;
           hTop = 6;
           hShift = 0;
         } else if (d <= 10) {
           var r0 = d / 10;
-          shiftY = -r0 * 180;
-          nTop = -10 - r0 * 10;
-          nBottom = 14 - r0 * 4;
-          hTop = 6 - r0 * 6;
-          hShift = -r0 * 10;
+          shiftY = -r0 * 100;
+          shiftYBottom = -r0 * 5;
+          nTop = -10 - r0 * 5;
+          nBottom = 14 - r0 * 2;
+          hTop = 6 - r0 * 4;
+          hShift = -r0 * 5;
         } else if (d <= 25) {
           var r1 = (d - 10) / 15;
-          shiftY = -180 - r1 * 105;
-          nTop = -20 - r1 * 10;
-          nBottom = 10 - r1 * 4;
-          hTop = 0 - r1 * 8;
-          hShift = -10 - r1 * 10;
+          shiftY = -100 - r1 * 100;
+          shiftYBottom = -5 - r1 * 5;
+          nTop = -15 - r1 * 10;
+          nBottom = 12 - r1 * 4;
+          hTop = 2 - r1 * 6;
+          hShift = -5 - r1 * 10;
         } else {
           var r2 = (d - 25) / 35;
-          shiftY = -285 - r2 * 185;
-          nTop = -30 - r2 * 18;
-          nBottom = 6 - r2 * 6;
-          hTop = -8 - r2 * 16;
-          hShift = -20 - r2 * 25;
+          shiftY = -200 - r2 * 250;
+          shiftYBottom = -10 - r2 * 15;
+          nTop = -25 - r2 * 20;
+          nBottom = 8 - r2 * 8;
+          hTop = -4 - r2 * 16;
+          hShift = -15 - r2 * 25;
         }
         hScale = 1.0 + Math.min(0.08, (d / 25) * 0.04);
       } else {
-        // モバイル計算:
-        // 0°: shiftY=0, nTop=0, nBottom=10, hShift=0 (gap ~14px)
-        // 10° (Flat): shiftY=-45, nTop=-3, nBottom=8, hShift=-10 (gap ~30px)
-        // 25° (Perspective): shiftY=-75, nTop=-6, nBottom=6, hShift=-22 (gap ~32px)
-        // 60° (High Tilt): shiftY=-195, nTop=-18, nBottom=0, hShift=-60 (gap ~35px)
+        // モバイル計算（強化版: 傾き角度に応じてより強く引き上げて隙間を詰める）:
+        // 0°: shiftY=0, shiftYBottom=0, nTop=0, nBottom=10, hShift=0 (gap ~14px)
+        // 10° (標準): shiftY=-30, shiftYBottom=-3, nTop=-2, nBottom=8, hShift=-5 (gap ~14px 維持)
+        // 25° (Perspective): shiftY=-60, shiftYBottom=-8, nTop=-5, nBottom=6, hShift=-12 (gap ~14px 維持)
+        // 60° (High Tilt): shiftY=-180, shiftYBottom=-25, nTop=-15, nBottom=0, hShift=-35 (gap ~14px 維持)
         if (d <= 0) {
           shiftY = 0;
+          shiftYBottom = 0;
           nTop = 0;
           nBottom = 10;
           hShift = 0;
         } else if (d <= 10) {
           var rm0 = d / 10;
-          shiftY = -rm0 * 45;
-          nTop = -rm0 * 3;
+          shiftY = -rm0 * 30;
+          shiftYBottom = -rm0 * 3;
+          nTop = -rm0 * 2;
           nBottom = 10 - rm0 * 2;
-          hShift = -rm0 * 10;
+          hShift = -rm0 * 5;
         } else if (d <= 25) {
           var rm1 = (d - 10) / 15;
-          shiftY = -45 - rm1 * 30;
-          nTop = -3 - rm1 * 3;
+          shiftY = -30 - rm1 * 30;
+          shiftYBottom = -3 - rm1 * 5;
+          nTop = -2 - rm1 * 3;
           nBottom = 8 - rm1 * 2;
-          hShift = -10 - rm1 * 12;
+          hShift = -5 - rm1 * 7;
         } else {
           var rm2 = (d - 25) / 35;
-          shiftY = -75 - rm2 * 120;
-          nTop = -6 - rm2 * 12;
+          shiftY = -60 - rm2 * 120;
+          shiftYBottom = -8 - rm2 * 17;
+          nTop = -5 - rm2 * 10;
           nBottom = 6 - rm2 * 6;
-          hShift = -22 - rm2 * 38;
+          hShift = -12 - rm2 * 23;
         }
         hTop = 0;
         hScale = 1.0 + Math.min(0.12, (d / 25) * 0.08);
       }
 
       document.body.style.setProperty('--field-tilt-shift-y', shiftY.toFixed(1) + 'px');
+      document.body.style.setProperty('--field-tilt-shift-y-bottom', shiftYBottom.toFixed(1) + 'px');
       document.body.style.setProperty('--narrator-margin-top', nTop.toFixed(1) + 'px');
       document.body.style.setProperty('--narrator-margin-bottom', nBottom.toFixed(1) + 'px');
       document.body.style.setProperty('--hand-margin-top', hTop.toFixed(1) + 'px');
