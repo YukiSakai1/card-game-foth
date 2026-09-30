@@ -1175,16 +1175,16 @@
 
   .field-situation-card {
     position: relative;
-    width: clamp(260px, 46vw, 420px);
-    aspect-ratio: 1.2 / 1;
-    border-radius: 20px;
-    opacity: 0.48; /* イラスト部分のみを背景として綺麗に透過表示 */
+    width: clamp(310px, 56vw, 500px);
+    aspect-ratio: 1.22 / 1;
+    border-radius: 22px;
+    opacity: 0.50; /* イラスト部分のみを背景として綺麗に透過表示 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    box-shadow: 0 0 50px rgba(56, 189, 248, 0.4), 0 0 90px rgba(14, 165, 233, 0.22);
-    border: 2px solid rgba(125, 211, 252, 0.65);
-    filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.7));
+    box-shadow: 0 0 55px rgba(56, 189, 248, 0.42), 0 0 100px rgba(14, 165, 233, 0.24);
+    border: 2px solid rgba(125, 211, 252, 0.68);
+    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.72));
     overflow: hidden;
     cursor: pointer;
     pointer-events: auto; /* タップで詳細確認可能 */
