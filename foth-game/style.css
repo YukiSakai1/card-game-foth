@@ -5765,7 +5765,7 @@
     color: #2b323b !important;
   }
 
-  body.field-white #closeup-layer {
+  body.field-white #closeup-layer.show {
     background: rgba(240, 245, 252, 0.94) !important;
   }
 
