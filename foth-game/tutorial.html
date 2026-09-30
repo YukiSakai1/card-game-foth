@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=26">
+  <link rel="stylesheet" href="style.css?v=27">
   <script type="importmap">
 {
     "imports": {
@@ -704,6 +704,7 @@
         horizonGlowMat.color.setHex(0x00b0ff);
         horizonGlowMat.opacity = 0.20;
         bloomPass.strength = 0.24;
+        bloomPass.threshold = 0.35;
         canvas.style.display = 'block';
       } else if (t === 'classic') {
         canvas.style.display = 'none';
@@ -718,6 +719,7 @@
         horizonGlowMat.color.setHex(0x0033aa);
         horizonGlowMat.opacity = 0.28;
         bloomPass.strength = 0.42;
+        bloomPass.threshold = 0.35;
       }
     }
 
@@ -807,7 +809,9 @@
       // Adapt texture repeat across X based on aspect ratio so grid cells stay square and dense on wide desktop screens
       const baseRepeatY = 4;
       const repeatX = Math.max(4, Math.round(baseRepeatY * aspect));
-      cyberTexture.repeat.set(repeatX, baseRepeatY);
+      if (planeMat && planeMat.map) {
+        planeMat.map.repeat.set(repeatX, baseRepeatY);
+      }
 
       renderer.setSize(width, height);
       composer.setSize(width, height);
@@ -823,7 +827,9 @@
       const elapsedTime = clock.getElapsedTime();
 
       // Forward flight effect
-      cyberTexture.offset.y -= delta * speed * 0.045;
+      if (planeMat && planeMat.map) {
+        planeMat.map.offset.y -= delta * speed * 0.045;
+      }
 
       // Particle forward drift and recycling
       const pPositions = particles.geometry.attributes.position.array;

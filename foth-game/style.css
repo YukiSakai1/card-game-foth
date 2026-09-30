@@ -5208,60 +5208,108 @@
   }
 
   /* ===================== White-based Cyber Theme (白ベース電脳テーマ) ===================== */
-  body.field-cyber.field-white {
+  body.field-cyber.field-white,
+  body.field-white {
+    --rail: #0f2942;
+    --rail-dim: #334e68;
+    --gold-2: #0284c7;
+    --line: rgba(0, 160, 235, 0.4);
     background: #f0f5fa;
-    color: #1a2a3a;
+    color: #0f2942;
   }
 
-  body.field-cyber.field-white .app {
-    color: #1a2a3a;
+  body.field-cyber.field-white .app,
+  body.field-white .app {
+    color: #0f2942;
   }
 
-  body.field-cyber.field-white .topbar {
-    background: rgba(255, 255, 255, 0.88);
+  body.field-cyber.field-white .topbar,
+  body.field-white .topbar {
+    background: rgba(255, 255, 255, 0.92);
     border-bottom: 1px solid rgba(0, 180, 235, 0.35);
     box-shadow: 0 4px 18px rgba(0, 70, 140, 0.08);
   }
 
-  body.field-cyber.field-white .brand {
+  body.field-cyber.field-white .brand,
+  body.field-white .brand {
     color: #0c4a6e;
     text-shadow: none;
   }
 
-  body.field-cyber.field-white .brand span {
+  body.field-cyber.field-white .brand span,
+  body.field-white .brand span {
     color: #0284c7;
     text-shadow: none;
   }
 
-  body.field-cyber.field-white .track-wrap {
+  body.field-cyber.field-white .track-wrap,
+  body.field-white .track-wrap {
     background: rgba(235, 245, 255, 0.85);
     border: 1px solid rgba(0, 180, 235, 0.35);
   }
 
-  body.field-cyber.field-white .track {
+  body.field-cyber.field-white .track,
+  body.field-white .track {
     background: rgba(215, 235, 250, 0.6);
   }
 
-  body.field-cyber.field-white .track-grid {
+  body.field-cyber.field-white .track-grid,
+  body.field-white .track-grid {
     background-size: 8px 100%;
     background-image: linear-gradient(90deg, rgba(0, 180, 235, 0.25) 1px, transparent 1px);
   }
 
-  body.field-cyber.field-white .step-label {
+  body.field-cyber.field-white .track-badge,
+  body.field-white .track-badge {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(2, 132, 199, 0.45);
+    color: #0284c7;
+    font-weight: 700;
+  }
+
+  body.field-cyber.field-white .badge-dot,
+  body.field-white .badge-dot {
+    background: #0284c7;
+    box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
+  }
+
+  body.field-cyber.field-white .step-label,
+  body.field-white .step-label {
     color: #0c4a6e;
   }
 
-  body.field-cyber.field-white .step-current {
-    color: #0284c7;
+  body.field-cyber.field-white .step-prefix,
+  body.field-white .step-prefix {
+    color: #475569;
+    font-weight: 600;
   }
 
-  body.field-cyber.field-white .settings-gear {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(0, 180, 235, 0.45);
+  body.field-cyber.field-white .step-current,
+  body.field-white .step-current {
+    color: #0284c7;
+    font-weight: 800;
+  }
+
+  body.field-cyber.field-white .step-slash,
+  body.field-white .step-slash {
+    color: #94a3b8;
+  }
+
+  body.field-cyber.field-white .step-total,
+  body.field-white .step-total {
+    color: #475569;
+    font-weight: 600;
+  }
+
+  body.field-cyber.field-white .settings-gear,
+  body.field-white .settings-gear {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 180, 235, 0.55);
     color: #0369a1;
   }
 
-  body.field-cyber.field-white .settings-gear:hover {
+  body.field-cyber.field-white .settings-gear:hover,
+  body.field-white .settings-gear:hover {
     background: #00d2ff;
     color: #022b3a;
     border-color: #00d2ff;
@@ -5488,15 +5536,66 @@
   }
 
   body.field-cyber.field-white .lane-label,
-  body.field-cyber.field-white .opp-lane .lane-label {
-    background: rgba(255, 255, 255, 0.95);
-    color: #0c4a6e;
-    border-color: rgba(0, 180, 235, 0.8);
-    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.15);
+  body.field-cyber.field-white .opp-lane .lane-label,
+  body.field-white .lane-label,
+  body.field-white .opp-lane .lane-label {
+    background: rgba(255, 255, 255, 0.96);
+    color: #0f2942;
+    border-color: rgba(0, 160, 235, 0.8);
+    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.18);
+  }
+
+  /* 脚質ごとの枠色・文字色アクセントを白背景で鮮明・高コントラストに最適化 */
+  body.field-white .lane[data-lane="nige"] .lane-label,
+  body.field-white .opp-lane[data-lane="nige"] .lane-label {
+    color: #0369a1 !important;
+    border-color: #0284c7 !important;
+    background: #ffffff !important;
+  }
+
+  body.field-white .lane[data-lane="senko"] .lane-label,
+  body.field-white .opp-lane[data-lane="senko"] .lane-label {
+    color: #be123c !important;
+    border-color: #f43f5e !important;
+    background: #ffffff !important;
+  }
+
+  body.field-white .lane[data-lane="sashi"] .lane-label,
+  body.field-white .opp-lane[data-lane="sashi"] .lane-label {
+    color: #047857 !important;
+    border-color: #10b981 !important;
+    background: #ffffff !important;
+  }
+
+  body.field-white .lane[data-lane="oikomi"] .lane-label,
+  body.field-white .opp-lane[data-lane="oikomi"] .lane-label {
+    color: #b45309 !important;
+    border-color: #f59e0b !important;
+    background: #ffffff !important;
+  }
+
+  /* アクティブな山札ラベル（白テーマ） */
+  body.field-white .lane.active .lane-label,
+  body.field-white .opp-lane.active .lane-label {
+    background: #0f2942 !important;
+    color: #ffffff !important;
+    border-color: #0284c7 !important;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.6) !important;
+  }
+
+  /* 山札枚数バッジ（白テーマ） */
+  body.field-white .lane-badge {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    border-color: #0369a1 !important;
+    box-shadow: 0 2px 6px rgba(0, 50, 120, 0.25) !important;
   }
 
   body.field-cyber.field-white #zone-opp-farm .farm-pile,
-  body.field-cyber.field-white #zone-field .field-body-opp {
+  body.field-cyber.field-white #zone-field .field-body-opp,
+  body.field-white #zone-opp-farm .farm-pile,
+  body.field-white #zone-field .field-body-opp {
     background:
       radial-gradient(120% 140% at 50% 0%, rgba(255, 120, 140, .18), transparent 65%),
       rgba(255, 242, 245, .85);
@@ -5504,38 +5603,125 @@
   }
 
   body.field-cyber.field-white #zone-farm .farm-pile,
-  body.field-cyber.field-white #zone-field .field-body {
+  body.field-cyber.field-white #zone-field .field-body,
+  body.field-white #zone-farm .farm-pile,
+  body.field-white #zone-field .field-body {
     background:
       radial-gradient(120% 140% at 50% 0%, rgba(0, 200, 255, .18), transparent 65%),
       rgba(238, 248, 255, .88);
     box-shadow: inset 0 0 16px rgba(0, 190, 255, .2), 0 2px 10px rgba(0, 160, 240, .22);
   }
 
-  body.field-cyber.field-white .field-placeholder {
-    color: rgba(2, 132, 199, 0.9);
+  body.field-cyber.field-white .field-placeholder,
+  body.field-white .field-placeholder {
+    color: #0284c7 !important;
+    font-weight: 700;
   }
 
-  body.field-cyber.field-white .field-placeholder-opp {
-    color: rgba(225, 29, 72, 0.9);
+  body.field-cyber.field-white .field-placeholder-opp,
+  body.field-white .field-placeholder-opp {
+    color: #e11d48 !important;
+    font-weight: 700;
   }
 
   body.field-cyber.field-white .farm-pile:empty::before,
-  body.field-cyber.field-white .zone-body:empty::before {
-    color: rgba(2, 132, 199, 0.9);
-  }
-
-  body.field-cyber.field-white .opp-name,
-  body.field-cyber.field-white #opp-name {
-    color: #0c4a6e !important;
-  }
-
-  body.field-cyber.field-white .opp-meta,
-  body.field-cyber.field-white #opp-meta {
-    color: #475569 !important;
-  }
-
-  body.field-cyber.field-white #opp-hand-count {
+  body.field-cyber.field-white .zone-body:empty::before,
+  body.field-white .farm-pile:empty::before,
+  body.field-white .zone-body:empty::before {
     color: #0284c7 !important;
+    font-weight: 700;
+  }
+
+  /* 相手エリアの文字同化防止（白テーマ） */
+  body.field-white .opponent-strip,
+  body.field-cyber.field-white .opponent-strip {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 254, 0.96) 100%) !important;
+    border: 1px solid rgba(0, 160, 235, 0.5) !important;
+    box-shadow: 0 4px 14px rgba(0, 60, 120, 0.12) !important;
+  }
+
+  body.field-white .opponent-avatar,
+  body.field-cyber.field-white .opponent-avatar {
+    border-color: #0284c7 !important;
+    box-shadow: 0 0 6px rgba(0, 160, 235, 0.3) !important;
+  }
+
+  body.field-white .opponent-name,
+  body.field-cyber.field-white .opponent-name,
+  body.field-white #opponent-name,
+  body.field-cyber.field-white #opponent-name {
+    color: #0f2942 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+  }
+
+  body.field-white .opponent-sub,
+  body.field-cyber.field-white .opponent-sub,
+  body.field-white #opponent-sub,
+  body.field-cyber.field-white #opponent-sub {
+    color: #0369a1 !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+
+  body.field-white .opponent-hand-area,
+  body.field-cyber.field-white .opponent-hand-area,
+  body.field-white #opponent-hand-display,
+  body.field-cyber.field-white #opponent-hand-display {
+    background: rgba(224, 242, 254, 0.95) !important;
+    border-color: rgba(0, 160, 235, 0.5) !important;
+    color: #0f2942 !important;
+    font-weight: 600 !important;
+  }
+
+  body.field-white #opponent-hand-count,
+  body.field-cyber.field-white #opponent-hand-count,
+  body.field-white .opponent-hand-area .count,
+  body.field-cyber.field-white .opponent-hand-area .count {
+    color: #0284c7 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+  }
+
+  /* 白テーマでのポップアップ・ヒント・トースト通知の視認性強化 */
+  body.field-white .free-hint {
+    background: rgba(255, 255, 255, 0.96) !important;
+    color: #0f2942 !important;
+    border: 1px solid rgba(0, 160, 235, 0.5) !important;
+  }
+
+  body.field-white .game-toast {
+    background: rgba(255, 255, 255, 0.98) !important;
+    color: #0f2942 !important;
+    border: 1.5px solid rgba(0, 160, 235, 0.6) !important;
+    box-shadow: 0 8px 24px rgba(0, 40, 90, 0.15) !important;
+  }
+
+  body.field-white #guard-popup .popup-box {
+    background: #ffffff !important;
+    color: #0f2942 !important;
+    border: 1.5px solid rgba(0, 160, 235, 0.6) !important;
+    box-shadow: 0 10px 30px rgba(0, 40, 90, 0.2) !important;
+  }
+
+  body.field-white #guard-popup .popup-title {
+    color: #0f2942 !important;
+  }
+
+  body.field-white #guard-popup .popup-desc {
+    color: #334e68 !important;
+  }
+
+  body.field-white #closeup-layer {
+    background: rgba(240, 245, 252, 0.94) !important;
+  }
+
+  body.field-white .closeup-label {
+    color: #0f2942 !important;
+  }
+
+  body.field-white .closeup-close-hint {
+    color: #475569 !important;
   }
 
   /* ===================== 初期50枚カード配布（ディール演出）スタイル ===================== */
