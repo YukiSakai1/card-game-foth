@@ -848,7 +848,7 @@
       setTimeout(function () {
         overlay.classList.remove('show');
         setTimeout(resolve, 140);
-      }, 1050);
+      }, 2000);
     });
   }
 

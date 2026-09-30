@@ -3424,7 +3424,7 @@
   }
 
   .turn-change-overlay.show .turn-change-wrap {
-    animation: turnChangeAnim 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: turnChangeAnim 2s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   @keyframes turnChangeAnim {
@@ -3433,16 +3433,16 @@
       transform: scale(1.5) skewX(-14deg);
       filter: brightness(2.4) drop-shadow(0 0 40px #ffffff);
     }
-    18% {
+    12% {
       opacity: 1;
       transform: scale(0.96) skewX(-14deg);
       filter: brightness(1.25) drop-shadow(0 0 28px rgba(0, 210, 255, 0.9));
     }
-    28% {
+    18% {
       transform: scale(1) skewX(-14deg);
       filter: brightness(1) drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95));
     }
-    78% {
+    85% {
       opacity: 1;
       transform: scale(1) skewX(-14deg);
     }
