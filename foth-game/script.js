@@ -677,7 +677,8 @@
 
   function renderNarratorAt(idx) {
     narratorHistoryIndex = idx;
-    $('narrator-text').innerHTML = narratorHistory[idx] || '';
+    var textEl = $('narrator-text');
+    if (textEl) textEl.innerHTML = narratorHistory[idx] || '';
     updateNarratorNavButtons();
   }
   function updateNarratorNavButtons() {
@@ -691,52 +692,75 @@
     if (narratorEl) narratorEl.classList.toggle('viewing-history', hasForward);
   }
   function setNarrator(html) {
-    // 新しいメッセージが来たら、それまで過去ログを閲覧していても常にそれを
-    // 「最新（現在地）」として履歴に積み、表示を最新メッセージに合わせる
     narratorHistory.push(html);
     renderNarratorAt(narratorHistory.length - 1);
   }
+
+  var waitNextResolve = null;
+
   function showNextButton(show) {
-    $('narrator-next').style.display = show ? 'inline-flex' : 'none';
+    var narratorEl = $('narrator');
+    var hintEl = $('narrator-tap-hint');
+    if (narratorEl) narratorEl.classList.toggle('can-advance', !!show);
+    if (hintEl) hintEl.classList.toggle('show', !!show);
+    var oldBtn = $('narrator-next');
+    if (oldBtn) oldBtn.style.display = 'none';
   }
+
+  function advanceNarrator() {
+    if (waitNextResolve) {
+      var r = waitNextResolve;
+      waitNextResolve = null;
+      showNextButton(false);
+      try { Haptics.tap(); } catch (e) {}
+      r();
+    }
+  }
+
   function waitNext() {
     return new Promise(function (resolve) {
-      var btn = $('narrator-next');
+      waitNextResolve = resolve;
       showNextButton(true);
-      function handler() {
-        // 過去のメッセージを閲覧中なら、実際には先に進めず表示だけ1つ先に戻す
-        // （最新メッセージまで進む ▶ ボタンで戻ってから、改めて「つぎへ」を押してもらう）
-        if (narratorHistoryIndex < narratorHistory.length - 1) {
-          renderNarratorAt(narratorHistoryIndex + 1);
-          return;
-        }
-        btn.removeEventListener('click', handler);
-        resolve();
-      }
-      btn.addEventListener('click', handler);
     });
   }
-  // 「つぎへ」ボタンが表示されている間は、画面上のどこをタップ／クリックしても
-  // 次に進めるようにする（カードやボタン、ポップアップ、盤面の各ゾーンなど
-  // 個別の操作が必要な要素は優先する）
+
+  // 吹き出し（ナレーター）自体のクリック・タップで次に進む
+  var narratorEl = $('narrator');
+  if (narratorEl) {
+    narratorEl.addEventListener('click', function (e) {
+      if (waitNextResolve) {
+        e.stopPropagation();
+        advanceNarrator();
+      }
+    });
+  }
+
+  // 「次へ」待ち受け中は、画面上のどこをタップ／クリックしても次に進める
+  // （カードや設定ボタン、ポップアップなど個別操作が必要な要素は除外）
   document.addEventListener('click', function (e) {
-    var nextBtn = $('narrator-next');
-    if (!nextBtn || nextBtn.style.display === 'none') return;
+    if (!waitNextResolve) return;
     if (e.target.closest('button, .card, .popup-box, #settings-overlay, #banner-overlay, .drag-handle, .lane, .opp-lane, .field-body, .field-body-opp, .farm-pile, #situation-body')) return;
-    nextBtn.click();
+    advanceNarrator();
   });
-  $('narrator-back').addEventListener('click', function () {
-    if (narratorHistoryIndex > 0) {
-      Haptics.tap();
-      renderNarratorAt(narratorHistoryIndex - 1);
-    }
-  });
-  $('narrator-forward').addEventListener('click', function () {
-    if (narratorHistoryIndex < narratorHistory.length - 1) {
-      Haptics.tap();
-      renderNarratorAt(narratorHistoryIndex + 1);
-    }
-  });
+
+  var backBtn = $('narrator-back');
+  if (backBtn) {
+    backBtn.addEventListener('click', function () {
+      if (narratorHistoryIndex > 0) {
+        Haptics.tap();
+        renderNarratorAt(narratorHistoryIndex - 1);
+      }
+    });
+  }
+  var fwdBtn = $('narrator-forward');
+  if (fwdBtn) {
+    fwdBtn.addEventListener('click', function () {
+      if (narratorHistoryIndex < narratorHistory.length - 1) {
+        Haptics.tap();
+        renderNarratorAt(narratorHistoryIndex + 1);
+      }
+    });
+  }
 
   var STEP_TOTAL = 16;
   function setProgress(step) {

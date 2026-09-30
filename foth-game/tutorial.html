@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=27">
+  <link rel="stylesheet" href="style.css?v=28">
   <script type="importmap">
 {
     "imports": {
@@ -275,13 +275,7 @@
         <div class="narrator-portrait"><img src="images/narrator.png" alt="ナレーター"></div>
         <div class="narrator-bubble">
           <div class="narrator-text" id="narrator-text">読み込み中…</div>
-          <div class="narrator-actions">
-            <div class="narrator-nav">
-              <button class="narrator-back" id="narrator-back" type="button">◀ 戻る</button>
-              <button class="narrator-forward" id="narrator-forward" type="button">進む ▶</button>
-            </div>
-            <button class="narrator-next" id="narrator-next">つぎへ ▶</button>
-          </div>
+          <div class="narrator-tap-hint" id="narrator-tap-hint">タップで進む <span class="tap-arrow">▼</span></div>
         </div>
       </footer>
 
@@ -386,7 +380,7 @@
 
   </div>
 
-  <script src="script.js?v=24"></script>
+  <script src="script.js?v=25"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
