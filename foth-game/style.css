@@ -41,7 +41,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Three.js 3D Space Background (Active in Classic mode) */
+  /* Three.js 3D Space Background (Active in Classic and Nature mode) */
   #three-bg {
     display: block;
     position: fixed;
@@ -68,6 +68,31 @@
       repeating-linear-gradient(90deg, rgba(62, 224, 255, .035) 0 1px, transparent 1px 28px),
       linear-gradient(180deg, #050c18 0%, #081426 50%, #0d223a 100%);
     background-attachment: fixed;
+  }
+
+  /* Nature mode: Full-screen panoramic nature course background */
+  body.field-nature,
+  body[data-theme="nature"],
+  body.field-classic,
+  body[data-theme="classic"] {
+    background-color: #0d2012;
+    background-image:
+      radial-gradient(ellipse 100% 50% at 50% 0%, rgba(255, 245, 190, 0.20) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(8, 24, 12, 0.15) 0%, rgba(8, 24, 12, 0.28) 50%, rgba(4, 14, 6, 0.60) 100%),
+      url("images/nature-course-bg.jpg");
+    background-size: cover;
+    background-position: center 25%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  body.field-nature #three-bg,
+  body[data-theme="nature"] #three-bg,
+  body.field-classic #three-bg {
+    display: block !important;
+    opacity: 0.9;
+    z-index: 0;
+    pointer-events: none;
   }
 
   body.space-bg #three-bg {
@@ -574,11 +599,12 @@
     box-shadow: 0 0 10px rgba(0, 210, 255, .65);
   }
 
-  .theme-opt[data-theme="classic"].active {
-    background: linear-gradient(135deg, #4ade80, #10b981);
-    color: #042512;
+  .theme-opt[data-theme="classic"].active,
+  .theme-opt[data-theme="nature"].active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(74, 222, 128, .6);
+    box-shadow: 0 0 12px rgba(16, 185, 129, .65);
   }
 
   .mode-opt.active {
@@ -4712,11 +4738,12 @@
     box-shadow: 0 0 10px rgba(0, 240, 255, .65);
   }
 
-  .theme-opt[data-theme="classic"].active {
-    background: var(--gold);
-    color: var(--ink);
+  .theme-opt[data-theme="classic"].active,
+  .theme-opt[data-theme="nature"].active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(227, 178, 60, .65);
+    box-shadow: 0 0 12px rgba(16, 185, 129, .65);
   }
 
   /* ---------- Mode Switch (チュートリアル / 自分で操作) ---------- */
@@ -6390,4 +6417,374 @@
       bottom: auto;
       z-index: 60;
     }
+  }
+
+  /* ==================== NATURE THEME (自然・芝生コース画面全体テーマ) ==================== */
+  body.field-nature,
+  body[data-theme="nature"],
+  body.field-classic,
+  body[data-theme="classic"] {
+    --rail: #f4f0e6;
+    --rail-dim: rgba(244, 240, 230, 0.85);
+  }
+
+  /* 画面全体の自然背景とフィールド枠の調和 */
+  body.field-nature .field-splash-bg,
+  body[data-theme="nature"] .field-splash-bg,
+  body.field-classic .field-splash-bg {
+    display: block !important;
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.12) 40%, transparent 75%),
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0px, rgba(255, 255, 255, 0.04) 26px, transparent 26px, transparent 52px),
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 26px, transparent 26px, transparent 52px),
+      linear-gradient(180deg, rgba(14, 46, 22, 0.90) 0%, rgba(10, 36, 18, 0.94) 50%, rgba(6, 26, 12, 0.97) 100%) !important;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 16px 40px rgba(0, 25, 10, 0.55) !important;
+    border: 1.5px solid rgba(227, 178, 60, 0.65) !important;
+  }
+
+  body.field-nature .field-splash-bg::before,
+  body[data-theme="nature"] .field-splash-bg::before,
+  body.field-classic .field-splash-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 15%, rgba(255, 240, 180, 0.18) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(74, 222, 128, 0.09) 0%, transparent 45%);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  body.field-nature .field-splash-canvas,
+  body[data-theme="nature"] .field-splash-canvas,
+  body.field-classic .field-splash-canvas {
+    mix-blend-mode: screen;
+    opacity: 0.40;
+  }
+
+  /* プレイヤー側スロット（自然・芝生コース調：エメラルドグラスとゴールド枠） */
+  body.field-nature #zone-farm .farm-pile,
+  body.field-nature #zone-field .field-body,
+  body.field-nature .lane,
+  body[data-theme="nature"] #zone-farm .farm-pile,
+  body[data-theme="nature"] #zone-field .field-body,
+  body[data-theme="nature"] .lane,
+  body.field-classic #zone-farm .farm-pile,
+  body.field-classic #zone-field .field-body,
+  body.field-classic .lane {
+    border: 1.5px solid rgba(227, 178, 60, 0.75) !important;
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(74, 222, 128, 0.22), transparent 70%),
+      rgba(10, 34, 18, 0.88) !important;
+    box-shadow: inset 0 0 14px rgba(74, 222, 128, 0.20), 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.field-nature .lane-card-back,
+  body[data-theme="nature"] .lane-card-back,
+  body.field-classic .lane-card-back {
+    border-color: rgba(227, 178, 60, 0.75) !important;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.25) 0%, transparent 75%),
+      linear-gradient(135deg, rgba(14, 46, 24, 0.90) 0%, rgba(8, 28, 14, 0.95) 100%) !important;
+    box-shadow: inset 0 0 10px rgba(74, 222, 128, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* プレイヤー側山札ラベル・バッジ */
+  body.field-nature .lane-label,
+  body[data-theme="nature"] .lane-label,
+  body.field-classic .lane-label {
+    background: rgba(6, 20, 10, 0.95) !important;
+    color: #ffe082 !important;
+    border: 1px solid rgba(227, 178, 60, 0.65) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 700 !important;
+  }
+
+  body.field-nature .lane.active .lane-label,
+  body[data-theme="nature"] .lane.active .lane-label,
+  body.field-classic .lane.active .lane-label {
+    background: linear-gradient(135deg, #15803d, #047857) !important;
+    color: #ffffff !important;
+    border-color: #4ade80 !important;
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.7) !important;
+  }
+
+  body.field-nature .lane-badge,
+  body.field-nature #farm-count,
+  body[data-theme="nature"] .lane-badge,
+  body[data-theme="nature"] #farm-count,
+  body.field-classic .lane-badge,
+  body.field-classic #farm-count {
+    background: linear-gradient(135deg, #d97706, #b45309) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    border-color: #fde68a !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.field-nature .slot-bracket,
+  body[data-theme="nature"] .slot-bracket,
+  body.field-classic .slot-bracket {
+    border-color: #e3b23c !important;
+    box-shadow: 0 0 6px rgba(227, 178, 60, 0.6) !important;
+  }
+
+  /* 相手側スロット（要望9対応：ファームと同じく赤みを帯びたワインレッド／クリムゾン調） */
+  body.field-nature #zone-opp-farm .farm-pile,
+  body.field-nature #zone-field .field-body-opp,
+  body.field-nature .opp-lane,
+  body[data-theme="nature"] #zone-opp-farm .farm-pile,
+  body[data-theme="nature"] #zone-field .field-body-opp,
+  body[data-theme="nature"] .opp-lane,
+  body.field-classic #zone-opp-farm .farm-pile,
+  body.field-classic #zone-field .field-body-opp,
+  body.field-classic .opp-lane {
+    border: 1.5px solid rgba(248, 113, 113, 0.75) !important;
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(239, 68, 68, 0.22), transparent 70%),
+      rgba(48, 14, 18, 0.88) !important;
+    box-shadow: inset 0 0 14px rgba(239, 68, 68, 0.22), 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.field-nature .opp-lane .lane-card-back,
+  body[data-theme="nature"] .opp-lane .lane-card-back,
+  body.field-classic .opp-lane .lane-card-back {
+    border-color: rgba(248, 113, 113, 0.8) !important;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.35) 0%, transparent 75%),
+      linear-gradient(135deg, rgba(62, 14, 20, 0.92) 0%, rgba(38, 8, 12, 0.95) 100%) !important;
+    box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.3), 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.field-nature .opp-lane .lane-label,
+  body[data-theme="nature"] .opp-lane .lane-label,
+  body.field-classic .opp-lane .lane-label {
+    background: rgba(42, 10, 14, 0.96) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(248, 113, 113, 0.65) !important;
+    font-weight: 700 !important;
+  }
+
+  body.field-nature .opp-lane.active .lane-label,
+  body[data-theme="nature"] .opp-lane.active .lane-label,
+  body.field-classic .opp-lane.active .lane-label {
+    background: linear-gradient(135deg, #be123c, #9f1239) !important;
+    color: #ffffff !important;
+    border-color: #f87171 !important;
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.7) !important;
+  }
+
+  body.field-nature .opp-lane .lane-badge,
+  body.field-nature #opp-farm-count,
+  body[data-theme="nature"] .opp-lane .lane-badge,
+  body[data-theme="nature"] #opp-farm-count,
+  body.field-classic .opp-lane .lane-badge,
+  body.field-classic #opp-farm-count {
+    background: linear-gradient(135deg, #e11d48, #9f1239) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    border-color: #fca5a5 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.field-nature .slot-frame-opp .slot-bracket,
+  body[data-theme="nature"] .slot-frame-opp .slot-bracket,
+  body.field-classic .slot-frame-opp .slot-bracket {
+    border-color: #f87171 !important;
+    box-shadow: 0 0 6px rgba(248, 113, 113, 0.6) !important;
+  }
+
+  /* 相手ストリップ（自然テーマ調） */
+  body.field-nature .opponent-strip,
+  body[data-theme="nature"] .opponent-strip,
+  body.field-classic .opponent-strip {
+    background: linear-gradient(90deg, rgba(8, 26, 14, 0.94) 0%, rgba(14, 40, 22, 0.90) 50%, rgba(8, 26, 14, 0.94) 100%) !important;
+    border-color: rgba(227, 178, 60, 0.5) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  body.field-nature .opponent-name,
+  body[data-theme="nature"] .opponent-name,
+  body.field-classic .opponent-name {
+    color: #ffe082 !important;
+  }
+
+  body.field-nature .opponent-sub,
+  body[data-theme="nature"] .opponent-sub,
+  body.field-classic .opponent-sub {
+    color: #a7f3d0 !important;
+  }
+
+  body.field-nature .opponent-hand-area,
+  body[data-theme="nature"] .opponent-hand-area,
+  body.field-classic .opponent-hand-area {
+    color: #f4f0e6 !important;
+  }
+
+  body.field-nature .opponent-hand-area .count,
+  body[data-theme="nature"] .opponent-hand-area .count,
+  body.field-classic .opponent-hand-area .count {
+    color: #34d399 !important;
+  }
+
+  body.field-nature .opponent-bubble,
+  body[data-theme="nature"] .opponent-bubble,
+  body.field-classic .opponent-bubble {
+    background: rgba(8, 28, 14, 0.95) !important;
+    border: 1.5px solid rgba(227, 178, 60, 0.7) !important;
+    color: #f4f0e6 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  /* トップバー・トラックバー（自然テーマ調） */
+  body.field-nature .topbar,
+  body[data-theme="nature"] .topbar,
+  body.field-classic .topbar {
+    background: linear-gradient(180deg, rgba(8, 24, 12, 0.96) 0%, rgba(10, 30, 16, 0.90) 100%) !important;
+    border-bottom: 1px solid rgba(227, 178, 60, 0.45) !important;
+  }
+
+  body.field-nature .brand,
+  body[data-theme="nature"] .brand,
+  body.field-classic .brand {
+    color: #ffe082 !important;
+    text-shadow: 0 0 10px rgba(227, 178, 60, 0.5) !important;
+  }
+
+  body.field-nature .brand span,
+  body[data-theme="nature"] .brand span,
+  body.field-classic .brand span {
+    color: #a7f3d0 !important;
+  }
+
+  body.field-nature .track,
+  body[data-theme="nature"] .track,
+  body.field-classic .track {
+    background: rgba(6, 18, 10, 0.88) !important;
+    border-color: rgba(227, 178, 60, 0.45) !important;
+  }
+
+  body.field-nature .track-fill,
+  body[data-theme="nature"] .track-fill,
+  body.field-classic .track-fill {
+    background: linear-gradient(90deg, #10b981, #e3b23c) !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.75) !important;
+  }
+
+  body.field-nature .track-badge,
+  body[data-theme="nature"] .track-badge,
+  body.field-classic .track-badge {
+    background: rgba(16, 185, 129, 0.22) !important;
+    border-color: rgba(16, 185, 129, 0.65) !important;
+    color: #6ee7b7 !important;
+  }
+
+  body.field-nature .settings-gear,
+  body[data-theme="nature"] .settings-gear,
+  body.field-classic .settings-gear {
+    border-color: rgba(227, 178, 60, 0.5) !important;
+    background: rgba(14, 38, 20, 0.85) !important;
+    color: #ffe082 !important;
+  }
+
+  /* 設定パネル（自然テーマ調） */
+  body.field-nature .settings-panel,
+  body[data-theme="nature"] .settings-panel,
+  body.field-classic .settings-panel {
+    background: linear-gradient(180deg, rgba(12, 34, 18, 0.98) 0%, rgba(8, 24, 12, 0.98) 100%) !important;
+    border: 1.5px solid rgba(227, 178, 60, 0.5) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.25) !important;
+  }
+
+  body.field-nature .settings-title,
+  body[data-theme="nature"] .settings-title,
+  body.field-classic .settings-title {
+    color: #ffe082 !important;
+  }
+
+  body.field-nature .settings-close,
+  body[data-theme="nature"] .settings-close,
+  body.field-classic .settings-close {
+    border-color: rgba(227, 178, 60, 0.45) !important;
+    color: #ffe082 !important;
+  }
+
+  body.field-nature .settings-tab-btn.active,
+  body[data-theme="nature"] .settings-tab-btn.active,
+  body.field-classic .settings-tab-btn.active {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: #ffffff !important;
+    border-color: #34d399 !important;
+  }
+
+  body.field-nature .theme-switch,
+  body.field-nature .mode-switch,
+  body[data-theme="nature"] .theme-switch,
+  body[data-theme="nature"] .mode-switch,
+  body.field-classic .theme-switch,
+  body.field-classic .mode-switch {
+    background: rgba(6, 20, 10, 0.90) !important;
+    border-color: rgba(227, 178, 60, 0.45) !important;
+  }
+
+  body.field-nature .preset-btn,
+  body.field-nature .settings-reset,
+  body.field-nature .settings-bgm-toggle,
+  body[data-theme="nature"] .preset-btn,
+  body[data-theme="nature"] .settings-reset,
+  body[data-theme="nature"] .settings-bgm-toggle,
+  body.field-classic .preset-btn,
+  body.field-classic .settings-reset,
+  body.field-classic .settings-bgm-toggle {
+    border-color: rgba(227, 178, 60, 0.4) !important;
+    background: rgba(14, 38, 20, 0.85) !important;
+    color: #f4f0e6 !important;
+  }
+
+  body.field-nature .preset-btn.active,
+  body[data-theme="nature"] .preset-btn.active,
+  body.field-classic .preset-btn.active {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    border-color: #34d399 !important;
+    color: #ffffff !important;
+  }
+
+  /* コマンドバー＆ボタン（自然テーマ調） */
+  body.field-nature .cmd-menu-btn,
+  body[data-theme="nature"] .cmd-menu-btn,
+  body.field-classic .cmd-menu-btn {
+    background: linear-gradient(135deg, rgba(14, 52, 28, 0.94) 0%, rgba(8, 32, 16, 0.96) 55%, rgba(4, 18, 8, 0.98) 100%) !important;
+    border-color: #e3b23c !important;
+    box-shadow: 0 0 14px rgba(227, 178, 60, 0.65), 0 0 28px rgba(74, 222, 128, 0.25), inset 0 0 12px rgba(74, 222, 128, 0.25), 0 6px 16px rgba(0, 0, 0, 0.85) !important;
+  }
+
+  body.field-nature .cmd-menu-btn .btn-sub,
+  body[data-theme="nature"] .cmd-menu-btn .btn-sub,
+  body.field-classic .cmd-menu-btn .btn-sub {
+    color: #e3b23c !important;
+    text-shadow: 0 0 6px rgba(227, 178, 60, 0.8) !important;
+  }
+
+  body.field-nature .cmd-menu-btn .btn-icon-wrap,
+  body[data-theme="nature"] .cmd-menu-btn .btn-icon-wrap,
+  body.field-classic .cmd-menu-btn .btn-icon-wrap {
+    border-color: rgba(227, 178, 60, 0.85) !important;
+    background: radial-gradient(circle at 40% 35%, rgba(227, 178, 60, 0.35) 0%, rgba(10, 36, 18, 0.85) 100%) !important;
+    box-shadow: 0 0 10px rgba(227, 178, 60, 0.6) !important;
+  }
+
+  body.field-nature .cmd-fab,
+  body[data-theme="nature"] .cmd-fab,
+  body.field-classic .cmd-fab {
+    background: radial-gradient(circle at 45% 28%, rgba(74, 222, 128, 0.35) 0%, transparent 60%), radial-gradient(circle at 50% 50%, #154522 0%, #0c2d16 55%, #051409 100%) !important;
+    border-color: #e3b23c !important;
+    box-shadow: 0 0 20px rgba(227, 178, 60, 0.65), 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  body.field-nature .cmd-fab-badge,
+  body[data-theme="nature"] .cmd-fab-badge,
+  body.field-classic .cmd-fab-badge {
+    background: linear-gradient(180deg, #10b981, #047857) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.8) !important;
   }

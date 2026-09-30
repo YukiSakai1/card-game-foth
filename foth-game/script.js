@@ -3709,7 +3709,7 @@
 
   })();
 
-  /* ===================== field theme switch (Dark / White / Classic) ===================== */
+  /* ===================== field theme switch (Dark / White / Nature) ===================== */
   (function setupThemeSwitch() {
     var switchWrap = $('theme-switch');
     if (!switchWrap) return;
@@ -3719,28 +3719,43 @@
       if (theme === 'white') {
         document.body.classList.add('field-cyber');
         document.body.classList.add('field-white');
+        document.body.classList.remove('field-nature');
+        document.body.classList.remove('field-classic');
         document.body.dataset.theme = 'white';
-      } else if (theme === 'classic') {
+      } else if (theme === 'nature' || theme === 'classic') {
         document.body.classList.remove('field-cyber');
         document.body.classList.remove('field-white');
-        document.body.dataset.theme = 'classic';
+        document.body.classList.add('field-nature');
+        document.body.dataset.theme = 'nature';
       } else {
         document.body.classList.add('field-cyber');
         document.body.classList.remove('field-white');
+        document.body.classList.remove('field-nature');
+        document.body.classList.remove('field-classic');
         document.body.dataset.theme = 'dark';
       }
       opts.forEach(function (opt) {
-        var match = (opt.dataset.theme === theme) ||
-                    (theme === 'dark' && opt.dataset.theme === 'cyber') ||
-                    ((theme === 'cyber' || !theme) && opt.dataset.theme === 'dark');
+        var optTheme = opt.dataset.theme;
+        var match = (optTheme === theme) ||
+                    (theme === 'dark' && optTheme === 'cyber') ||
+                    ((theme === 'cyber' || !theme) && optTheme === 'dark') ||
+                    ((theme === 'nature' || theme === 'classic') && (optTheme === 'nature' || optTheme === 'classic'));
         opt.classList.toggle('active', match);
       });
+      try {
+        localStorage.setItem('foth_theme', theme);
+      } catch (e) {}
       try {
         window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: theme } }));
       } catch (e) {}
     }
 
-    applyTheme('dark');
+    var initialTheme = 'dark';
+    try {
+      var saved = localStorage.getItem('foth_theme');
+      if (saved) initialTheme = saved;
+    } catch (e) {}
+    applyTheme(initialTheme);
 
     opts.forEach(function (opt) {
       opt.addEventListener('click', function () {

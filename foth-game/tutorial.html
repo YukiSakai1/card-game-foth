@@ -98,9 +98,9 @@
               <div class="theme-switch" id="theme-switch" role="group" aria-label="テーマ切り替え">
                 <button class="theme-opt active" data-theme="dark" type="button">Dark (標準)</button>
                 <button class="theme-opt" data-theme="white" type="button">White (白)</button>
-                <button class="theme-opt" data-theme="classic" type="button">Green (芝)</button>
+                <button class="theme-opt" data-theme="nature" type="button">🍃 Nature (自然・芝)</button>
               </div>
-              <div class="settings-desc">模様はそのままで白ベースに変更できる「White」など、背景色合いを選択できます。</div>
+              <div class="settings-desc">画面全体を自然・芝生コースに包む「Nature」や、白ベースの「White」など背景テーマを選択できます。</div>
             </div>
 
             <div class="settings-group">
@@ -686,8 +686,36 @@
     scene.add(horizonGlow);
 
     // Dynamic Background Theme Controller
+    let currentTheme = 'dark';
+
     function applyThreeTheme(t) {
-      if (t === 'white') {
+      currentTheme = t || 'dark';
+      if (t === 'nature' || t === 'classic') {
+        canvas.style.display = 'block';
+        floor.visible = false;
+        ceiling.visible = false;
+        horizonGlow.visible = false;
+        scene.background = null;
+        scene.fog = null;
+        renderer.setClearColor(0x000000, 0);
+        for (let i = 0; i < particleCount; i++) {
+          const pColor = new THREE.Color();
+          if (Math.random() > 0.45) {
+            pColor.setHSL(0.12 + Math.random() * 0.06, 0.95, 0.70 + Math.random() * 0.25);
+          } else {
+            pColor.setHSL(0.28 + Math.random() * 0.08, 0.90, 0.65 + Math.random() * 0.25);
+          }
+          colors[i * 3] = pColor.r;
+          colors[i * 3 + 1] = pColor.g;
+          colors[i * 3 + 2] = pColor.b;
+        }
+        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
+      } else if (t === 'white') {
+        canvas.style.display = 'block';
+        floor.visible = true;
+        ceiling.visible = true;
+        horizonGlow.visible = true;
+        if (!scene.fog) scene.fog = new THREE.Fog(0xf0f5fa, 150, 1600);
         if (!whiteTexture) whiteTexture = createCyberTexture('white');
         planeMat.map = whiteTexture;
         planeMat.needsUpdate = true;
@@ -699,11 +727,24 @@
         horizonGlowMat.opacity = 0.20;
         bloomPass.strength = 0.24;
         bloomPass.threshold = 0.35;
-        canvas.style.display = 'block';
-      } else if (t === 'classic') {
-        canvas.style.display = 'none';
+        for (let i = 0; i < particleCount; i++) {
+          const pColor = new THREE.Color();
+          if (Math.random() > 0.4) {
+            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.70 + Math.random() * 0.25);
+          } else {
+            pColor.setRGB(0.95, 0.98, 1.0);
+          }
+          colors[i * 3] = pColor.r;
+          colors[i * 3 + 1] = pColor.g;
+          colors[i * 3 + 2] = pColor.b;
+        }
+        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
       } else {
         canvas.style.display = 'block';
+        floor.visible = true;
+        ceiling.visible = true;
+        horizonGlow.visible = true;
+        if (!scene.fog) scene.fog = new THREE.Fog(HORIZON_DARK, 220, 1750);
         planeMat.map = darkTexture;
         planeMat.needsUpdate = true;
         scene.background = new THREE.Color(HORIZON_DARK);
@@ -714,6 +755,18 @@
         horizonGlowMat.opacity = 0.28;
         bloomPass.strength = 0.42;
         bloomPass.threshold = 0.35;
+        for (let i = 0; i < particleCount; i++) {
+          const pColor = new THREE.Color();
+          if (Math.random() > 0.4) {
+            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.70 + Math.random() * 0.25);
+          } else {
+            pColor.setRGB(0.95, 0.98, 1.0);
+          }
+          colors[i * 3] = pColor.r;
+          colors[i * 3 + 1] = pColor.g;
+          colors[i * 3 + 2] = pColor.b;
+        }
+        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
       }
     }
 
@@ -846,9 +899,12 @@
 
       camera.rotation.x += (targetRotX - camera.rotation.x) * 0.08;
       camera.position.y += (targetPosY - camera.position.y) * 0.08;
-      camera.position.x = Math.sin(elapsedTime * 0.3) * 1.5;
-
-      composer.render();
+      if (currentTheme === 'nature' || currentTheme === 'classic') {
+        renderer.clear();
+        renderer.render(scene, camera);
+      } else {
+        composer.render();
+      }
       requestAnimationFrame(animate);
     }
 
