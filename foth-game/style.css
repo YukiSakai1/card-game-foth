@@ -557,6 +557,7 @@
   .mode-switch {
     flex: none;
     display: flex;
+    flex-wrap: wrap;
     gap: 3px;
     border: 1px solid rgba(227, 178, 60, .4);
     background: rgba(20, 16, 10, .65);
@@ -585,11 +586,18 @@
   }
 
   .theme-opt.active,
-  .theme-opt[data-theme="dark"].active {
-    background: linear-gradient(135deg, #3ee0ff, #0ab8e0);
-    color: #032530;
+  .theme-opt[data-theme="cyber"].active {
+    background: linear-gradient(135deg, #00f0ff, #0284c7);
+    color: #03202e;
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(62, 224, 255, .6);
+    box-shadow: 0 0 10px rgba(0, 240, 255, .65);
+  }
+
+  .theme-opt[data-theme="dark"].active {
+    background: linear-gradient(135deg, #38bdf8, #0369a1);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(56, 189, 248, .6);
   }
 
   .theme-opt[data-theme="white"].active {
@@ -6787,4 +6795,65 @@
     background: linear-gradient(180deg, #10b981, #047857) !important;
     color: #ffffff !important;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.8) !important;
+  }
+
+  /* ==================== CYBER 3D THEME (元々の3D電脳空間パース・フロア＆天井グリッド) ==================== */
+  body.theme-cyber,
+  body[data-theme="cyber"] {
+    background-color: #000108;
+    background: #000108 !important;
+  }
+
+  body.theme-cyber #three-bg,
+  body[data-theme="cyber"] #three-bg {
+    display: block !important;
+    opacity: 1 !important;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* 3D電脳グリッドを盤面下まで透過して奥行きを広げる */
+  body.theme-cyber .field-splash-bg,
+  body[data-theme="cyber"] .field-splash-bg {
+    display: none !important;
+  }
+
+  body.theme-cyber .field-image-wrap,
+  body[data-theme="cyber"] .field-image-wrap {
+    background: transparent !important;
+  }
+
+  /* 3Dサイバースロット枠（シアンの発光ブラケット） */
+  body.theme-cyber .lane,
+  body.theme-cyber .field-body,
+  body.theme-cyber .farm-pile,
+  body.theme-cyber .zone-body,
+  body[data-theme="cyber"] .lane,
+  body[data-theme="cyber"] .field-body,
+  body[data-theme="cyber"] .farm-pile,
+  body[data-theme="cyber"] .zone-body {
+    border: 1px solid rgba(0, 240, 255, 0.75) !important;
+    background: rgba(2, 16, 32, 0.35) !important;
+    box-shadow: inset 0 0 14px rgba(0, 240, 255, 0.2), 0 0 10px rgba(0, 240, 255, 0.3) !important;
+  }
+
+  body.theme-cyber .slot-bracket,
+  body[data-theme="cyber"] .slot-bracket {
+    border-color: #00f0ff !important;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.8) !important;
+  }
+
+  body.theme-cyber .lane-label,
+  body[data-theme="cyber"] .lane-label {
+    background: rgba(1, 10, 22, 0.92) !important;
+    color: #38bdf8 !important;
+    border: 1px solid rgba(0, 240, 255, 0.6) !important;
+  }
+
+  body.theme-cyber .lane-badge,
+  body[data-theme="cyber"] .lane-badge {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.5) !important;
   }
