@@ -2112,13 +2112,18 @@
      デスクトップ幅（860px以上）はこれまで通り通常のレイアウトのまま。 */
   @media (max-width:859px) {
     .board {
-      padding-bottom: 175px;
+      padding-bottom: 24px;
       gap: 4px;
       transition: padding-bottom .35s cubic-bezier(.2, .7, .3, 1);
     }
 
+    body.has-hand-cards .board,
+    body:has(.hand-zone.has-cards) .board {
+      padding-bottom: 155px;
+    }
+
     body.manual-mode .board {
-      padding-bottom: 135px;
+      padding-bottom: 20px;
     }
 
     /* opponent-strip と盤面の間に適切な余白を確保（相手山札との重なり防止） */
@@ -2139,26 +2144,89 @@
       margin-top: var(--field-tilt-shift-y, -75px);
     }
 
+    /* ナレーター：手札枠に隠れないようz-indexを50にし、コンパクトなサイズで表示 */
+    .narrator {
+      position: relative;
+      z-index: 50;
+      width: 96%;
+      max-width: 520px;
+      margin: 0px auto 4px;
+      gap: 8px;
+    }
+
     /* 3D傾き時はナレーターもモバイルで角度に応じて動的に引き上げる */
     body.field-3d .narrator {
       margin-top: var(--narrator-margin-top, 0px);
-      margin-bottom: var(--narrator-margin-bottom, 10px);
+      margin-bottom: var(--narrator-margin-bottom, 4px);
     }
 
+    .narrator-portrait {
+      flex: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+    }
+
+    .narrator-bubble {
+      min-height: 40px;
+      padding: 6px 14px 6px 14px;
+      border-radius: 20px;
+      gap: 3px;
+    }
+
+    .narrator-text {
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    .narrator-actions {
+      margin-top: 1px;
+      gap: 6px;
+    }
+
+    .narrator-next {
+      padding: 4px 11px;
+      font-size: 10px;
+      border-radius: 999px;
+    }
+
+    .narrator-back,
+    .narrator-forward {
+      padding: 2px 6px;
+      font-size: 8px;
+    }
+
+    /* 手札ゾーン：囲う枠（ボーダー、暗い背景、影、ラベル）をすべて完全に撤廃 */
     .hand-zone {
       position: fixed;
-      left: 6px;
-      right: 6px;
+      left: 0;
+      right: 0;
       bottom: calc(4px + env(safe-area-inset-bottom, 0px));
       z-index: 40;
-      height: 165px;
-      min-height: 165px;
-      padding: 3px 5px 3px;
-      border: 1px solid rgba(227, 178, 60, .45);
-      border-radius: 12px 12px 0 0;
-      background: linear-gradient(180deg, rgba(10, 18, 32, .97), rgba(5, 10, 20, .98));
-      box-shadow: 0 -10px 24px rgba(0, 0, 0, .5);
-      transition: bottom .35s cubic-bezier(.2, .7, .3, 1), transform .35s cubic-bezier(.2, .7, .3, 1), height .35s ease;
+      height: 145px;
+      min-height: 0;
+      padding: 0 4px;
+      border: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      pointer-events: none;
+      transition: bottom .35s cubic-bezier(.2, .7, .3, 1), transform .35s cubic-bezier(.2, .7, .3, 1), opacity .3s ease;
+    }
+
+    /* 手札ラベルの完全非表示 */
+    .hand-zone .zone-label {
+      display: none !important;
+    }
+
+    /* 手札カードが存在しない時（初期状態など）は完全非表示で画面を遮らない */
+    .hand-zone:not(.has-cards) {
+      display: none !important;
+    }
+
+    .hand-zone .card,
+    .hand-zone .hand-nav-btn {
+      pointer-events: auto;
     }
 
     /* manual-modeの時はナレーターが無いぶん手札を自然に引き上げてデッキとの間隔を詰める */
@@ -2178,11 +2246,6 @@
 
     .hand-row::-webkit-scrollbar {
       display: none;
-    }
-
-    .hand-zone .zone-label {
-      font-size: 11px;
-      line-height: 14px;
     }
 
     .hand-nav-btn {
@@ -2255,26 +2318,42 @@
     }
   }
 
-  /* スモールモバイル（480px以下）でも手札枠の高さを160px確保し、カードの見切れ防止とデッキとの間隔詰めを両立 */
+  /* スモールモバイル（480px以下） */
   @media (max-width:480px) {
     .board {
-      padding-bottom: 160px;
+      padding-bottom: 16px;
+    }
+
+    body.has-hand-cards .board,
+    body:has(.hand-zone.has-cards) .board {
+      padding-bottom: 145px;
     }
 
     body.manual-mode .board {
-      padding-bottom: 120px;
+      padding-bottom: 16px;
+    }
+
+    .narrator-portrait {
+      width: 44px;
+      height: 44px;
+    }
+
+    .narrator-bubble {
+      min-height: 38px;
+      padding: 5px 12px 5px 12px;
+    }
+
+    .narrator-text {
+      font-size: 11px;
+      line-height: 1.35;
     }
 
     .hand-zone {
-      height: 160px;
-      min-height: 160px;
-      padding: 3px 5px 3px;
-    }
-
-    .hand-zone .zone-label {
-      font-size: 11px;
-      line-height: 13px;
-      margin-bottom: 2px;
+      height: 140px;
+      min-height: 0;
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
     }
 
     .hand-row {
@@ -3736,34 +3815,44 @@
   @media (max-width:639px) {
     .narrator {
       gap: 7px;
+      width: 96%;
+      max-width: 500px;
+      margin: 0 auto 4px;
     }
 
     .narrator-portrait {
-      width: 66px;
-      height: 66px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
+      border-width: 1.5px;
     }
 
     .narrator-bubble {
-      min-height: 52px;
-      padding: 10px 22px 8px 22px;
-      border-radius: 9999px;
+      min-height: 38px;
+      padding: 5px 14px 5px 14px;
+      border-radius: 18px;
+      gap: 2px;
     }
 
     .narrator-text {
-      font-size: 12px;
-      line-height: 1.45;
+      font-size: 11px;
+      line-height: 1.36;
+    }
+
+    .narrator-actions {
+      margin-top: 1px;
+      gap: 5px;
     }
 
     .narrator-next {
-      padding: 6px 12px;
-      font-size: 10px;
+      padding: 3.5px 10px;
+      font-size: 9.5px;
     }
 
     .narrator-back,
     .narrator-forward {
-      padding: 3px 8px;
-      font-size: 8px;
+      padding: 2px 5px;
+      font-size: 7.5px;
     }
   }
 

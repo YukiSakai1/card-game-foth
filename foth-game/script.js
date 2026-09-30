@@ -380,6 +380,7 @@
     if (zone) {
       zone.classList.toggle('has-cards', hand.length > 0);
     }
+    document.body.classList.toggle('has-hand-cards', hand.length > 0);
   }
   window.addEventListener('resize', function () { layoutHandFan(); adjustFieldDiagonalLayout(); });
 
