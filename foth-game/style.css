@@ -1229,12 +1229,12 @@
     mix-blend-mode: screen;
   }
 
-  /* ---------- 状況カード背景（field-image-wrapの背景として透明度を薄くして設置） ---------- */
+  /* ---------- 状況カード背景（field-image-wrapの背景として設置） ---------- */
   .field-situation-bg {
     position: absolute;
     inset: 0;
-    z-index: 0;
-    pointer-events: none;
+    z-index: 1;
+    pointer-events: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1254,24 +1254,24 @@
     width: clamp(310px, 56vw, 500px);
     aspect-ratio: 1.22 / 1;
     border-radius: 22px;
-    opacity: 0.50; /* イラスト部分のみを背景として綺麗に透過表示 */
+    opacity: 0.90; /* 状況カードは背景の薄さ設定に影響されず鮮明に表示 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    box-shadow: 0 0 55px rgba(56, 189, 248, 0.42), 0 0 100px rgba(14, 165, 233, 0.24);
-    border: 2px solid rgba(125, 211, 252, 0.68);
+    box-shadow: 0 0 55px rgba(56, 189, 248, 0.55), 0 0 100px rgba(14, 165, 233, 0.35);
+    border: 2px solid rgba(125, 211, 252, 0.85);
     filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.72));
     overflow: hidden;
     cursor: pointer;
-    pointer-events: auto; /* 長押しで詳細確認可能 */
+    pointer-events: auto; /* クリックや長押しで詳細確認可能 */
     touch-action: manipulation;
     transition: opacity .25s ease, transform .25s ease, filter .25s ease;
   }
 
   .field-situation-card:hover {
-    opacity: 0.72;
+    opacity: 1.0;
     transform: scale(1.02);
-    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.8)) brightness(1.1);
+    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.85)) brightness(1.15);
   }
 
   .field-situation-card:active {
@@ -7923,11 +7923,6 @@ body.field-classic #three-bg {
 .field-splash-bg,
 #field-splash-bg {
   opacity: var(--bg-field-opacity, 1) !important;
-}
-
-.field-situation-bg,
-#field-situation-bg {
-  opacity: calc(var(--bg-field-opacity, 1) * 0.45) !important;
 }
 
 .bg-dimmer {

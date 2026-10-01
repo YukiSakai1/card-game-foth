@@ -646,21 +646,29 @@
       return;
     }
     bg.classList.add('active');
-    var badgeHtml = '<div class="field-situation-badge">🔍 長押しで確認</div>';
+    var badgeHtml = '<div class="field-situation-badge">🔍 クリック / 長押しで確認</div>';
     var artSrc = situation.artImg || situation.img;
     if (artSrc) {
       bg.innerHTML =
-        '<div class="field-situation-card" style="background-image:url(' + artSrc + ');" role="button" tabindex="0" title="長押しして状況カードを確認">' +
+        '<div class="field-situation-card" style="background-image:url(' + artSrc + ');" role="button" tabindex="0" title="クリックまたは長押しして状況カードを確認">' +
         '<div class="card-shine"></div>' +
         badgeHtml +
         '</div>';
     } else {
       bg.innerHTML =
-        '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);" role="button" tabindex="0" title="長押しして状況カードを確認">' +
+        '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);" role="button" tabindex="0" title="クリックまたは長押しして状況カードを確認">' +
         '<div class="card-art" style="font-size:72px; text-align:center;">' + situation.icon + '</div>' +
         '<div class="card-shine"></div>' +
         badgeHtml +
         '</div>';
+    }
+    var cardEl = bg.querySelector('.field-situation-card');
+    if (cardEl) {
+      cardEl.addEventListener('click', function (e) {
+        e.stopPropagation();
+        Haptics.tap();
+        CardCloseup.show(situation, { label: '状況カード' });
+      });
     }
   }
 
@@ -3991,8 +3999,6 @@
       document.body.style.setProperty('--field-perspective', px + 'px');
       if (depthRange) depthRange.value = px;
       if (depthValue) depthValue.textContent = px + 'px';
-      fitFieldGaps();
-      scheduleFieldCorrection();
     }
     function setZoom(pct) {
       var minPct = 100;
@@ -4005,8 +4011,6 @@
       if (FieldCamera && typeof FieldCamera.setBaseScale === 'function') {
         FieldCamera.setBaseScale(pct / 100);
       }
-      fitFieldGaps();
-      scheduleFieldCorrection();
     }
 
     function setBgOpacity(pct) {
@@ -4032,8 +4036,6 @@
       }
     } catch (e) {}
     setBgOpacity(initialBgOpacity);
-
-    window.addEventListener('load', function () { fitFieldGaps(); });
 
     window.addEventListener('resize', function () {
       applyTiltVar(baseTilt);
@@ -4465,6 +4467,17 @@
 
     return { show: show, hide: hide };
   })();
+
+  var sitBgEl = $('field-situation-bg');
+  if (sitBgEl) {
+    sitBgEl.addEventListener('click', function (e) {
+      if (situation) {
+        e.stopPropagation();
+        Haptics.tap();
+        CardCloseup.show(situation, { label: '状況カード' });
+      }
+    });
+  }
 
   /* ===================== フィールド背景の放射状サイバー飛沫・スピードストリーム ===================== */
   var FieldSplash = (function () {
