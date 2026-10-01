@@ -3277,6 +3277,7 @@
   /* ===================== BGM（音源ファイル再生 / シームレスループ / トラック選択） ===================== */
   var BGM_TRACKS = {
     'turkish': { name: 'トルコ行進曲 (モーツァルト)', src: 'audio/bgm_turkish_march.wav?v=3' },
+    'rydeen': { name: 'RYDEEN (YMO風テクノポップ)', src: 'audio/bgm_rydeen.wav?v=3' },
     'william': { name: 'ウィリアム・テル序曲 (Gallop)', src: 'audio/bgm_william_tell.wav?v=3' },
     'cyber': { name: 'Cyber Turf (疾走電脳)', src: 'audio/bgm_cyber_turf.wav?v=3' },
     'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' }

@@ -571,10 +571,197 @@ def generate_grand_prix():
 
     save_wav('audio/bgm_grand_prix.wav', left, right)
 
+
+# ==========================================
+# 5. TRACK 5: RYDEEN TECHNO (YMO風 電脳ライディーン)
+# ==========================================
+def generate_rydeen():
+    BPM = 136.0
+    BEAT_SEC = 60.0 / BPM
+    SIXTEENTH_SEC = BEAT_SEC / 4.0
+    MEASURE_16THS = 8  # 2/4 time measures
+    NUM_MEASURES = 64  # 64 measures = 32 bars of 4/4
+    TOTAL_SAMPLES = int(NUM_MEASURES * MEASURE_16THS * SIXTEENTH_SEC * SAMPLE_RATE)
+
+    left = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    right = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    samples_per_beat = int(BEAT_SEC * SAMPLE_RATE)
+    samples_per_16th = int(SIXTEENTH_SEC * SAMPLE_RATE)
+
+    melody_events = []
+    def add_m(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': melody_events.append((c, dur, n))
+            c += dur
+
+    # RYDEEN Signature Pentatonic Theme
+    # Theme A (Measures 0-15)
+    r_theme_a = [
+        # Phrase 1: D5 E5 G5 A5 | B5 A5 G5 E5 | G5 (sustained)
+        ('D5', 1), ('E5', 1), ('G5', 1), ('A5', 1), ('B5', 1), ('A5', 1), ('G5', 1), ('E5', 1),
+        ('G5', 4), ('_', 4),
+        # Phrase 2: D5 E5 G5 A5 | B5 D6 B5 A5 | G5 (sustained)
+        ('D5', 1), ('E5', 1), ('G5', 1), ('A5', 1), ('B5', 1), ('D6', 1), ('B5', 1), ('A5', 1),
+        ('G5', 4), ('_', 4),
+        # Phrase 3: D5 E5 G5 A5 | B5 A5 G5 E5 | G5 E5 D5 B4
+        ('D5', 1), ('E5', 1), ('G5', 1), ('A5', 1), ('B5', 1), ('A5', 1), ('G5', 1), ('E5', 1),
+        ('G5', 1), ('E5', 1), ('D5', 1), ('B4', 1), ('D5', 2), ('E5', 2),
+        # Phrase 4: G5 A5 G5 E5 | G5
+        ('G5', 1), ('A5', 1), ('G5', 1), ('E5', 1), ('G5', 4),
+        ('_', 8),
+    ]
+    add_m(0, r_theme_a)
+    add_m(8, r_theme_a)
+
+    # Theme B (The Emotional Bridge with soaring synth strings) Measures 16-31
+    r_theme_b = [
+        # B5 . A5 G5 | E5 . . . | G5 A5 B5 D6 | E6 . . .
+        ('B5', 2), ('A5', 1), ('G5', 1), ('E5', 4),
+        ('G5', 1), ('A5', 1), ('B5', 1), ('D6', 1), ('E6', 4),
+        # D6 B5 A5 G5 | A5 . . . | G5 A5 B5 D6 | E6 . D6 B5
+        ('D6', 1), ('B5', 1), ('A5', 1), ('G5', 1), ('A5', 4),
+        ('G5', 1), ('A5', 1), ('B5', 1), ('D6', 1), ('E6', 2), ('D6', 1), ('B5', 1),
+        # A5 G5 E5 D5 | G5 . . . | D5 E5 G5 A5 | B5 . . .
+        ('A5', 1), ('G5', 1), ('E5', 1), ('D5', 1), ('G5', 4),
+        ('D5', 1), ('E5', 1), ('G5', 1), ('A5', 1), ('B5', 4),
+        ('A5', 1), ('G5', 1), ('E5', 1), ('D5', 1), ('G5', 4),
+        ('_', 8),
+    ]
+    add_m(16, r_theme_b)
+
+    # High-Energy Section C (Measures 32-47) with octave lead
+    r_theme_c = [
+        ('D6', 1), ('E6', 1), ('G6', 1), ('A6', 1), ('B6', 1), ('A6', 1), ('G6', 1), ('E6', 1),
+        ('G6', 4), ('_', 4),
+        ('D6', 1), ('E6', 1), ('G6', 1), ('A6', 1), ('B6', 1), ('D7', 1), ('B6', 1), ('A6', 1),
+        ('G6', 4), ('_', 4),
+        ('D6', 1), ('E6', 1), ('G6', 1), ('A6', 1), ('B6', 1), ('A6', 1), ('G6', 1), ('E6', 1),
+        ('G6', 1), ('E6', 1), ('D6', 1), ('B5', 1), ('D6', 2), ('E6', 2),
+        ('G6', 1), ('A6', 1), ('G6', 1), ('E6', 1), ('G6', 4),
+        ('_', 8),
+        # Climax fanfare
+        ('B5', 2), ('A5', 1), ('G5', 1), ('E5', 4),
+        ('G5', 1), ('A5', 1), ('B5', 1), ('D6', 1), ('E6', 4),
+        ('D6', 1), ('B5', 1), ('A6', 1), ('G6', 1), ('A6', 4),
+        ('G6', 2), ('E6', 2), ('D6', 2), ('B5', 2),
+    ]
+    add_m(32, r_theme_c)
+
+    # Grand Reprise & Outro leading into Loop turnaround (Measures 48-63)
+    r_outro = [
+        ('D5', 1), ('E5', 1), ('G5', 1), ('A5', 1), ('B5', 1), ('A5', 1), ('G5', 1), ('E5', 1),
+        ('G5', 4), ('_', 4),
+        ('D5', 1), ('E5', 1), ('G5', 1), ('A5', 1), ('B5', 1), ('D6', 1), ('B5', 1), ('A5', 1),
+        ('G5', 4), ('_', 4),
+        ('G5', 1), ('A5', 1), ('B5', 1), ('D6', 1), ('E6', 2), ('D6', 1), ('B5', 1),
+        ('A5', 1), ('G5', 1), ('E5', 1), ('D5', 1), ('G5', 4),
+        ('D5', 2), ('G5', 2), ('B5', 2), ('D6', 2),
+        ('G5', 4), ('D5', 4),
+        ('G4', 8), ('_', 8)
+    ]
+    add_m(48, r_outro)
+
+    # 1. DRUMS (YMO Style Electronic Disco/Techno Gallop + Simmons Toms & Horse Hooves)
+    for m in range(NUM_MEASURES):
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        for beat in range(2):
+            b_start = m_start + beat * samples_per_beat
+            # Punchy TR-808 Kick
+            klen = int(0.20 * SAMPLE_RATE)
+            kt = np.linspace(0, 0.20, klen, endpoint=False)
+            kick = np.sin(2*np.pi*(160*np.exp(-kt*28)+48)*kt) * np.exp(-kt*16) * 1.15
+            ek = min(TOTAL_SAMPLES, b_start + klen)
+            ak = ek - b_start
+            if ak > 0:
+                left[b_start:ek] += kick[:ak] * 0.72
+                right[b_start:ek] += kick[:ak] * 0.72
+
+            # Snare with snappy electronic noise on beat 2
+            if beat == 1:
+                slen = int(0.18 * SAMPLE_RATE)
+                st = np.linspace(0, 0.18, slen, endpoint=False)
+                snare = np.random.uniform(-1, 1, slen) * np.exp(-st*25) * 0.65 + np.sin(2*np.pi*240*st)*np.exp(-st*35)*0.35
+                es = min(TOTAL_SAMPLES, b_start + slen)
+                as_ = es - b_start
+                if as_ > 0:
+                    left[b_start:es] += snare[:as_] * 0.52
+                    right[b_start:es] += snare[:as_] * 0.52
+
+            # 16th Hi-Hats (chi-chi-chi-chi)
+            for s in range(4):
+                h_start = b_start + s * samples_per_16th
+                hlen = int(0.045 * SAMPLE_RATE)
+                ht = np.linspace(0, 0.045, hlen, endpoint=False)
+                hat = np.random.uniform(-1, 1, hlen) * np.exp(-ht * (70 if s%2==1 else 110)) * (0.85 if s%2==1 else 0.4) * 0.35
+                eh = min(TOTAL_SAMPLES, h_start + hlen)
+                ah = eh - h_start
+                if ah > 0:
+                    left[h_start:eh] += hat[:ah] * 0.48
+                    right[h_start:eh] += hat[:ah] * 0.52
+
+            # Horse Hooves Woodblock Gallop (poko-poko sound)
+            for h16 in (0, 1, 2, 3):
+                hoof_start = b_start + h16 * samples_per_16th
+                wlen = int(0.04 * SAMPLE_RATE)
+                wt = np.linspace(0, 0.04, wlen, endpoint=False)
+                w_freq = 900.0 if h16 % 2 == 0 else 1150.0
+                wood = np.sin(2 * np.pi * w_freq * wt) * np.exp(-wt * 120.0) * 0.38
+                ew = min(TOTAL_SAMPLES, hoof_start + wlen)
+                aw = ew - hoof_start
+                if aw > 0:
+                    pan_l = 0.65 if h16 % 2 == 0 else 0.35
+                    left[hoof_start:ew] += wood[:aw] * pan_l
+                    right[hoof_start:ew] += wood[:aw] * (1.0 - pan_l)
+
+    # 2. BASSLINE (Moog 16th Octave Galloping Techno Bass)
+    chord_roots = ['G2', 'E2', 'C2', 'D2']
+    for m in range(NUM_MEASURES):
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        root = chord_roots[(m // 2) % len(chord_roots)]
+        rf = note_to_freq(root)
+        for s in range(MEASURE_16THS):
+            nstart = m_start + s * samples_per_16th
+            nlen = int(samples_per_16th * 0.85)
+            eb = min(TOTAL_SAMPLES, nstart + nlen)
+            ab = eb - nstart
+            if ab > 0:
+                t = np.linspace(0, ab / SAMPLE_RATE, ab, endpoint=False)
+                oct_ = 2.0 if (s % 2 == 1) else 1.0
+                f = rf * oct_
+                saw = 2.0 * (f * t - np.floor(0.5 + f * t))
+                sqr = np.sign(np.sin(2 * np.pi * f * t))
+                b_sig = (saw * 0.6 + sqr * 0.4) * np.exp(-t * 22.0) * 0.48
+                left[nstart:eb] += b_sig * 0.52
+                right[nstart:eb] += b_sig * 0.48
+
+    # 3. LEAD SYNTH (Classic YMO Roland/Prophet-5 Lead)
+    for s16, dur, n_name in melody_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.12) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.004) * np.exp(-t * (4.2 if dur >= 4 else 7.8))
+            # Square wave + pulse + subtle chorus
+            sqr = np.sign(np.sin(2 * np.pi * fq * t)) * 0.55
+            sqr_detune = np.sign(np.sin(2 * np.pi * (fq * 1.003) * t)) * 0.35
+            saw = (2.0 * (fq * t - np.floor(0.5 + fq * t))) * 0.25
+            lead = (sqr + sqr_detune + saw) * env * 0.42
+            left[n_start:es] += lead * 0.53
+            right[n_start:es] += lead * 0.47
+
+    save_wav('audio/bgm_rydeen.wav', left, right)
+
 if __name__ == '__main__':
     print("=== Generating FORCE OF THE HORSE Music Suite ===")
     generate_turkish_march()
     generate_william_tell()
     generate_cyber_turf()
     generate_grand_prix()
+    generate_rydeen()
     print("=== All BGM Tracks Generated Successfully ===")
+
