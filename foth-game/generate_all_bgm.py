@@ -1288,6 +1288,432 @@ def generate_dq_overture():
 
     save_wav('audio/bgm_dq_overture.wav', left, right)
 
+# ==========================================
+# 8. TRACK 8: GREEN PASTURE GALLOP (緑の草原を駆ける風 〜ケルティック・大草原の疾走〜)
+# ==========================================
+def generate_green_pasture_gallop():
+    BPM = 136.0
+    BEAT_SEC = 60.0 / BPM
+    # 6/8 compound meter: 6 eighth notes per measure. 12 sixteenth units per measure.
+    SIXTEENTH_SEC = (BEAT_SEC * 2.0) / 12.0
+    MEASURE_16THS = 12
+    NUM_MEASURES = 48
+    TOTAL_16THS = NUM_MEASURES * MEASURE_16THS
+    TOTAL_SAMPLES = int(TOTAL_16THS * SIXTEENTH_SEC * SAMPLE_RATE)
+
+    left = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    right = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    samples_per_16th = int(SIXTEENTH_SEC * SAMPLE_RATE)
+    samples_per_8th = samples_per_16th * 2
+
+    whistle_events = []
+    fiddle_events = []
+    guitar_chords = []
+
+    def add_w(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': whistle_events.append((c, dur, n))
+            c += dur
+
+    def add_f(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': fiddle_events.append((c, dur, n))
+            c += dur
+
+    # --- THEME A: CELTIC MEADOW BREEZE (Measures 0 - 15) ---
+    theme_a_w = [
+        # M0 (Intro pick-up / gallop start)
+        ('_', 6), ('D5', 2), ('E5', 2), ('F#5', 2),
+        # M1
+        ('G5', 4), ('A5', 2), ('B5', 3), ('A5', 1), ('G5', 2),
+        # M2
+        ('E5', 4), ('G5', 2), ('D5', 6),
+        # M3
+        ('E5', 2), ('F#5', 2), ('G5', 2), ('A5', 4), ('B5', 2),
+        # M4
+        ('A5', 6), ('D5', 2), ('E5', 2), ('F#5', 2),
+        # M5
+        ('G5', 4), ('A5', 2), ('B5', 3), ('C6', 1), ('D6', 2),
+        # M6
+        ('E6', 4), ('D6', 2), ('B5', 6),
+        # M7
+        ('A5', 2), ('B5', 2), ('G5', 2), ('A5', 3), ('G5', 1), ('E5', 2),
+        # M8
+        ('G5', 6), ('G5', 6),
+
+        # M9 (Variation)
+        ('B5', 4), ('C6', 2), ('D6', 3), ('C6', 1), ('B5', 2),
+        # M10
+        ('A5', 4), ('G5', 2), ('E5', 6),
+        # M11
+        ('G5', 2), ('A5', 2), ('B5', 2), ('D6', 4), ('B5', 2),
+        # M12
+        ('A5', 6), ('D5', 2), ('E5', 2), ('F#5', 2),
+        # M13
+        ('G5', 4), ('A5', 2), ('B5', 3), ('C6', 1), ('D6', 2),
+        # M14
+        ('E6', 4), ('D6', 2), ('B5', 4), ('G5', 2),
+        # M15
+        ('A5', 4), ('B5', 2), ('G5', 6),
+    ]
+    add_w(0, theme_a_w)
+
+    theme_a_f = [
+        # M0
+        ('_', 12),
+        # M1
+        ('B4', 4), ('C5', 2), ('D5', 4), ('B4', 2),
+        # M2
+        ('C5', 4), ('E5', 2), ('B4', 6),
+        # M3
+        ('C5', 2), ('D5', 2), ('E5', 2), ('F#5', 4), ('G5', 2),
+        # M4
+        ('F#5', 6), ('B4', 2), ('C5', 2), ('D5', 2),
+        # M5
+        ('B4', 4), ('C5', 2), ('D5', 4), ('F#5', 2),
+        # M6
+        ('G5', 4), ('F#5', 2), ('D5', 6),
+        # M7
+        ('E5', 2), ('G5', 2), ('D5', 2), ('F#5', 4), ('C5', 2),
+        # M8
+        ('B4', 6), ('B4', 6),
+
+        # M9
+        ('G5', 4), ('A5', 2), ('B5', 4), ('G5', 2),
+        # M10
+        ('F#5', 4), ('E5', 2), ('C5', 6),
+        # M11
+        ('E5', 2), ('F#5', 2), ('G5', 2), ('B5', 4), ('G5', 2),
+        # M12
+        ('F#5', 6), ('B4', 2), ('C5', 2), ('D5', 2),
+        # M13
+        ('B4', 4), ('C5', 2), ('D5', 4), ('F#5', 2),
+        # M14
+        ('G5', 4), ('F#5', 2), ('D5', 4), ('B4', 2),
+        # M15
+        ('C5', 4), ('D5', 2), ('B4', 6),
+    ]
+    add_f(0, theme_a_f)
+
+    # --- THEME B: SOARING HILLS & GALLOPING HORIZON (Measures 16 - 31) ---
+    theme_b_w = [
+        # M16
+        ('D6', 4), ('E6', 2), ('D6', 3), ('C6', 1), ('B5', 2),
+        # M17
+        ('C6', 4), ('D6', 2), ('C6', 3), ('B5', 1), ('A5', 2),
+        # M18
+        ('B5', 4), ('C6', 2), ('B5', 3), ('A5', 1), ('G5', 2),
+        # M19
+        ('A5', 6), ('D5', 6),
+        # M20
+        ('G5', 4), ('A5', 2), ('B5', 4), ('D6', 2),
+        # M21
+        ('E6', 4), ('F#6', 2), ('G6', 4), ('E6', 2),
+        # M22
+        ('D6', 4), ('B5', 2), ('A5', 3), ('B5', 1), ('A5', 2),
+        # M23
+        ('G5', 6), ('G5', 6),
+
+        # M24
+        ('D6', 4), ('E6', 2), ('D6', 3), ('C6', 1), ('B5', 2),
+        # M25
+        ('C6', 4), ('D6', 2), ('C6', 3), ('B5', 1), ('A5', 2),
+        # M26
+        ('B5', 4), ('C6', 2), ('B5', 3), ('A5', 1), ('G5', 2),
+        # M27
+        ('A5', 4), ('B5', 2), ('A5', 6),
+        # M28
+        ('G5', 2), ('A5', 2), ('B5', 2), ('C6', 2), ('D6', 2), ('E6', 2),
+        # M29
+        ('F#6', 4), ('G6', 2), ('E6', 4), ('D6', 2),
+        # M30
+        ('B5', 4), ('D6', 2), ('A5', 4), ('B5', 2),
+        # M31
+        ('G5', 6), ('G5', 6),
+    ]
+    add_w(16, theme_b_w)
+
+    theme_b_f = [
+        # M16
+        ('B5', 4), ('C6', 2), ('B5', 4), ('G5', 2),
+        # M17
+        ('A5', 4), ('B5', 2), ('A5', 4), ('F#5', 2),
+        # M18
+        ('G5', 4), ('A5', 2), ('G5', 4), ('E5', 2),
+        # M19
+        ('F#5', 6), ('B4', 6),
+        # M20
+        ('B4', 4), ('C5', 2), ('D5', 4), ('B5', 2),
+        # M21
+        ('C6', 4), ('D6', 2), ('E6', 4), ('C6', 2),
+        # M22
+        ('B5', 4), ('G5', 2), ('F#5', 4), ('D5', 2),
+        # M23
+        ('B4', 6), ('B4', 6),
+
+        # M24
+        ('B5', 4), ('C6', 2), ('B5', 4), ('G5', 2),
+        # M25
+        ('A5', 4), ('B5', 2), ('A5', 4), ('F#5', 2),
+        # M26
+        ('G5', 4), ('A5', 2), ('G5', 4), ('E5', 2),
+        # M27
+        ('F#5', 4), ('G5', 2), ('F#5', 6),
+        # M28
+        ('E5', 2), ('F#5', 2), ('G5', 2), ('A5', 2), ('B5', 2), ('C6', 2),
+        # M29
+        ('D6', 4), ('E6', 2), ('C6', 4), ('B5', 2),
+        # M30
+        ('G5', 4), ('B5', 2), ('F#5', 4), ('D5', 2),
+        # M31
+        ('B4', 6), ('B4', 6),
+    ]
+    add_f(16, theme_b_f)
+
+    # --- THEME C: HIGH JIG CLIMAX & CELEBRATION (Measures 32 - 47) ---
+    theme_c_w = [
+        # M32
+        ('G6', 4), ('F#6', 2), ('G6', 4), ('D6', 2),
+        # M33
+        ('E6', 4), ('D6', 2), ('E6', 4), ('B5', 2),
+        # M34
+        ('C6', 3), ('D6', 1), ('E6', 2), ('D6', 3), ('C6', 1), ('B5', 2),
+        # M35
+        ('A5', 6), ('D5', 6),
+        # M36
+        ('G6', 4), ('F#6', 2), ('G6', 4), ('D6', 2),
+        # M37
+        ('E6', 4), ('D6', 2), ('E6', 4), ('B5', 2),
+        # M38
+        ('C6', 2), ('D6', 2), ('E6', 2), ('D6', 2), ('B5', 2), ('A5', 2),
+        # M39
+        ('G5', 6), ('G5', 6),
+
+        # M40 (Grand Reprise of Theme A in High Octave)
+        ('G5', 4), ('A5', 2), ('B5', 3), ('C6', 1), ('D6', 2),
+        # M41
+        ('E6', 4), ('G6', 2), ('D6', 6),
+        # M42
+        ('E6', 2), ('F#6', 2), ('G6', 2), ('A6', 4), ('B6', 2),
+        # M43
+        ('A6', 6), ('D6', 6),
+        # M44
+        ('B6', 4), ('A6', 2), ('G6', 3), ('F#6', 1), ('E6', 2),
+        # M45
+        ('D6', 4), ('E6', 2), ('B5', 6),
+        # M46
+        ('A5', 2), ('B5', 2), ('D6', 2), ('A5', 4), ('F#5', 2),
+        # M47
+        ('G5', 6), ('G5', 6),
+    ]
+    add_w(32, theme_c_w)
+    add_f(32, theme_c_w)
+
+    # 1. EQUESTRIAN GALLOP PERCUSSION (Bodhrán Thump + Coconut / Wooden Hoof-Clopping)
+    for m in range(NUM_MEASURES):
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        # 6/8: 2 main beats (Beat 1 at 0, Beat 2 at 6 sixteenths)
+        for compound_beat in range(2):
+            b_start = m_start + compound_beat * (samples_per_8th * 3)
+            # Resonant Bodhrán Bass Thump
+            blen = int(0.28 * SAMPLE_RATE)
+            bt = np.linspace(0, 0.28, blen, endpoint=False)
+            bodhran = np.sin(2 * np.pi * (75.0 * np.exp(-bt * 18.0) + 42.0) * bt) * np.exp(-bt * 7.5) * 1.25
+            eb = min(TOTAL_SAMPLES, b_start + blen)
+            ab = eb - b_start
+            if ab > 0:
+                left[b_start:eb] += bodhran[:ab] * 0.65
+                right[b_start:eb] += bodhran[:ab] * 0.65
+
+        # 6 Eighth-Note Hoof-Clops per measure: 1-2-3, 4-5-6 galloping cadence
+        for eighth in range(6):
+            h_start = m_start + eighth * samples_per_8th
+            # Coconut / Wood block hoof strike
+            wlen = int(0.06 * SAMPLE_RATE)
+            wt = np.linspace(0, 0.06, wlen, endpoint=False)
+            # Resonant hollow wooden pitch (higher on 2, 3, 5, 6, deep thud on 1, 4)
+            is_accent = (eighth == 0 or eighth == 3)
+            w_pitch = 460.0 if is_accent else (580.0 if eighth % 2 == 1 else 520.0)
+            wood = np.sin(2 * np.pi * w_pitch * wt) * np.exp(-wt * 65.0)
+            click = np.random.uniform(-1, 1, wlen) * np.exp(-wt * 120.0) * 0.5
+            clop = (wood * 0.75 + click * 0.25) * (0.85 if is_accent else 0.50)
+            ew = min(TOTAL_SAMPLES, h_start + wlen)
+            aw = ew - h_start
+            if aw > 0:
+                # Panning alternating slightly left/right like left/right horse hooves!
+                pan_l = 0.60 if (eighth % 2 == 0) else 0.40
+                pan_r = 0.40 if (eighth % 2 == 0) else 0.60
+                left[h_start:ew] += clop[:aw] * pan_l * 0.45
+                right[h_start:ew] += clop[:aw] * pan_r * 0.45
+
+        # Tambourine / Jingle shimmer on upbeat eighths (eighth 2, 5)
+        for eighth in [2, 5]:
+            t_start = m_start + eighth * samples_per_8th
+            tlen = int(0.14 * SAMPLE_RATE)
+            tt = np.linspace(0, 0.14, tlen, endpoint=False)
+            tamb = np.random.uniform(-1, 1, tlen) * np.exp(-tt * 24.0) * 0.35
+            et = min(TOTAL_SAMPLES, t_start + tlen)
+            at = et - t_start
+            if at > 0:
+                left[t_start:et] += tamb[:at] * 0.30
+                right[t_start:et] += tamb[:at] * 0.30
+
+    # 2. CELTIC ACOUSTIC GUITAR & HARP ARPEGGIOS (Rolling 6/8 Arpeggio Strumming)
+    # Chord progression:
+    # M0-7: G - Em - C - D - G - Em - C - G
+    # M8-15: G - Em - C - D - G - Em - D - G
+    # M16-23: Em - C - G - D - Em - C - D - G
+    # M24-31: Em - C - G - D - Em - C - D - G
+    # M32-39: C - G - Em - D - C - G - D - G
+    # M40-47: G - Em - C - D - Em - C - D - G
+    chords_map = [
+        # M0-7
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'D3', 'F#3', 'A3', 'D4', 'F#3'],
+
+        # M8-15
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['D3', 'F#3', 'A3', 'D4', 'B3', 'G3'],
+
+        # M16-23
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+
+        # M24-31
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+
+        # M32-39
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+
+        # M40-47
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['E3', 'G3', 'B3', 'E4', 'B3', 'G3'],
+        ['C3', 'E3', 'G3', 'C4', 'G3', 'E3'],
+        ['D3', 'F#3', 'A3', 'D4', 'A3', 'F#3'],
+        ['G3', 'B3', 'D4', 'G4', 'D4', 'B3'],
+    ]
+
+    for m in range(NUM_MEASURES):
+        chord_notes = chords_map[m]
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        for i, n_name in enumerate(chord_notes):
+            fq = note_to_freq(n_name)
+            p_start = m_start + i * samples_per_8th
+            plen = int(0.24 * SAMPLE_RATE)
+            ep = min(TOTAL_SAMPLES, p_start + plen)
+            ap = ep - p_start
+            if ap > 0:
+                t = np.linspace(0, ap / SAMPLE_RATE, ap, endpoint=False)
+                # Acoustic Pluck (Tri + Sine with fast decay)
+                tri = 2.0 * np.abs(2.0 * (fq * t - np.floor(fq * t + 0.5))) - 1.0
+                sin = np.sin(2 * np.pi * fq * t)
+                env = np.exp(-t * 14.0) * np.minimum(1.0, t / 0.004)
+                pluck = (tri * 0.60 + sin * 0.40) * env * 0.45
+                left[p_start:ep] += pluck * 0.55
+                right[p_start:ep] += pluck * 0.45
+
+    # 3. ACOUSTIC BASS (Jumping Celtic Bass on beats 1 & 4)
+    for m in range(NUM_MEASURES):
+        chord_notes = chords_map[m]
+        root_name = chord_notes[0][:-1] + '2'
+        fifth_name = chord_notes[2][:-1] + '2'
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+
+        for beat, b_note in enumerate([root_name, fifth_name]):
+            fq = note_to_freq(b_note)
+            b_start = m_start + beat * (samples_per_8th * 3)
+            blen = int(0.35 * SAMPLE_RATE)
+            eb = min(TOTAL_SAMPLES, b_start + blen)
+            ab = eb - b_start
+            if ab > 0:
+                t = np.linspace(0, ab / SAMPLE_RATE, ab, endpoint=False)
+                saw = 2.0 * (fq * t - np.floor(0.5 + fq * t))
+                sin = np.sin(2 * np.pi * fq * t)
+                env = np.exp(-t * 8.0) * np.minimum(1.0, t / 0.008)
+                bass = (sin * 0.65 + saw * 0.35) * env * 0.65
+                left[b_start:eb] += bass * 0.50
+                right[b_start:eb] += bass * 0.50
+
+    # 4. CELTIC TIN WHISTLE & WOODEN FLUTE (Airy, Light & Joyful Lead)
+    for s16, dur, n_name in whistle_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.16) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.012) * np.exp(-t * (2.0 if dur >= 4 else 4.5))
+            # Celtic breathy vibrato
+            vib = 1.0 + (0.012 if dur >= 3 else 0.004) * np.sin(2 * np.pi * 6.2 * t)
+            f_vib = fq * vib
+            # Pure wooden whistle tone with breath noise
+            breath = np.random.uniform(-1, 1, as_) * 0.06 * np.exp(-t * 12.0)
+            whistle = (np.sin(2 * np.pi * f_vib * t) * 0.75 +
+                       np.sin(4 * np.pi * f_vib * t) * 0.20 +
+                       np.sin(6 * np.pi * f_vib * t) * 0.05 + breath) * env * 0.52
+            left[n_start:es] += whistle * 0.53
+            right[n_start:es] += whistle * 0.47
+
+    # 5. CELTIC FIDDLE / STRINGS (Warm Meadow Harmony)
+    for s16, dur, n_name in fiddle_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.18) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.018) * np.exp(-t * (2.2 if dur >= 4 else 5.0))
+            vib = 1.0 + 0.008 * np.sin(2 * np.pi * 5.6 * t)
+            f_vib = fq * vib
+            saw = 2.0 * (f_vib * t - np.floor(0.5 + f_vib * t))
+            sin = np.sin(2 * np.pi * f_vib * t)
+            fiddle = (saw * 0.45 + sin * 0.55) * env * 0.38
+            left[n_start:es] += fiddle * 0.44
+            right[n_start:es] += fiddle * 0.56
+
+    save_wav('audio/bgm_green_pasture.wav', left, right)
+
 if __name__ == '__main__':
     print("=== Generating FORCE OF THE HORSE Music Suite ===")
     generate_turkish_march()
@@ -1297,7 +1723,9 @@ if __name__ == '__main__':
     generate_rydeen()
     generate_yugioh_arena()
     generate_dq_overture()
+    generate_green_pasture_gallop()
     print("=== All BGM Tracks Generated Successfully ===")
+
 
 
 
