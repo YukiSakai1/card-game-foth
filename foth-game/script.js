@@ -3119,8 +3119,14 @@
     resetPlayerDeck(true);
     renderAll();
 
-    setNarrator('ようこそ、<b>フォース オブ ザ ホース</b>の世界へ！ 今回はチュートリアルなので本番よりも10枚少ないカードでプレイするよ。まずは対戦の準備をしよう。');
+    setNarrator('ようこそ、<b>フォース オブ ザ ホース</b>の世界へ！');
     setProgress(0);
+    showNextButton(true);
+    await waitNext();
+    if (myRunId !== tutorialRunId) return;
+
+    setNarrator('今回はチュートリアルなので本番よりも10枚少ないカードでプレイするよ。まずは対戦の準備をしよう。');
+    showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
