@@ -961,7 +961,7 @@
     var cardBackdrop = $('banner-card-backdrop');
     var stage = $('banner-stage');
     var hasCard = false;
-    var isGuard = text.indexOf('ガード！') >= 0;
+    var isGuard = text.indexOf('ガード') >= 0;
     if (cardBackdrop) {
       cardBackdrop.innerHTML = '';
       var targetCard = horseCard || ((text.indexOf('走破成功') >= 0 || text.indexOf('走破！') >= 0 || isGuard) ? (fieldGuard || field || selectedHorse || cpuHorseCard || goldShip()) : null);
@@ -984,7 +984,8 @@
       overlay.classList.toggle('is-guard', isGuard && hasCard);
     }
     var isFreeplay = (interactionMode === 'freeplay');
-    var tapHintHtml = isFreeplay ? '<div class="banner-tap-hint" style="margin-top:10px;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;text-shadow:0 2px 8px rgba(0,0,0,0.8);">👆 画面をタップ／クリックして次へ進む</div>' : '';
+    var waitClick = isFreeplay || isGuard;
+    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:10px;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;text-shadow:0 2px 8px rgba(0,0,0,0.8);">👆 画面をタップ／クリックして次へ進む</div>' : '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
     box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
     box.classList.add('show');
@@ -1013,8 +1014,8 @@
         setTimeout(resolve, 250);
       }
       overlay.addEventListener('click', finish);
-      // マニュアル操作（freeplay）時は秒数自動スキップせず、ユーザーのタップ／クリック操作で次へ進む
-      var timer = isFreeplay ? null : setTimeout(finish, maxWait || 3200);
+      // マニュアル操作（freeplay）またはガード表示時は秒数自動スキップせず、ユーザーのタップ／クリック操作で次へ進む
+      var timer = waitClick ? null : setTimeout(finish, maxWait || 3200);
     });
   }
 
@@ -2070,7 +2071,7 @@
         var thinkingPopup = $('opponent-thinking-popup');
         thinkingPopup.style.display = 'flex';
         setNarrator('相手プレイヤーはガードをするか考えています。');
-        return sleep(1200).then(function () {
+        return sleep(2500).then(function () {
           thinkingPopup.style.display = 'none';
 
           // 相手の手札に、現在の距離適性に合う馬カードがあるか確認
