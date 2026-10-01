@@ -3723,8 +3723,7 @@
       scheduleFieldCorrection();
     }
     function setZoom(pct) {
-      var isMob = typeof window !== 'undefined' && window.innerWidth < 860;
-      var minPct = isMob ? 100 : 80;
+      var minPct = 100;
       pct = Math.max(minPct, Math.min(200, Number(pct) || DEFAULTS.zoom));
       if (zoomRange) {
         zoomRange.min = String(minPct);
@@ -3934,8 +3933,8 @@
     var isMobile = function () { return typeof window !== 'undefined' && window.innerWidth < 860; };
     var baseScale = 1.14;
     function getMinScale() {
-      // スマホでは手で画面（盤面）を縮小できないよう最小倍率を1.0（標準サイズ）に固定
-      return isMobile() ? 1.0 : 0.8;
+      // 最小倍率を1.0（100%）に固定
+      return 1.0;
     }
     var MAX_SCALE = 2.6;
     var state = { scale: baseScale, tx: 0, ty: 0 };
