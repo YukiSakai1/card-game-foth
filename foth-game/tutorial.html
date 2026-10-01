@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=38">
+  <link rel="stylesheet" href="style.css?v=39">
   <script type="importmap">
 {
     "imports": {
@@ -438,7 +438,7 @@
 
       // 1. Base Color
       if (isWhite) {
-        ctx.fillStyle = '#edf2f7';
+        ctx.fillStyle = '#dbe3eb';
       } else if (isNature) {
         ctx.fillStyle = '#010d06';
       } else {
@@ -448,11 +448,11 @@
 
       // Ambient light pools
       const ambientGlows = isWhite ? [
-        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 140, 240, 0.16)' },
-        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 180, 255, 0.14)' },
-        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(0, 140, 240, 0.14)' },
-        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(0, 170, 255, 0.12)' },
-        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(0, 130, 220, 0.12)' },
+        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(2, 132, 199, 0.08)' },
+        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(14, 165, 233, 0.07)' },
+        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(2, 132, 199, 0.07)' },
+        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(14, 165, 233, 0.06)' },
+        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(2, 132, 199, 0.06)' },
       ] : isNature ? [
         { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(5, 120, 60, 0.30)' },
         { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(16, 185, 129, 0.26)' },
@@ -469,7 +469,7 @@
       ambientGlows.forEach(g => {
         const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
         rad.addColorStop(0, g.c);
-        rad.addColorStop(1, isWhite ? 'rgba(237, 242, 247, 0)' : isNature ? 'rgba(1, 13, 6, 0)' : 'rgba(1, 5, 15, 0)');
+        rad.addColorStop(1, isWhite ? 'rgba(219, 227, 235, 0)' : isNature ? 'rgba(1, 13, 6, 0)' : 'rgba(1, 5, 15, 0)');
         ctx.fillStyle = rad;
         ctx.fillRect(0, 0, size, size);
       });
@@ -749,18 +749,18 @@
         if (!whiteTexture) whiteTexture = createCyberTexture('white');
         planeMat.map = whiteTexture;
         planeMat.needsUpdate = true;
-        scene.background = new THREE.Color(0xedf2f7);
-        scene.fog = new THREE.Fog(0xedf2f7, 220, 1750);
-        horizonGlowMat.color.setHex(0x0099ff);
-        horizonGlowMat.opacity = 0.25;
-        bloomPass.strength = 0.26;
-        bloomPass.threshold = 0.35;
+        scene.background = new THREE.Color(0xdbe3eb);
+        scene.fog = new THREE.Fog(0xdbe3eb, 220, 1750);
+        horizonGlowMat.color.setHex(0x0284c7);
+        horizonGlowMat.opacity = 0.12;
+        bloomPass.strength = 0.12;
+        bloomPass.threshold = 0.45;
         for (let i = 0; i < particleCount; i++) {
           const pColor = new THREE.Color();
           if (Math.random() > 0.4) {
-            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.55 + Math.random() * 0.25);
+            pColor.setHSL(0.57 + Math.random() * 0.05, 0.70, 0.45 + Math.random() * 0.20);
           } else {
-            pColor.setRGB(0.1, 0.4, 0.8);
+            pColor.setRGB(0.15, 0.35, 0.55);
           }
           colors[i * 3] = pColor.r;
           colors[i * 3 + 1] = pColor.g;
