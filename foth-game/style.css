@@ -7743,7 +7743,7 @@ body #closeup-layer .closeup-toast {
 
 /* ==================== BACKGROUND & FIELD DIM (薄くする設定) ==================== */
 :root {
-  --bg-field-opacity: 1;
+  --bg-field-opacity: 0.8;
 }
 
 #three-bg {

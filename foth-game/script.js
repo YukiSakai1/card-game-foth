@@ -3918,7 +3918,7 @@
     }
 
     function setBgOpacity(pct) {
-      pct = Math.max(10, Math.min(100, Number(pct) || 100));
+      pct = Math.max(10, Math.min(100, Number(pct) || 80));
       document.body.style.setProperty('--bg-field-opacity', (pct / 100).toFixed(2));
       if (bgOpacityRange) bgOpacityRange.value = pct;
       if (bgOpacityValue) bgOpacityValue.textContent = pct + '%';
@@ -3931,7 +3931,7 @@
     setDepth(DEFAULTS.depth);
     setZoom(DEFAULTS.zoom);
 
-    var initialBgOpacity = 100;
+    var initialBgOpacity = 80;
     try {
       var savedOp = localStorage.getItem('foth_bg_opacity');
       if (savedOp !== null && savedOp !== undefined) {
@@ -4021,7 +4021,7 @@
         setTilt(DEFAULTS.tilt);
         setDepth(DEFAULTS.depth);
         setZoom(DEFAULTS.zoom);
-        setBgOpacity(100);
+        setBgOpacity(80);
         if (touchToggle) touchToggle.checked = true;
         pointerTiltEnabled = true;
       });
