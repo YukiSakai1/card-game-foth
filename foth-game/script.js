@@ -1876,7 +1876,11 @@
       return;
     }
     var maxDraw = Math.min(actualDraw, cpuTotalDeck());
-    setNarrator('相手（CPU）は走破に成功しました。山札から ' + maxDraw + ' 枚引きます。（走破 ' + cpuRunValue + ' - ガード ' + guardValue + ' = ' + actualDraw + '）');
+    var cpuDiscardCount = Math.max(0, maxDraw - 1);
+    var cpuReason = (guardValue > 0) ?
+      ('走破 <b>' + cpuRunValue + '</b> − ガード <b>' + guardValue + '</b> ＝ 走破数 <b>' + actualDraw + '</b>') :
+      ('走破数が <b>' + actualDraw + '</b>（ガードなし）');
+    setNarrator('相手（CPU）は走破に成功しました。' + cpuReason + ' だから山札から <b>' + maxDraw + '枚</b> 引きます。その後、走破数−1枚（<b>' + cpuDiscardCount + '枚</b>）をファームに捨てます。');
     showOpponentBubble('走破成功！');
 
     var horse = cpuHorseCard || goldShip();
@@ -2124,10 +2128,19 @@
     /* STEP 5: 成功時の報酬ドロー＋捨て札 */
     function continueRunLogic(finalRun, usedGuard, usedGuardVal) {
       var drawCount = Math.min(finalRun, totalDeck());
+      var discardCount = Math.max(0, drawCount - 1);
       if (drawCount <= 0) {
         setNarrator('走破値が0になったため、カードを引けませんでした。');
         return sendHorseToFarmAndReset();
       }
+
+      var reason = usedGuard ?
+        ('実効走破 <b>' + totalRun + '</b> − ガード <b>' + usedGuardVal + '</b> ＝ 走破数 <b>' + finalRun + '</b>') :
+        ('<b>' + (horseInPlay ? horseInPlay.name : '馬') + '</b>の走破数が <b>' + finalRun + '</b>（基礎 ' + (horseInPlay ? horseInPlay.run : '') + (modifierText ? '、' + modifierText : '') + (runBonus ? '、アイテム +' + runBonus : '') + '）');
+
+      setNarrator(reason + ' だから山札から <b>' + drawCount + '枚</b> 引きます。その後、走破数−1枚（<b>' + discardCount + '枚</b>）をファームに捨てます。');
+      showToast('走破数 ' + finalRun + '枚ドロー → 走破数−1（' + discardCount + '枚）捨て', 'info', 3000);
+
       var chain = Promise.resolve();
       for (var i = 0; i < drawCount; i++) {
         (function () {
@@ -2141,20 +2154,20 @@
               drawOneFromDeck();
               lastDrawer = 'player';
               renderAll();
-              return sleep(120);
+              if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+              return sleep(140);
             });
           });
         })();
       }
       return chain.then(function () {
-        var discardCount = Math.max(0, drawCount - 1);
         var need = Math.min(discardCount, hand.length);
         if (need > 0) {
           phase = 'discard_select';
           selectionNeeded = need;
           selectionCount = 0;
           pendingFinishRun = function () { finishRun(finalRun, usedGuard, usedGuardVal); };
-          setNarrator('引いた中から <b>' + need + '枚</b> 選んでファームに送ってください。');
+          setNarrator('走破数 ' + finalRun + ' − 1 ＝ <b>' + need + '枚</b> を手札から選んでファームに捨ててください。（残り ' + need + ' 枚）');
           renderAll();
         } else {
           finishRun(finalRun, usedGuard, usedGuardVal);
@@ -2163,9 +2176,9 @@
     }
 
     function finishRun(finalRun, usedGuard, usedGuardVal) {
-      var msg = '<b>走破成功！</b> ' + finalRun + '枚引いたよ！';
-      if (usedGuard) msg += '（ガードで' + usedGuardVal + '減少）';
-      if (runBonus > 0) msg += '（ボーナス+' + runBonus + '）';
+      var discardCount = Math.max(0, finalRun - 1);
+      var msg = '<b>走破成功！</b> ' + finalRun + '枚引いて、走破数−1枚（' + discardCount + '枚）をファームに送りました。';
+      if (usedGuard) msg += ' <span style="font-size:12px;color:var(--rail-dim)">（ガード' + usedGuardVal + '減少）</span>';
       setNarrator(msg);
       sendHorseToFarmAndReset();
     }
@@ -2305,7 +2318,7 @@
           selectionCount++;
           var remaining = selectionNeeded - selectionCount;
           if (remaining > 0) {
-            setNarrator('あと <b>' + remaining + '枚</b> 選んでファームに送ってください。');
+            setNarrator('走破数−1枚（計 <b>' + selectionNeeded + '枚</b>）を捨てます。ファームに送るカードを選んでください。（残り <b>' + remaining + '枚</b>）');
           } else {
             phase = 'idle';
             var fn = pendingFinishRun;
