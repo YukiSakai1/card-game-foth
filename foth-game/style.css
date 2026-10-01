@@ -1757,10 +1757,10 @@
     transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
   }
 
-  /* 相手側山札のラベル（中央フィールド向きに枠下端に配置） */
+  /* 相手側山札のラベル（デッキの反対側／枠上端に配置） */
   .opp-lane .lane-label {
-    top: auto;
-    bottom: -9px;
+    top: -9px;
+    bottom: auto;
   }
 
   /* 脚質ごとの枠色・文字色アクセント */
@@ -2684,8 +2684,8 @@
     }
 
     .opp-lane .lane-label {
-      top: auto;
-      bottom: -10px;
+      top: -10px;
+      bottom: auto;
     }
 
     /* トップバー・各種操作ボタン */
