@@ -1152,7 +1152,8 @@
   body.field-3d .field-tilt {
     transform: perspective(var(--field-perspective, 1300px)) rotateX(var(--tilt-angle, 10deg));
     transform-origin: 50% 100%;
-    margin: var(--field-tilt-shift-y, -34px) 0 14px;
+    margin: var(--field-tilt-shift-y, -34px) 0 var(--field-tilt-margin-bottom, 14px);
+    transition: transform .45s cubic-bezier(.2, .7, .3, 1), margin-top .45s cubic-bezier(.2, .7, .3, 1), margin-bottom .45s cubic-bezier(.2, .7, .3, 1);
   }
 
   /* radiating "floor" lines that share the field's own tilt and vanishing
@@ -2236,9 +2237,11 @@
       padding-bottom: 2.5vw;
     }
 
-    /* 3Dモード時のfield-tiltの引き上げ量をモバイルで角度に応じて動的に適用（相手デッキと相手バーの隙間を解消） */
+    /* 3Dモード時のfield-tiltの引き上げ量・余白をモバイルで角度に応じて動的に適用（相手バー＆手札との隙間を完全解消） */
     body.field-3d .field-tilt {
       margin-top: var(--field-tilt-shift-y, -75px);
+      margin-bottom: var(--field-tilt-margin-bottom, 4px);
+      transition: margin-top .45s cubic-bezier(.2, .7, .3, 1), margin-bottom .45s cubic-bezier(.2, .7, .3, 1);
     }
 
     /* ナレーター：手札枠に隠れないようz-indexを50にし、コンパクトなサイズで表示 */
@@ -2594,8 +2597,8 @@
     /* 3D傾き（0°〜60°全域）およびズーム倍率に応じてフィールド余白を動的に詰める */
     body.field-3d .field-tilt {
       margin-top: var(--field-tilt-shift-y, -285px);
-      margin-bottom: var(--field-scale-shift-y, 0px);
-      transition: margin-top .45s cubic-bezier(.2, .7, .3, 1), margin-bottom .22s ease;
+      margin-bottom: var(--field-tilt-margin-bottom, 0px);
+      transition: margin-top .45s cubic-bezier(.2, .7, .3, 1), margin-bottom .45s cubic-bezier(.2, .7, .3, 1);
     }
 
     /* ナレーターは手札とデッキの間に固定配置（デッキのすぐ下に間隔を詰めて配置、角度に応じて動的引き上げ） */

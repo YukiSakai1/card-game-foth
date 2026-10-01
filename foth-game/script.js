@@ -3959,34 +3959,44 @@
       var rounded = Math.round(d);
       document.body.dataset.tilt = String(rounded);
       document.body.classList.toggle('tilt-20-plus', d >= 18);
-      fitOpponentGap();
+      fitFieldGaps();
       scheduleFieldCorrection();
     }
 
-    // ---- 相手プレイヤー(バー) と 相手の山札 の間隔を、傾き0°と同じに保つ ----------
-    // 傾きやズームを変えると、遠近変形で相手の山札の見かけ位置が動き、相手バーとの
-    // 間に隙間（または重なり）ができていた。従来の固定テーブルでは角度・画面幅・倍率
-    // ごとの差を吸収しきれないため、実際の描画位置を測って補正量を決める。
-    //   1) 余白補正を0にした状態で「傾き0°」の間隔 g0 を測る
-    //   2) 同じ状態で「現在の傾き」の間隔 gt を測る
-    //   3) margin-top を (g0 - gt) にすると、間隔が 0° と一致する
-    // 測定中は transition を切り、測定後に元へ戻す。
-    function fitOpponentGap() {
+    // ---- 相手バーと相手山札、および自分山札と手札／ナレーターの間隔を、傾き0°時と完全同期 ----------
+    // 傾きやパースペクティブを付与した際に発生する上下の余白（特に自分山札と手札ゾーンの間の空き）を
+    // 実測値ベースで精密補正し、どの角度でも常に無駄なスペースなくスマートに接続する。
+    function fitFieldGaps() {
       var tiltEl = $('field-tilt');
       var wrapEl = $('field-image-wrap');
       var stripEl = $('zone-opponent');
-      var lanesEl = $('opp-lanes');
-      if (!tiltEl || !wrapEl || !stripEl || !lanesEl) return;
-      var laneEl = lanesEl.querySelector('.opp-lane') || lanesEl;
+      var oppLanesEl = $('opp-lanes');
+      var playerLanesEl = $('lanes');
+      var narratorEl = $('narrator');
+      var handEl = $('zone-hand');
+      if (!tiltEl || !wrapEl || !stripEl || !oppLanesEl) return;
+      var oppLaneEl = oppLanesEl.querySelector('.opp-lane') || oppLanesEl;
+      var playerLaneEl = playerLanesEl ? (playerLanesEl.querySelector('.lane') || playerLanesEl) : null;
+      var nextEl = (narratorEl && narratorEl.offsetHeight > 0 && !document.body.classList.contains('manual-mode')) ? narratorEl : handEl;
+
       var st = document.body.style;
       var deg = st.getPropertyValue('--tilt-angle') || '0deg';
-      var prevShift = st.getPropertyValue('--field-tilt-shift-y');
+      var prevShiftY = st.getPropertyValue('--field-tilt-shift-y');
+      var prevBottomShift = st.getPropertyValue('--field-tilt-margin-bottom');
 
-      function gap() {
+      function oppGap() {
         var s = stripEl.getBoundingClientRect();
-        var l = laneEl.getBoundingClientRect();
+        var l = oppLaneEl.getBoundingClientRect();
         if (!s.height || !l.height) return null;
         return l.top - s.bottom;
+      }
+
+      function playerBottomGap() {
+        if (!playerLaneEl || !nextEl) return null;
+        var p = playerLaneEl.getBoundingClientRect();
+        var n = nextEl.getBoundingClientRect();
+        if (!p.height || !n.height) return null;
+        return n.top - p.bottom;
       }
 
       var prevTiltTr = tiltEl.style.transition;
@@ -3995,38 +4005,44 @@
       wrapEl.style.transition = 'none';
 
       st.setProperty('--field-tilt-shift-y', '0px');
+      st.setProperty('--field-tilt-margin-bottom', '0px');
       st.setProperty('--tilt-angle', '0deg');
       void tiltEl.offsetHeight;
-      var g0 = gap();
+      var g0 = oppGap();
+      var b0 = playerBottomGap();
+
       st.setProperty('--tilt-angle', deg);
       void tiltEl.offsetHeight;
-      var gt = gap();
+      var gt = oppGap();
 
-      if (g0 === null || gt === null) {
-        if (prevShift) st.setProperty('--field-tilt-shift-y', prevShift);
-      } else {
+      if (g0 !== null && gt !== null) {
         var shift = Math.max(-1200, Math.min(300, g0 - gt));
         st.setProperty('--field-tilt-shift-y', shift.toFixed(1) + 'px');
+      } else if (prevShiftY) {
+        st.setProperty('--field-tilt-shift-y', prevShiftY);
       }
+
+      void tiltEl.offsetHeight;
+      var bt = playerBottomGap();
+
+      if (b0 !== null && bt !== null) {
+        // 傾きによって生じた下側の余分な隙間 (bt - b0) を margin-bottom で相殺して手札を引き上げる
+        var bottomShift = Math.max(-800, Math.min(200, b0 - bt));
+        st.setProperty('--field-tilt-margin-bottom', bottomShift.toFixed(1) + 'px');
+      } else if (prevBottomShift) {
+        st.setProperty('--field-tilt-margin-bottom', prevBottomShift);
+      }
+
       void tiltEl.offsetHeight;
       tiltEl.style.transition = prevTiltTr;
       wrapEl.style.transition = prevWrapTr;
     }
 
-    // ---- 実測ベースの重なり補正を、傾き／奥行き変更後に再実行する ----------
-    // adjustFieldDiagonalLayout()（このIIFEの外で定義されている、実際の
-    // 描画位置を測って相手側フィールド枠のズレを補正する関数）は、これまで
-    // renderAll()（ゲーム状態が変わった時）と resize 時にしか呼ばれておらず、
-    // 傾き角度・奥行きを変更したタイミングでは再計算されていなかった。
-    // そのため「10°用に測った補正量」が20°でもそのまま使われてしまい、
-    // 枠の重なりとして残っていた。.field-tilt の transform には .45s の
-    // transition がかかっているため、アニメーションが収まってから
-    // （少し余裕を持たせて480ms後に）再測定する。
     var fieldCorrectionTimer = null;
     function scheduleFieldCorrection() {
       if (fieldCorrectionTimer) clearTimeout(fieldCorrectionTimer);
       fieldCorrectionTimer = setTimeout(function () {
-        fitOpponentGap();
+        fitFieldGaps();
         if (typeof adjustFieldDiagonalLayout === 'function') adjustFieldDiagonalLayout();
       }, 480);
     }
@@ -4045,7 +4061,7 @@
       document.body.style.setProperty('--field-perspective', px + 'px');
       if (depthRange) depthRange.value = px;
       if (depthValue) depthValue.textContent = px + 'px';
-      fitOpponentGap();
+      fitFieldGaps();
       scheduleFieldCorrection();
     }
     function setZoom(pct) {
@@ -4059,7 +4075,7 @@
       if (FieldCamera && typeof FieldCamera.setBaseScale === 'function') {
         FieldCamera.setBaseScale(pct / 100);
       }
-      fitOpponentGap();
+      fitFieldGaps();
       scheduleFieldCorrection();
     }
 
@@ -4087,7 +4103,7 @@
     } catch (e) {}
     setBgOpacity(initialBgOpacity);
 
-    window.addEventListener('load', function () { fitOpponentGap(); });
+    window.addEventListener('load', function () { fitFieldGaps(); });
 
     window.addEventListener('resize', function () {
       applyTiltVar(baseTilt);
