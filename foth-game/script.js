@@ -3095,54 +3095,111 @@
     runTutorial();
   }
 
-  /* ===================== BGM（音源ファイル再生） ===================== */
+  /* ===================== BGM（音源ファイル再生 / シームレスループ） ===================== */
   var BGM = (function () {
-    var SRC = 'audio/Banners_in_the_Gale.mp3';
-    var TARGET_VOLUME = 0.45;
+    var SRC = 'audio/force_of_the_horse_bgm.wav';
+    var TARGET_VOLUME = 0.40;
     var FADE_IN_MS = 1200;
     var FADE_OUT_MS = 600;
 
-    var audio = null, fadeTimer = null;
+    var audioCtx = null;
+    var gainNode = null;
+    var sourceNode = null;
+    var audioBuffer = null;
+    var isPlaying = false;
+    var fallbackAudio = null;
+    var fadeTimer = null;
 
-    function ensureAudio() {
-      if (!audio) {
-        audio = new Audio(SRC);
-        audio.loop = true;
-        audio.preload = 'auto';
-        audio.volume = 0;
-      }
-      return audio;
-    }
-
-    function clearFade() {
-      if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
-    }
-
-    function fadeTo(target, duration) {
-      clearFade();
-      var startVol = audio.volume;
-      var startTime = (window.performance && performance.now) ? performance.now() : Date.now();
-      fadeTimer = setInterval(function () {
-        var now = (window.performance && performance.now) ? performance.now() : Date.now();
-        var t = Math.min(1, (now - startTime) / duration);
-        audio.volume = startVol + (target - startVol) * t;
-        if (t >= 1) {
-          clearFade();
-          if (target === 0) audio.pause();
+    function getAudioContext() {
+      if (!audioCtx) {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          audioCtx = new AudioCtx();
+          gainNode = audioCtx.createGain();
+          gainNode.gain.value = 0;
+          gainNode.connect(audioCtx.destination);
         }
-      }, 30);
+      }
+      return audioCtx;
     }
+
+    function loadBuffer() {
+      if (audioBuffer) return Promise.resolve(audioBuffer);
+      var ctx = getAudioContext();
+      if (!ctx) return Promise.resolve(null);
+      return fetch(SRC)
+        .then(function (res) { return res.arrayBuffer(); })
+        .then(function (arrBuf) { return ctx.decodeAudioData(arrBuf); })
+        .then(function (decoded) {
+          audioBuffer = decoded;
+          return audioBuffer;
+        })
+        .catch(function () { return null; });
+    }
+
+    // Preload buffer on initial script load
+    try { loadBuffer(); } catch (e) {}
 
     function start() {
-      ensureAudio();
-      var playPromise = audio.play();
-      if (playPromise && playPromise.catch) { playPromise.catch(function () { }); }
-      fadeTo(TARGET_VOLUME, FADE_IN_MS);
+      isPlaying = true;
+      var ctx = getAudioContext();
+      if (ctx) {
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(function () {});
+        }
+        loadBuffer().then(function (buf) {
+          if (!isPlaying) return;
+          if (buf) {
+            if (sourceNode) {
+              try { sourceNode.stop(); sourceNode.disconnect(); } catch (e) {}
+            }
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = buf;
+            sourceNode.loop = true; // Web Audio API による完全シームレス（隙間ゼロ）ループ
+            sourceNode.connect(gainNode);
+            sourceNode.start(0);
+
+            var now = ctx.currentTime;
+            gainNode.gain.cancelScheduledValues(now);
+            gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+            gainNode.gain.linearRampToValueAtTime(TARGET_VOLUME, now + FADE_IN_MS / 1000);
+          } else {
+            startFallback();
+          }
+        });
+      } else {
+        startFallback();
+      }
+    }
+
+    function startFallback() {
+      if (!fallbackAudio) {
+        fallbackAudio = new Audio(SRC);
+        fallbackAudio.loop = true;
+        fallbackAudio.preload = 'auto';
+      }
+      fallbackAudio.volume = TARGET_VOLUME;
+      var p = fallbackAudio.play();
+      if (p && p.catch) p.catch(function () {});
     }
 
     function stop() {
-      if (!audio) return;
-      fadeTo(0, FADE_OUT_MS);
+      isPlaying = false;
+      var ctx = getAudioContext();
+      if (ctx && gainNode && sourceNode) {
+        var now = ctx.currentTime;
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+        gainNode.gain.linearRampToValueAtTime(0, now + FADE_OUT_MS / 1000);
+        setTimeout(function () {
+          if (!isPlaying && sourceNode) {
+            try { sourceNode.stop(); sourceNode.disconnect(); sourceNode = null; } catch (e) {}
+          }
+        }, FADE_OUT_MS + 60);
+      }
+      if (fallbackAudio) {
+        fallbackAudio.pause();
+      }
     }
 
     return { start: start, stop: stop };
