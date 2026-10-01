@@ -420,11 +420,22 @@
     <!-- 状況カード使用確認（ターン開始時など） -->
     <div id="situation-hint-popup">
       <div class="popup-box">
-        <div class="popup-title">☀️ 状況カード</div>
-        <div class="popup-desc" id="situation-hint-desc">使用可能な状況カードが手札にあります。状況カードを使いますか？</div>
+        <div class="popup-title" id="situation-hint-desc">☀️ 状況カード</div>
+        <div class="popup-desc" id="situation-hint-desc-body">使用可能な状況カードが手札にあります。状況カードを使いますか？</div>
         <div class="popup-btns">
           <button class="btn-guard" id="situation-hint-yes">はい</button>
           <button class="btn-skip" id="situation-hint-no">いいえ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 案内・指示ポップアップ（走破ドロー・手札破棄など） -->
+    <div id="notice-action-popup">
+      <div class="popup-box">
+        <div class="popup-title" id="notice-action-title">🏇 走破ドロー</div>
+        <div class="popup-desc" id="notice-action-desc">走破数分（<b>1枚</b>）カードを引きます。</div>
+        <div class="popup-btns">
+          <button class="btn-guard" id="notice-action-btn">次へ進む</button>
         </div>
       </div>
     </div>
@@ -443,7 +454,7 @@
 
   </div>
 
-  <script src="script.js?v=73"></script>
+  <script src="script.js?v=74"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

@@ -1019,6 +1019,34 @@
     });
   }
 
+  /* 汎用案内・指示ポップアップ（走破ドロー・手札破棄など） */
+  function showNoticePopup(title, desc, btnText) {
+    var popup = $('notice-action-popup');
+    var titleEl = $('notice-action-title');
+    var descEl = $('notice-action-desc');
+    var btnEl = $('notice-action-btn');
+    if (!popup) return Promise.resolve();
+    if (titleEl) titleEl.innerHTML = title;
+    if (descEl) descEl.innerHTML = desc;
+    if (btnEl) btnEl.textContent = btnText || 'OK';
+    popup.style.display = 'flex';
+
+    return new Promise(function (resolve) {
+      var finished = false;
+      function onConfirm(e) {
+        if (finished) return;
+        finished = true;
+        if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+        popup.removeEventListener('click', onConfirm);
+        if (btnEl) btnEl.removeEventListener('click', onConfirm);
+        popup.style.display = 'none';
+        resolve();
+      }
+      popup.addEventListener('click', onConfirm);
+      if (btnEl) btnEl.addEventListener('click', onConfirm);
+    });
+  }
+
   /* ===================== デュエルリンクス風 ターンチェンジ演出 ===================== */
   function showTurnChange(type) {
     var overlay = $('turn-change-overlay');
@@ -2150,37 +2178,51 @@
       setNarrator(reason + ' だから山札から <b>' + drawCount + '枚</b> 引きます。その後、走破数−1枚（<b>' + discardCount + '枚</b>）をファームに捨てます。');
       showToast('走破数 ' + finalRun + '枚ドロー → 走破数−1（' + discardCount + '枚）捨て', 'info', 3000);
 
-      var chain = Promise.resolve();
-      for (var i = 0; i < drawCount; i++) {
-        (function () {
-          chain = chain.then(function () {
-            var deckRect = deckSourceRect();
-            var handRect = $('hand-row').getBoundingClientRect();
-            var dummy = makeDeckDummy(deckRect);
-            return flyGhost(dummy, handRect).then(function () {
-              dummy.remove();
-              hand.push(getNextPlayerDrawCard());
-              drawOneFromDeck();
-              lastDrawer = 'player';
-              renderAll();
-              if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
-              return sleep(140);
+      // 1. 走破したら走破数分カードを引きますのポップアップ
+      return showNoticePopup(
+        '🏇 走破ドロー',
+        '走破数分（<b>' + drawCount + '枚</b>）カードを引きます。',
+        'カードを引く'
+      ).then(function () {
+        var chain = Promise.resolve();
+        for (var i = 0; i < drawCount; i++) {
+          (function () {
+            chain = chain.then(function () {
+              var deckRect = deckSourceRect();
+              var handRect = $('hand-row').getBoundingClientRect();
+              var dummy = makeDeckDummy(deckRect);
+              return flyGhost(dummy, handRect).then(function () {
+                dummy.remove();
+                hand.push(getNextPlayerDrawCard());
+                drawOneFromDeck();
+                lastDrawer = 'player';
+                renderAll();
+                if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+                return sleep(140);
+              });
             });
-          });
-        })();
-      }
-      return chain.then(function () {
-        var need = Math.min(discardCount, hand.length);
-        if (need > 0) {
-          phase = 'discard_select';
-          selectionNeeded = need;
-          selectionCount = 0;
-          pendingFinishRun = function () { finishRun(finalRun, usedGuard, usedGuardVal); };
-          setNarrator('走破数 ' + finalRun + ' − 1 ＝ <b>' + need + '枚</b> を手札から選んでファームに捨ててください。（残り ' + need + ' 枚）');
-          renderAll();
-        } else {
-          finishRun(finalRun, usedGuard, usedGuardVal);
+          })();
         }
+        return chain.then(function () {
+          var need = Math.min(discardCount, hand.length);
+          if (need > 0) {
+            // 2. 走破後には、走破数ー１枚のカードを捨ててくださいのポップアップ
+            return showNoticePopup(
+              '🗑️ 手札を捨てる',
+              '走破数−1枚（<b>' + need + '枚</b>）のカードを捨ててください。',
+              'カードを選ぶ'
+            ).then(function () {
+              phase = 'discard_select';
+              selectionNeeded = need;
+              selectionCount = 0;
+              pendingFinishRun = function () { finishRun(finalRun, usedGuard, usedGuardVal); };
+              setNarrator('走破数 ' + finalRun + ' − 1 ＝ <b>' + need + '枚</b> を手札から選んでファームに捨ててください。（残り ' + need + ' 枚）');
+              renderAll();
+            });
+          } else {
+            finishRun(finalRun, usedGuard, usedGuardVal);
+          }
+        });
       });
     }
 

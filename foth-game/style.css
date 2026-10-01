@@ -4343,7 +4343,8 @@
 
   #opponent-thinking-popup,
   #run-support-popup,
-  #situation-hint-popup {
+  #situation-hint-popup,
+  #notice-action-popup {
     position: fixed;
     inset: 0;
     z-index: 200;
@@ -4356,7 +4357,8 @@
 
   #opponent-thinking-popup .popup-box,
   #run-support-popup .popup-box,
-  #situation-hint-popup .popup-box {
+  #situation-hint-popup .popup-box,
+  #notice-action-popup .popup-box {
     background: linear-gradient(180deg, #1a2f22, #0c1710);
     border: 3px solid var(--gold-2);
     border-radius: 18px;
@@ -4369,7 +4371,8 @@
 
   #opponent-thinking-popup .popup-title,
   #run-support-popup .popup-title,
-  #situation-hint-popup .popup-title {
+  #situation-hint-popup .popup-title,
+  #notice-action-popup .popup-title {
     font-size: 18px;
     font-weight: 700;
     color: var(--gold-2);
@@ -4378,7 +4381,8 @@
 
   #opponent-thinking-popup .popup-desc,
   #run-support-popup .popup-desc,
-  #situation-hint-popup .popup-desc {
+  #situation-hint-popup .popup-desc,
+  #notice-action-popup .popup-desc {
     font-size: 13px;
     color: var(--rail);
     line-height: 1.6;
@@ -4386,7 +4390,8 @@
   }
 
   #run-support-popup .popup-btns,
-  #situation-hint-popup .popup-btns {
+  #situation-hint-popup .popup-btns,
+  #notice-action-popup .popup-btns {
     display: flex;
     gap: 12px;
     justify-content: center;
@@ -6919,11 +6924,12 @@
   --bubble-accent: #0284c7;
 }
 
-/* ---- 確認ポップアップ（走破サポート／状況カード／ガード／相手思考） ---- */
+/* ---- 確認ポップアップ（走破サポート／状況カード／ガード／相手思考／案内） ---- */
 body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
 body #situation-hint-popup .popup-box,
 body #opponent-thinking-popup .popup-box,
+body #notice-action-popup .popup-box,
 body.field-white #guard-popup .popup-box,
 body.field-cyber.field-white #guard-popup .popup-box {
   background: var(--bubble-bg) !important;
@@ -6944,6 +6950,7 @@ body #guard-popup .popup-title,
 body #run-support-popup .popup-title,
 body #situation-hint-popup .popup-title,
 body #opponent-thinking-popup .popup-title,
+body #notice-action-popup .popup-title,
 body.field-white #guard-popup .popup-title {
   font-family: inherit !important;
   color: var(--bubble-accent) !important;
@@ -6956,6 +6963,7 @@ body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
 body #situation-hint-popup .popup-desc,
 body #opponent-thinking-popup .popup-desc,
+body #notice-action-popup .popup-desc,
 body.field-white #guard-popup .popup-desc {
   font-family: inherit !important;
   color: var(--bubble-text) !important;
@@ -6968,7 +6976,8 @@ body.field-white #guard-popup .popup-desc {
 body #guard-popup .popup-desc b,
 body #run-support-popup .popup-desc b,
 body #situation-hint-popup .popup-desc b,
-body #opponent-thinking-popup .popup-desc b {
+body #opponent-thinking-popup .popup-desc b,
+body #notice-action-popup .popup-desc b {
   color: var(--bubble-accent) !important;
   font-weight: 700 !important;
 }
@@ -6977,6 +6986,7 @@ body #opponent-thinking-popup .popup-desc b {
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
+body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
   background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
   color: #ffffff !important;
@@ -7588,6 +7598,7 @@ body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
 body #situation-hint-popup .popup-box,
 body #opponent-thinking-popup .popup-box,
+body #notice-action-popup .popup-box,
 body.field-white #guard-popup .popup-box,
 body.field-cyber.field-white #guard-popup .popup-box,
 body .banner-box,
@@ -7610,6 +7621,7 @@ body.field-white .closeup-label {
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
+body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
   border-radius: 8px !important;
   background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
