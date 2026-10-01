@@ -756,6 +756,178 @@ def generate_rydeen():
 
     save_wav('audio/bgm_rydeen.wav', left, right)
 
+
+# ==========================================
+# 6. TRACK 6: YUGIOH BATTLE ARENA (遊戯王 封印されし記憶・古代決闘闘技場)
+# ==========================================
+def generate_yugioh_arena():
+    BPM = 130.0
+    BEAT_SEC = 60.0 / BPM
+    SIXTEENTH_SEC = BEAT_SEC / 4.0
+    MEASURE_16THS = 8  # 2/4 time measures
+    NUM_MEASURES = 64  # 64 measures = 32 bars of 4/4
+    TOTAL_SAMPLES = int(NUM_MEASURES * MEASURE_16THS * SIXTEENTH_SEC * SAMPLE_RATE)
+
+    left = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    right = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    samples_per_beat = int(BEAT_SEC * SAMPLE_RATE)
+    samples_per_16th = int(SIXTEENTH_SEC * SAMPLE_RATE)
+
+    melody_events = []
+    def add_m(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': melody_events.append((c, dur, n))
+            c += dur
+
+    # Ancient Colosseum Melody (D Harmonic Minor)
+    # Section A (Measures 0-15: The Duel Commences)
+    y_theme_a = [
+        # Phrase 1: D5 . F5 E5 | D5 . A4 .
+        ('D5', 2), ('F5', 1), ('E5', 1), ('D5', 2), ('A4', 2),
+        # Phrase 2: Bb4 . D5 C5 | A4 . . .
+        ('Bb4', 2), ('D5', 1), ('C5', 1), ('A4', 4),
+        # Phrase 3: D5 . F5 G5 | A5 . Bb5 .
+        ('D5', 2), ('F5', 1), ('G5', 1), ('A5', 2), ('Bb5', 2),
+        # Phrase 4: A5 G5 F5 E5 | D5 . . .
+        ('A5', 1), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 4),
+        # Phrase 5: F5 . A5 G5 | F5 . C5 .
+        ('F5', 2), ('A5', 1), ('G5', 1), ('F5', 2), ('C5', 2),
+        # Phrase 6: D5 . F5 E5 | C#5 . . .
+        ('D5', 2), ('F5', 1), ('E5', 1), ('C#5', 4),
+        # Phrase 7: E5 F5 G5 A5 | Bb5 A5 G5 F5
+        ('E5', 1), ('F5', 1), ('G5', 1), ('A5', 1), ('Bb5', 1), ('A5', 1), ('G5', 1), ('F5', 1),
+        # Phrase 8: E5 D5 C#5 E5 | D5 . . .
+        ('E5', 1), ('D5', 1), ('C#5', 1), ('E5', 1), ('D5', 4),
+    ]
+    add_m(0, y_theme_a)
+    add_m(8, y_theme_a)
+
+    # Section B (Measures 16-31: High-Stakes Ancient Egyptian Brass)
+    y_theme_b = [
+        # A5 . F5 . | D5 . . . | Bb5 . G5 . | E5 . . .
+        ('A5', 2), ('F5', 2), ('D5', 4),
+        ('Bb5', 2), ('G5', 2), ('E5', 4),
+        # A5 . Bb5 A5 | G5 F5 E5 D5 | C#5 . E5 G5 | A5 . . .
+        ('A5', 2), ('Bb5', 1), ('A5', 1), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 1),
+        ('C#5', 2), ('E5', 1), ('G5', 1), ('A5', 4),
+        # D6 . A5 . | F5 . D5 . | G5 . Bb5 A5 | G5 . E5 .
+        ('D6', 2), ('A5', 2), ('F5', 2), ('D5', 2),
+        ('G5', 2), ('Bb5', 1), ('A5', 1), ('G5', 2), ('E5', 2),
+        # F5 G5 A5 Bb5 | C6 Bb5 A5 G5 | A5 . C#5 . | D5 . . .
+        ('F5', 1), ('G5', 1), ('A5', 1), ('Bb5', 1), ('C6', 1), ('Bb5', 1), ('A5', 1), ('G5', 1),
+        ('A5', 2), ('C#5', 2), ('D5', 4),
+    ]
+    add_m(16, y_theme_b)
+
+    # Section C (Measures 32-47: Climax with Soaring Octave Trumpets)
+    y_theme_c = [
+        ('D6', 2), ('F6', 1), ('E6', 1), ('D6', 2), ('A5', 2),
+        ('Bb5', 2), ('D6', 1), ('C6', 1), ('A5', 4),
+        ('D6', 2), ('F6', 1), ('G6', 1), ('A6', 2), ('Bb6', 2),
+        ('A6', 1), ('G6', 1), ('F6', 1), ('E6', 1), ('D6', 4),
+        ('F6', 2), ('A6', 1), ('G6', 1), ('F6', 2), ('C6', 2),
+        ('D6', 2), ('F6', 1), ('E6', 1), ('C#6', 4),
+        ('E6', 1), ('F6', 1), ('G6', 1), ('A6', 1), ('Bb6', 1), ('A6', 1), ('G6', 1), ('F6', 1),
+        ('E6', 1), ('D6', 1), ('C#6', 1), ('E6', 1), ('D6', 4),
+        ('A6', 2), ('F6', 2), ('D6', 4),
+        ('Bb6', 2), ('G6', 2), ('E6', 4),
+        ('A6', 2), ('Bb6', 1), ('A6', 1), ('G6', 1), ('F6', 1), ('E6', 1), ('D6', 1),
+        ('C#6', 2), ('E6', 1), ('G6', 1), ('A6', 4),
+    ]
+    add_m(32, y_theme_c)
+
+    # Outro (Measures 48-63)
+    y_outro = [
+        ('D5', 2), ('F5', 1), ('E5', 1), ('D5', 2), ('A4', 2),
+        ('Bb4', 2), ('D5', 1), ('C5', 1), ('A4', 4),
+        ('D5', 2), ('F5', 1), ('G5', 1), ('A5', 2), ('Bb5', 2),
+        ('A5', 1), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 4),
+        ('D5', 2), ('F5', 2), ('A5', 2), ('D6', 2),
+        ('A5', 2), ('F5', 2), ('D5', 4),
+        ('A4', 2), ('C#5', 2), ('E5', 2), ('A5', 2),
+        ('D5', 4), ('A4', 4),
+        ('D4', 8), ('_', 8)
+    ]
+    add_m(48, y_outro)
+
+    # 1. BATTLE DRUMS (Timpani + March Snare Rolls + Battle Cymbals)
+    for m in range(NUM_MEASURES):
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        for beat in range(2):
+            b_start = m_start + beat * samples_per_beat
+            # Heavy Orchestral Timpani Kick on downbeats
+            klen = int(0.25 * SAMPLE_RATE)
+            kt = np.linspace(0, 0.25, klen, endpoint=False)
+            kick = np.sin(2 * np.pi * (135 * np.exp(-kt * 22) + 38) * kt) * np.exp(-kt * 12) * 1.15
+            ek = min(TOTAL_SAMPLES, b_start + klen)
+            ak = ek - b_start
+            if ak > 0:
+                left[b_start:ek] += kick[:ak] * 0.72
+                right[b_start:ek] += kick[:ak] * 0.72
+
+            # March Snare roll (16th martial snare)
+            for s16 in range(4):
+                s_start = b_start + s16 * samples_per_16th
+                slen = int(0.09 * SAMPLE_RATE)
+                st = np.linspace(0, 0.09, slen, endpoint=False)
+                sn = np.random.uniform(-1, 1, slen) * np.exp(-st * 38) * (0.85 if (s16 == 0 or beat == 1) else 0.45)
+                es = min(TOTAL_SAMPLES, s_start + slen)
+                as_ = es - s_start
+                if as_ > 0:
+                    left[s_start:es] += sn[:as_] * 0.42
+                    right[s_start:es] += sn[:as_] * 0.42
+
+    # 2. STRINGS OSTINATO (16th D-F-A-D driving rhythm)
+    chords = []
+    for m in range(NUM_MEASURES):
+        if m % 4 == 0: chords.append(('D3', 'F3', 'A3', 'D4'))
+        elif m % 4 == 1: chords.append(('Bb2', 'D3', 'F3', 'Bb3'))
+        elif m % 4 == 2: chords.append(('G2', 'Bb2', 'D3', 'G3'))
+        else: chords.append(('A2', 'C#3', 'E3', 'A3'))
+
+    for m in range(NUM_MEASURES):
+        chord = chords[m]
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        patt = [chord[0], chord[1], chord[2], chord[3], chord[2], chord[1], chord[0], chord[3]]
+        for s in range(MEASURE_16THS):
+            fq = note_to_freq(patt[s])
+            n_start = m_start + s * samples_per_16th
+            dur_s = int(samples_per_16th * 1.5)
+            es = min(TOTAL_SAMPLES, n_start + dur_s)
+            as_ = es - n_start
+            if as_ > 0:
+                t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+                # Staccato string ostinato
+                saw = 2.0 * (fq * t - np.floor(0.5 + fq * t))
+                tri = 2.0 * np.abs(2.0 * (fq * t - np.floor(fq * t + 0.5))) - 1.0
+                str_tone = (saw * 0.55 + tri * 0.45) * np.exp(-t * 20.0) * 0.38
+                left[n_start:es] += str_tone * 0.52
+                right[n_start:es] += str_tone * 0.48
+
+    # 3. TRUMPET & BRASS LEAD (Majestic Ancient Battle Trumpet)
+    for s16, dur, n_name in melody_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.16) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.006) * np.exp(-t * (3.5 if dur >= 4 else 7.0))
+            # Harmonic rich trumpet with vibrato
+            vib = 1.0 + 0.008 * np.sin(2 * np.pi * 5.5 * t)
+            f_vib = fq * vib
+            lead = (np.sin(2 * np.pi * f_vib * t) * 0.52 +
+                    np.sin(4 * np.pi * f_vib * t) * 0.32 +
+                    np.sin(6 * np.pi * f_vib * t) * 0.22 +
+                    np.sin(8 * np.pi * f_vib * t) * 0.10) * env * 0.50
+            left[n_start:es] += lead * 0.53
+            right[n_start:es] += lead * 0.47
+
+    save_wav('audio/bgm_yugioh_arena.wav', left, right)
+
 if __name__ == '__main__':
     print("=== Generating FORCE OF THE HORSE Music Suite ===")
     generate_turkish_march()
@@ -763,5 +935,7 @@ if __name__ == '__main__':
     generate_cyber_turf()
     generate_grand_prix()
     generate_rydeen()
+    generate_yugioh_arena()
     print("=== All BGM Tracks Generated Successfully ===")
+
 
