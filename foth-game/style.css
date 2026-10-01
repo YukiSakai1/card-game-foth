@@ -1214,7 +1214,7 @@
     filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.72));
     overflow: hidden;
     cursor: pointer;
-    pointer-events: auto; /* タップで詳細確認可能 */
+    pointer-events: auto; /* 長押しで詳細確認可能 */
     touch-action: manipulation;
     transition: opacity .25s ease, transform .25s ease, filter .25s ease;
   }

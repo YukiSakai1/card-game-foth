@@ -530,29 +530,21 @@
       return;
     }
     bg.classList.add('active');
-    var badgeHtml = '<div class="field-situation-badge">🔍 タップで確認</div>';
+    var badgeHtml = '<div class="field-situation-badge">🔍 長押しで確認</div>';
     var artSrc = situation.artImg || situation.img;
     if (artSrc) {
       bg.innerHTML =
-        '<div class="field-situation-card" style="background-image:url(' + artSrc + ');" role="button" tabindex="0" title="タップして状況カードを確認">' +
+        '<div class="field-situation-card" style="background-image:url(' + artSrc + ');" role="button" tabindex="0" title="長押しして状況カードを確認">' +
         '<div class="card-shine"></div>' +
         badgeHtml +
         '</div>';
     } else {
       bg.innerHTML =
-        '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);" role="button" tabindex="0" title="タップして状況カードを確認">' +
+        '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);" role="button" tabindex="0" title="長押しして状況カードを確認">' +
         '<div class="card-art" style="font-size:72px; text-align:center;">' + situation.icon + '</div>' +
         '<div class="card-shine"></div>' +
         badgeHtml +
         '</div>';
-    }
-    var cardEl = bg.querySelector('.field-situation-card');
-    if (cardEl) {
-      cardEl.addEventListener('click', function (e) {
-        e.stopPropagation();
-        Haptics.tap();
-        CardCloseup.show(situation, { label: '発動中の状況カード' });
-      });
     }
   }
 
@@ -3392,6 +3384,49 @@
       }
       pressedTarget = null;
     }
+
+    // --- PC用：マウス左ボタン長押し（mousedown / mousemove / mouseup） ---
+    var mouseTimer = null;
+    var mouseTarget = null;
+    var mouseStartX = 0, mouseStartY = 0;
+
+    document.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return; // 左クリックのみ
+      var info = getCardFromEvent(e.target);
+      if (!info || !info.card) return;
+      mouseStartX = e.clientX;
+      mouseStartY = e.clientY;
+      mouseTarget = info;
+
+      if (mouseTimer) clearTimeout(mouseTimer);
+      mouseTimer = setTimeout(function () {
+        if (mouseTarget && mouseTarget.card) {
+          Haptics.tap();
+          CardCloseup.show(mouseTarget.card, { label: mouseTarget.label });
+        }
+        mouseTimer = null;
+        mouseTarget = null;
+      }, LONG_PRESS_MS);
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!mouseTimer) return;
+      var dx = Math.abs(e.clientX - mouseStartX);
+      var dy = Math.abs(e.clientY - mouseStartY);
+      if (dx > 10 || dy > 10) {
+        clearTimeout(mouseTimer);
+        mouseTimer = null;
+        mouseTarget = null;
+      }
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (mouseTimer) {
+        clearTimeout(mouseTimer);
+        mouseTimer = null;
+      }
+      mouseTarget = null;
+    });
 
     document.addEventListener('touchstart', onTouchStart, { passive: true });
     document.addEventListener('touchmove', onTouchMove, { passive: true });
