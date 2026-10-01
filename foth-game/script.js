@@ -675,11 +675,12 @@
   function renderDeckLanes() {
     var wrap = $('lanes');
     var active = currentLane();
+    var maxLaneCount = (interactionMode === 'freeplay') ? 7 : 10;
     wrap.innerHTML = LANES.map(function (lane) {
       var isActive = active && lane.key === active.key;
       var isEmpty = lane.count <= 0;
       var cls = 'lane' + (isEmpty ? ' empty' : '') + (isActive ? ' active' : '');
-      var t = Math.max(0, Math.min(1, lane.count / 10));
+      var t = Math.max(0, Math.min(1, lane.count / maxLaneCount));
       // カードが1枚もない状態（配布前・引き切った後）は、うっすらカード裏面が
       // 見えてしまわないよう、カード画像自体を出さない空の枠にする
       var stackHtml = isEmpty ? '' :
@@ -712,11 +713,12 @@
     var wrap = $('opp-lanes');
     if (!wrap) return;
     var active = cpuCurrentLane();
+    var maxLaneCount = (interactionMode === 'freeplay') ? 7 : 10;
     wrap.innerHTML = CPU_LANES.map(function (lane) {
       var isActive = active && lane.key === active.key;
       var isEmpty = lane.count <= 0;
       var cls = 'opp-lane' + (isEmpty ? ' empty' : '') + (isActive ? ' active' : '');
-      var t = Math.max(0, Math.min(1, lane.count / 10));
+      var t = Math.max(0, Math.min(1, lane.count / maxLaneCount));
       var stackHtml = isEmpty ? '' :
         '<div class="lane-stack" style="--stack-t:' + t.toFixed(2) + '">' +
         '<div class="lane-card-back lane-back-2"></div>' +
@@ -2800,21 +2802,23 @@
   })();
   window.SoundFX = SoundFX;
 
-  /* ===================== 初期50枚カード配布演出 ===================== */
+  /* ===================== 初期カード配布演出 ===================== */
   async function dealInitialCards(isManual, runId) {
-    // 画面中央に50枚デッキスタックを生成
+    var laneCountPerZone = isManual ? 7 : 10;
+    var totalCards = (laneCountPerZone * 4) + 3 + 7; // manual: 28+3+7 = 38枚, tutorial: 40+3+7 = 50枚
+    // 画面中央にデッキスタックを生成
     var centerEl = document.createElement('div');
     centerEl.className = 'deal-center-deck';
     centerEl.innerHTML =
       '<div class="deal-deck-stack">' +
       '<div class="deal-deck-back"></div>' +
-      '<div class="deal-deck-badge" id="deal-deck-count">50</div>' +
-      '<div class="deal-deck-label">DECK (50枚)</div>' +
+      '<div class="deal-deck-badge" id="deal-deck-count">' + totalCards + '</div>' +
+      '<div class="deal-deck-label">DECK (' + totalCards + '枚)</div>' +
       '</div>';
     document.body.appendChild(centerEl);
 
     var countBadge = centerEl.querySelector('#deal-deck-count');
-    var currentCount = 50;
+    var currentCount = totalCards;
 
     function updateDeckCount(val) {
       currentCount = val;
@@ -2866,7 +2870,7 @@
     await sleep(300);
     if (runId && runId !== tutorialRunId) { centerEl.remove(); return; }
 
-    // ① 4つの距離エリア（各10枚・計40枚）へ配る
+    // ① 4つの距離エリア（各7枚/各10枚）へ配る
     if (!isManual) {
       setNarrator('50枚のデッキから、まずは<b>各10枚（計40枚）</b>を4つの距離エリア（山札）に配るよ。');
     }
@@ -2878,20 +2882,20 @@
       var laneEl = document.querySelector('.lane[data-lane="' + lKey + '"]');
       var laneRect = laneEl ? laneEl.getBoundingClientRect() : $('lanes').getBoundingClientRect();
 
-      // 各レーンへテンポよくカードが飛ぶ（3回のゴーストで10枚配る演出）
-      for (var step = 0; step < 3; step++) {
-        flyDealGhost(laneRect, 180);
-        await sleep(isManual ? 50 : 80);
+      // 各レーンへテンポよくカードが飛ぶ
+      for (var step = 0; step < (isManual ? 2 : 3); step++) {
+        flyDealGhost(laneRect, isManual ? 140 : 180);
+        await sleep(isManual ? 40 : 80);
       }
-      laneObj.count = 10;
-      updateDeckCount(currentCount - 10);
+      laneObj.count = laneCountPerZone;
+      updateDeckCount(currentCount - laneCountPerZone);
       renderDeckLanes();
       if (laneEl) {
         laneEl.classList.add('deal-flash');
         setTimeout(function (el) { if (el) el.classList.remove('deal-flash'); }, 350, laneEl);
       }
       Haptics.place();
-      await sleep(isManual ? 100 : 180);
+      await sleep(isManual ? 80 : 180);
     }
 
     await sleep(isManual ? 180 : 350);
@@ -3223,7 +3227,7 @@
     // 相手（CPU）の初期手札とデッキを既存カード画像から初期化
     initCpuHandAndDeck();
     cpuHorseCard = null;
-    if (cpuTotalDeck() <= 0) CPU_LANES.forEach(function (l) { l.count = 10; });
+    if (cpuTotalDeck() <= 0) CPU_LANES.forEach(function (l) { l.count = 7; });
     renderRaceInfo();
     showNextButton(false);
     $('free-hint').hidden = true;
@@ -3251,7 +3255,7 @@
 
     // 盤面を一旦初期化（カードを空にしてから配り始める）
     LANES.forEach(function (l) { l.count = 0; });
-    CPU_LANES.forEach(function (l) { l.count = 10; });
+    CPU_LANES.forEach(function (l) { l.count = 7; });
     farm = [];
     oppFarm = [];
     hand = [];
