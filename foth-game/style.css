@@ -70,27 +70,20 @@
     background-attachment: fixed;
   }
 
-  /* Nature mode: Full-screen panoramic nature course background */
+  /* Nature mode: 3D背景を前面に見せるため画面全体を透明化 */
   body.field-nature,
   body[data-theme="nature"],
   body.field-classic,
   body[data-theme="classic"] {
-    background-color: #0d2012;
-    background-image:
-      radial-gradient(ellipse 100% 50% at 50% 0%, rgba(255, 245, 190, 0.20) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(8, 24, 12, 0.15) 0%, rgba(8, 24, 12, 0.28) 50%, rgba(4, 14, 6, 0.60) 100%),
-      url("images/nature-course-bg.jpg");
-    background-size: cover;
-    background-position: center 25%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-color: #010d06 !important;
+    background-image: none !important;
   }
 
   body.field-nature #three-bg,
   body[data-theme="nature"] #three-bg,
   body.field-classic #three-bg {
     display: block !important;
-    opacity: 0.9;
+    opacity: 1 !important;
     z-index: 0;
     pointer-events: none;
   }
@@ -6436,41 +6429,29 @@
     --rail-dim: rgba(244, 240, 230, 0.85);
   }
 
-  /* 画面全体の自然背景とフィールド枠の調和 */
+  /* 画面全体のフィールドマットを完全透明化し、背後の動く3D背景とカード枠のみを表示 */
   body.field-nature .field-splash-bg,
   body[data-theme="nature"] .field-splash-bg,
   body.field-classic .field-splash-bg {
-    display: block !important;
-    background:
-      radial-gradient(ellipse at 50% 120%, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.12) 40%, transparent 75%),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0px, rgba(255, 255, 255, 0.04) 26px, transparent 26px, transparent 52px),
-      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 26px, transparent 26px, transparent 52px),
-      linear-gradient(180deg, rgba(14, 46, 22, 0.90) 0%, rgba(10, 36, 18, 0.94) 50%, rgba(6, 26, 12, 0.97) 100%) !important;
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 16px 40px rgba(0, 25, 10, 0.55) !important;
-    border: 1.5px solid rgba(227, 178, 60, 0.65) !important;
+    display: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   body.field-nature .field-splash-bg::before,
   body[data-theme="nature"] .field-splash-bg::before,
   body.field-classic .field-splash-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 50% 15%, rgba(255, 240, 180, 0.18) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(74, 222, 128, 0.09) 0%, transparent 45%);
-    opacity: 0.85;
-    pointer-events: none;
+    display: none !important;
   }
 
   body.field-nature .field-splash-canvas,
   body[data-theme="nature"] .field-splash-canvas,
   body.field-classic .field-splash-canvas {
-    mix-blend-mode: screen;
-    opacity: 0.40;
+    display: none !important;
   }
 
-  /* プレイヤー側スロット（自然・芝生コース調：エメラルドグラスとゴールド枠） */
+  /* プレイヤー側スロット：透明背景にエメラルドグリーンの光る枠線のみ表示 */
   body.field-nature #zone-farm .farm-pile,
   body.field-nature #zone-field .field-body,
   body.field-nature .lane,
@@ -6480,30 +6461,28 @@
   body.field-classic #zone-farm .farm-pile,
   body.field-classic #zone-field .field-body,
   body.field-classic .lane {
-    border: 1.5px solid rgba(227, 178, 60, 0.75) !important;
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(74, 222, 128, 0.22), transparent 70%),
-      rgba(10, 34, 18, 0.88) !important;
-    box-shadow: inset 0 0 14px rgba(74, 222, 128, 0.20), 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+    border: 1.5px solid #34d399 !important;
+    background: rgba(4, 28, 14, 0.28) !important;
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.4), inset 0 0 10px rgba(52, 211, 153, 0.15) !important;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
 
   body.field-nature .lane-card-back,
   body[data-theme="nature"] .lane-card-back,
   body.field-classic .lane-card-back {
-    border-color: rgba(227, 178, 60, 0.75) !important;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.25) 0%, transparent 75%),
-      linear-gradient(135deg, rgba(14, 46, 24, 0.90) 0%, rgba(8, 28, 14, 0.95) 100%) !important;
-    box-shadow: inset 0 0 10px rgba(74, 222, 128, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+    border: 1px dashed rgba(74, 222, 128, 0.6) !important;
+    background: rgba(6, 36, 18, 0.35) !important;
+    box-shadow: inset 0 0 8px rgba(74, 222, 128, 0.25) !important;
   }
 
   /* プレイヤー側山札ラベル・バッジ */
   body.field-nature .lane-label,
   body[data-theme="nature"] .lane-label,
   body.field-classic .lane-label {
-    background: rgba(6, 20, 10, 0.95) !important;
+    background: rgba(6, 20, 10, 0.88) !important;
     color: #ffe082 !important;
-    border: 1px solid rgba(227, 178, 60, 0.65) !important;
+    border: 1px solid #34d399 !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
     font-weight: 700 !important;
   }
@@ -6533,11 +6512,11 @@
   body.field-nature .slot-bracket,
   body[data-theme="nature"] .slot-bracket,
   body.field-classic .slot-bracket {
-    border-color: #e3b23c !important;
-    box-shadow: 0 0 6px rgba(227, 178, 60, 0.6) !important;
+    border-color: #34d399 !important;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.8) !important;
   }
 
-  /* 相手側スロット（要望9対応：ファームと同じく赤みを帯びたワインレッド／クリムゾン調） */
+  /* 相手側スロット：透明背景にクリムゾンレッドの光る枠線のみ表示 */
   body.field-nature #zone-opp-farm .farm-pile,
   body.field-nature #zone-field .field-body-opp,
   body.field-nature .opp-lane,
@@ -6547,29 +6526,27 @@
   body.field-classic #zone-opp-farm .farm-pile,
   body.field-classic #zone-field .field-body-opp,
   body.field-classic .opp-lane {
-    border: 1.5px solid rgba(248, 113, 113, 0.75) !important;
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(239, 68, 68, 0.22), transparent 70%),
-      rgba(48, 14, 18, 0.88) !important;
-    box-shadow: inset 0 0 14px rgba(239, 68, 68, 0.22), 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+    border: 1.5px solid #f87171 !important;
+    background: rgba(38, 8, 14, 0.28) !important;
+    box-shadow: 0 0 12px rgba(248, 113, 113, 0.4), inset 0 0 10px rgba(248, 113, 113, 0.15) !important;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
 
   body.field-nature .opp-lane .lane-card-back,
   body[data-theme="nature"] .opp-lane .lane-card-back,
   body.field-classic .opp-lane .lane-card-back {
-    border-color: rgba(248, 113, 113, 0.8) !important;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.35) 0%, transparent 75%),
-      linear-gradient(135deg, rgba(62, 14, 20, 0.92) 0%, rgba(38, 8, 12, 0.95) 100%) !important;
-    box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.3), 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+    border: 1px dashed rgba(248, 113, 113, 0.6) !important;
+    background: rgba(48, 10, 16, 0.35) !important;
+    box-shadow: inset 0 0 8px rgba(248, 113, 113, 0.25) !important;
   }
 
   body.field-nature .opp-lane .lane-label,
   body[data-theme="nature"] .opp-lane .lane-label,
   body.field-classic .opp-lane .lane-label {
-    background: rgba(42, 10, 14, 0.96) !important;
+    background: rgba(42, 10, 14, 0.88) !important;
     color: #fca5a5 !important;
-    border: 1px solid rgba(248, 113, 113, 0.65) !important;
+    border: 1px solid #f87171 !important;
     font-weight: 700 !important;
   }
 
