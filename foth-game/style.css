@@ -3241,78 +3241,77 @@
     margin: 0 auto;
   }
 
-  /* 走破成功時：カード中央に「走破成功！」バッジを美しく重ねて表示 */
-  .banner-stage.has-card:not(.is-guard) .banner-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 80%;
-    max-width: 250px;
-    padding: 13px 14px;
-    background: linear-gradient(180deg, #181d24 0%, #0d1217 100%);
-    border: 2px solid #e5c07b;
-    border-radius: 6px;
+  /* カード表示時（走破宣言・走破成功・ガード共通）：カードの下にバナーを縦並びで表示 */
+  .banner-stage.has-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 380px !important;
+  }
+
+  .banner-stage.has-card .banner-card-backdrop {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .banner-stage.has-card .banner-card-backdrop .banner-horse-card.card,
+  .banner-stage.has-card .banner-card-backdrop .banner-horse-card {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    animation: none !important;
+    width: min(280px, 74vw) !important;
+    height: auto !important;
+    aspect-ratio: 5 / 7.1 !important;
+    max-height: 48vh !important;
+    border-radius: 12px !important;
     box-shadow:
-      0 14px 40px rgba(0, 0, 0, 0.95),
-      0 0 25px rgba(227, 178, 60, 0.45);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    z-index: 10;
-    overflow: hidden;
+      0 18px 50px rgba(0, 0, 0, 0.95),
+      0 0 28px rgba(0, 240, 255, 0.45) !important;
+    border: 2px solid #00f0ff !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    margin: 0 auto !important;
   }
 
-  .banner-stage.has-card:not(.is-guard) .banner-box::before {
-    content: '';
-    position: absolute;
-    inset: 3.5px;
-    left: 3.5px;
-    right: 3.5px;
-    height: auto;
-    border: 1px solid rgba(229, 192, 123, 0.7);
-    border-radius: 5px;
-    pointer-events: none;
-    background: transparent;
-    box-shadow: inset 0 0 8px rgba(227, 178, 60, 0.2);
+  .banner-stage.has-card .banner-box {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateY(8px) scale(0.96) !important;
+    width: auto !important;
+    min-width: min(280px, 86vw) !important;
+    max-width: min(94vw, 420px) !important;
+    padding: 12px 28px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    opacity: 0;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
-  .banner-stage.has-card:not(.is-guard) .banner-box::after {
-    display: none;
-  }
-
-  .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
-    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    font-size: clamp(11px, 3.1vw, 13px);
-    font-weight: 700;
-    color: #ffdc7d;
-    letter-spacing: 0.04em;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-    position: relative;
-    z-index: 2;
-    white-space: nowrap;
-  }
-
-  .banner-stage.has-card:not(.is-guard) .banner-box .banner-box-text {
-    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    font-size: clamp(21px, 5.2vw, 26px);
-    font-weight: 900;
-    color: #fff6db;
-    letter-spacing: 0.12em;
-    text-shadow:
-      0 0 14px rgba(255, 235, 160, 0.9),
-      0 2px 6px rgba(0, 0, 0, 0.95);
-    white-space: nowrap;
-    position: relative;
-    z-index: 2;
-  }
-
-  .banner-stage.has-card:not(.is-guard) .banner-box.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+  .banner-stage.has-card .banner-box.show {
+    opacity: 1 !important;
+    transform: scale(1) translateY(0) !important;
   }
 
   /* ガード時：カードの下に「相手（自分）がガード！ 馬名 / ガード X」バナーを表示 */
@@ -6972,43 +6971,51 @@ body #situation-hint-popup .popup-btns button {
 
 /* ---- 画面中央バナー（走破成功！／ガード！など） ---- */
 body .banner-box,
+body .banner-stage.has-card .banner-box,
 body .banner-stage.has-card:not(.is-guard) .banner-box,
 body .banner-stage.has-card.is-guard .banner-box {
   background: var(--bubble-bg) !important;
   border: var(--bubble-border) !important;
-  border-radius: 9999px !important;
+  border-radius: 12px !important;
   box-shadow: var(--bubble-shadow) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--bubble-text) !important;
   text-shadow: none !important;
-  padding: 12px 32px !important;
+  padding: 12px 28px !important;
 }
 
 body .banner-box::before,
 body .banner-box::after,
 body .banner-box .banner-shine,
+body .banner-stage.has-card .banner-box::before,
 body .banner-stage.has-card:not(.is-guard) .banner-box::before,
 body .banner-stage.has-card.is-guard .banner-box::before {
   display: none !important;
 }
 
 body .banner-box .banner-box-text,
+body .banner-stage.has-card .banner-box .banner-box-text,
 body .banner-stage.has-card:not(.is-guard) .banner-box .banner-box-text,
 body .banner-stage.has-card.is-guard .banner-box .banner-box-text {
   font-family: inherit !important;
   color: var(--bubble-text) !important;
   font-weight: 700 !important;
-  letter-spacing: 0.04em !important;
+  letter-spacing: 0.02em !important;
   text-shadow: none !important;
+  font-size: clamp(14px, 3.8vw, 18px) !important;
+  padding: 0 4px !important;
 }
 
 body .banner-box .banner-sub-caption,
+body .banner-stage.has-card .banner-box .banner-sub-caption,
 body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
   font-family: inherit !important;
   color: var(--bubble-accent) !important;
   font-weight: 700 !important;
+  font-size: 13px !important;
   text-shadow: none !important;
+  margin-bottom: 4px !important;
 }
 
 /* ---- トースト通知 ---- */
@@ -7505,37 +7512,52 @@ body #situation-hint-popup .btn-skip:hover {
   border-color: #64748b !important;
 }
 
-/* 文字数に応じて枠が伸び、長い場合は折り返す（枠外へはみ出さない） */
+/* バナー枠：文字が枠線に当たらず余裕を持って収まるようにパディングと幅を調整 */
+body .banner-stage.has-card .banner-box,
 body .banner-stage.has-card:not(.is-guard) .banner-box,
 body .banner-stage.has-card.is-guard .banner-box,
 body .banner-box {
   width: auto !important;
-  min-width: min(240px, 80vw) !important;
-  max-width: min(92vw, 420px) !important;
+  min-width: min(280px, 86vw) !important;
+  max-width: min(94vw, 440px) !important;
   box-sizing: border-box !important;
-  padding: 12px 22px !important;
+  padding: 12px 30px !important;
+  border-radius: 12px !important;
   overflow: visible !important;
 }
+
 body .banner-box .banner-box-text,
+body .banner-stage.has-card .banner-box .banner-box-text,
 body .banner-stage.has-card:not(.is-guard) .banner-box .banner-box-text,
-body .banner-stage.has-card.is-guard .banner-box .banner-box-text,
-body .banner-box .banner-sub-caption,
-body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
+body .banner-stage.has-card.is-guard .banner-box .banner-box-text {
   white-space: normal !important;
   overflow-wrap: anywhere;
   word-break: normal;
   line-height: 1.45;
   text-align: center;
   max-width: 100%;
+  font-size: clamp(14px, 3.8vw, 17.5px) !important;
+  letter-spacing: 0.02em !important;
+  padding: 0 4px !important;
 }
-body .banner-box .banner-box-text { font-size: clamp(15px, 4.2vw, 20px) !important; }
-body .banner-stage.has-card:not(.is-guard) .banner-box .banner-box-text { font-size: clamp(20px, 5.4vw, 26px) !important; }
+
+body .banner-box .banner-sub-caption,
+body .banner-stage.has-card .banner-box .banner-sub-caption,
+body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
+  font-size: 13px !important;
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+  text-align: center;
+  margin-bottom: 4px !important;
+}
+
 body .game-toast {
   white-space: normal !important;
   max-width: min(92vw, 420px);
   text-align: center;
   box-sizing: border-box;
 }
+
 body #guard-popup .popup-title,
 body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
@@ -7543,42 +7565,59 @@ body #situation-hint-popup .popup-desc {
   overflow-wrap: anywhere;
 }
 
-/* 走破成功など：馬カードの上に重ねず、ガード時と同じく「カード → 下にバナー」の縦並びにする */
-body .banner-stage.has-card:not(.is-guard) {
+/* 走破宣言・走破成功・ガード共通：馬カードの上に重ねず、「カード → 下にバナー」の縦並びにする */
+body .banner-stage.has-card,
+body .banner-stage.has-card:not(.is-guard),
+body .banner-stage.has-card.is-guard {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 14px !important;
+  gap: 12px !important;
   width: 100% !important;
   max-width: 380px !important;
 }
-body .banner-stage.has-card:not(.is-guard) .banner-card-backdrop {
+
+body .banner-stage.has-card .banner-card-backdrop,
+body .banner-stage.has-card:not(.is-guard) .banner-card-backdrop,
+body .banner-stage.has-card.is-guard .banner-card-backdrop {
   display: flex !important;
   justify-content: center !important;
   width: 100% !important;
   margin: 0 !important;
 }
+
+body .banner-stage.has-card .banner-card-backdrop .banner-horse-card.card,
+body .banner-stage.has-card .banner-card-backdrop .banner-horse-card,
 body .banner-stage.has-card:not(.is-guard) .banner-card-backdrop .banner-horse-card.card,
-body .banner-stage.has-card:not(.is-guard) .banner-card-backdrop .banner-horse-card {
+body .banner-stage.has-card:not(.is-guard) .banner-card-backdrop .banner-horse-card,
+body .banner-stage.has-card.is-guard .banner-card-backdrop .banner-horse-card.card,
+body .banner-stage.has-card.is-guard .banner-card-backdrop .banner-horse-card {
   width: min(280px, 74vw) !important;
   max-height: 48vh !important;
+  border-radius: 12px !important;
 }
-body .banner-stage.has-card:not(.is-guard) .banner-box {
+
+body .banner-stage.has-card .banner-box,
+body .banner-stage.has-card:not(.is-guard) .banner-box,
+body .banner-stage.has-card.is-guard .banner-box {
   position: relative !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
   bottom: auto !important;
   margin: 0 !important;
-  transform: translateY(10px) scale(0.96) !important;
+  transform: translateY(8px) scale(0.96) !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
-body .banner-stage.has-card:not(.is-guard) .banner-box.show {
+
+body .banner-stage.has-card .banner-box.show,
+body .banner-stage.has-card:not(.is-guard) .banner-box.show,
+body .banner-stage.has-card.is-guard .banner-box.show {
   opacity: 1 !important;
   transform: scale(1) translateY(0) !important;
 }
