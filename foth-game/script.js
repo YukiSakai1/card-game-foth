@@ -106,44 +106,159 @@
     return c;
   }
 
+  /* ===================== プレイヤー山札（40枚）構成 =====================
+     - 状況カード: 1枚（かんかん照り）
+     - アイテムカード: 3枚（エリートジョッキー, 鞭, 獣医師）
+     - 馬カード: 15枚（ゴールドシップ×3, ローシャムパーク×3, セファーラジエル×3, シルクメビウス×2, セイウンスカイ×2, ドウデュース×2）
+     - フォースカード: 21枚
+     合計: 40枚
+  ====================================================================== */
   var FREEPLAY_POOL = [
-    // フォースカード：馬・アイテムに比べてやや引きやすい比率（45%）に調整
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    function () { return forceCard(); },
-    // 馬カード（30%：各馬均等）
+    // 状況カード（1枚 / 2.5%）
+    function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); },
+    // アイテムカード（3枚 / 7.5%）
+    function () { return eliteJockey(); },
+    function () { return whip(); },
+    function () { return veterinarian(); },
+    // 馬カード（15枚 / 37.5%）
+    function () { return goldShip(); },
+    function () { return goldShip(); },
     function () { return goldShip(); },
     function () { return rousham(); },
+    function () { return rousham(); },
+    function () { return rousham(); },
+    function () { return seferRasiel(); },
+    function () { return seferRasiel(); },
     function () { return seferRasiel(); },
     function () { return silkMobius(); },
+    function () { return silkMobius(); },
+    function () { return seiunSky(); },
     function () { return seiunSky(); },
     function () { return doDeuce(); },
-    // アイテム・騎手・状況カード（25%）
-    function () { return whip(); },
-    function () { return kutsuwa(); },
-    function () { return eliteJockey(); },
-    function () { return veterinarian(); },
-    function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); }
+    function () { return doDeuce(); },
+    // フォースカード（21枚 / 52.5%）
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); },
+    function () { return forceCard(); }
   ];
 
-  // 自分でプレイ時のドローキュー（1枚目: エリートジョッキー、2枚目: 状況カード「かんかん照り」）
-  var drawQueue = [
-    function () { return eliteJockey(); },
-    function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); }
-  ];
-  function resetDrawQueue() {
-    drawQueue = [
+  function createPlayerDeck40(forTutorial) {
+    var deck = [
+      // 1. 状況カード（1枚）
+      function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); },
+
+      // 2. アイテムカード（3枚）
       function () { return eliteJockey(); },
-      function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); }
+      function () { return whip(); },
+      function () { return veterinarian(); },
+
+      // 3. 馬カード（15枚）
+      function () { return goldShip(); },
+      function () { return goldShip(); },
+      function () { return goldShip(); },
+      function () { return rousham(); },
+      function () { return rousham(); },
+      function () { return rousham(); },
+      function () { return seferRasiel(); },
+      function () { return seferRasiel(); },
+      function () { return seferRasiel(); },
+      function () { return silkMobius(); },
+      function () { return silkMobius(); },
+      function () { return seiunSky(); },
+      function () { return seiunSky(); },
+      function () { return doDeuce(); },
+      function () { return doDeuce(); },
+
+      // 4. フォースカード（21枚）
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); },
+      function () { return forceCard(); }
     ];
+
+    if (forTutorial) {
+      // チュートリアル用：1枚目にエリートジョッキー、2枚目に状況カード、残り38枚をシャッフル
+      var first = function () { return eliteJockey(); };
+      var second = function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); };
+      var rest = deck.filter(function (fn, idx) {
+        return idx !== 0 && idx !== 1;
+      });
+      for (var i = rest.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = rest[i];
+        rest[i] = rest[j];
+        rest[j] = temp;
+      }
+      return [first, second].concat(rest);
+    } else {
+      // 自由対戦（マニュアル操作）：40枚を完全にシャッフル
+      for (var k = deck.length - 1; k > 0; k--) {
+        var r = Math.floor(Math.random() * (k + 1));
+        var tmp = deck[k];
+        deck[k] = deck[r];
+        deck[r] = tmp;
+      }
+      return deck;
+    }
   }
+
+  var playerDeck = [];
+  function resetPlayerDeck(forTutorial) {
+    playerDeck = createPlayerDeck40(forTutorial);
+  }
+  function resetDrawQueue() {
+    resetPlayerDeck(true);
+  }
+
   var nextDrawOverride = null;
+
+  function getNextPlayerDrawCard() {
+    if (nextDrawOverride) {
+      var override = nextDrawOverride;
+      nextDrawOverride = null;
+      return typeof override === 'function' ? override() : override;
+    }
+    if (playerDeck && playerDeck.length > 0) {
+      return playerDeck.shift()();
+    }
+    var maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
+    return maker();
+  }
 
   // 自分で操作モードでの相手（CPU）ドローキュー（既存のカード画像から組み合わせたデッキ）
   var cpuDrawQueue = [];
@@ -1999,8 +2114,7 @@
             var dummy = makeDeckDummy(deckRect);
             return flyGhost(dummy, handRect).then(function () {
               dummy.remove();
-              var maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
-              hand.push(maker());
+              hand.push(getNextPlayerDrawCard());
               drawOneFromDeck();
               lastDrawer = 'player';
               renderAll();
@@ -2127,8 +2241,7 @@
         var drawn = 0;
         for (var i = 0; i < card.effectValue; i++) {
           if (!currentLane()) break;
-          var maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
-          hand.push(maker());
+          hand.push(getNextPlayerDrawCard());
           drawOneFromDeck();
           drawn++;
         }
@@ -2337,16 +2450,8 @@
     var dummy = makeDeckDummy(deckRect);
     flyGhost(dummy, handRect).then(function () {
       dummy.remove();
-      var maker;
-      if (drawQueue && drawQueue.length > 0) {
-        maker = drawQueue.shift();
-      } else if (nextDrawOverride) {
-        maker = nextDrawOverride;
-        nextDrawOverride = null; // 1回使ったら通常のランダム抽選に戻す
-      } else {
-        maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
-      }
-      hand.push(maker());
+      var drawnCard = getNextPlayerDrawCard();
+      hand.push(drawnCard);
       drawOneFromDeck();
       lastDrawer = 'player';
       renderAll();
@@ -2758,7 +2863,6 @@
   }
 
   function rewardDraw(n) {
-    var pool = FREEPLAY_POOL;
     var chain = Promise.resolve();
     for (var i = 0; i < n; i++) {
       (function (i) {
@@ -2768,7 +2872,7 @@
           var dummy = makeDeckDummy(deckRect);
           return flyGhost(dummy, handRect).then(function () {
             dummy.remove();
-            hand.push(pool[i % pool.length]());
+            hand.push(getNextPlayerDrawCard());
             drawOneFromDeck();
             renderAll();
             SoundFX.deal();
@@ -2819,6 +2923,7 @@
     field = null;
     fieldGuard = null;
     situation = null;
+    resetPlayerDeck(true);
     renderAll();
 
     setNarrator('ようこそ、<b>フォース オブ ザ ホース</b>の世界へ！ まずは対戦の準備をしよう。');
@@ -3071,7 +3176,7 @@
     canDraw = true;
     showCommandBar(true);
     renderAll();
-    resetDrawQueue();
+    resetPlayerDeck(false);
     cmdDraw(); // 最初の手番ドロー
   }
 
