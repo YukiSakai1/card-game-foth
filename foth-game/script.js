@@ -3216,6 +3216,9 @@
     modeOpts.forEach(function (opt) {
       opt.classList.toggle('active', opt.dataset.mode === 'manual');
     });
+    if (typeof window._setTilt === 'function') {
+      window._setTilt(0);
+    }
     $('step-label').textContent = '自分で操作';
     phase = 'idle';
     selectedHorse = null;
@@ -3246,6 +3249,9 @@
     cardExplainHide();
     var myRunId = ++tutorialRunId; // 進行中の処理を中断し新しいIDを発行
     interactionMode = 'freeplay';
+    if (typeof window._setTilt === 'function') {
+      window._setTilt(0);
+    }
     hideArrow();
     clearZoneActive();
     $('zone-deck').classList.remove('tappable');
@@ -3302,6 +3308,9 @@
   function startTutorialMode() {
     tutorialRunId++;
     document.body.classList.remove('manual-mode');
+    if (typeof window._setTilt === 'function') {
+      window._setTilt(10);
+    }
     var modeOpts = document.querySelectorAll('#mode-switch .mode-opt');
     modeOpts.forEach(function (opt) {
       opt.classList.toggle('active', opt.dataset.mode === 'tutorial');
@@ -4012,6 +4021,7 @@
       presetBtns.forEach(function (b) { b.classList.toggle('active', Number(b.dataset.angle) === deg); });
       legacyChips.forEach(function (o) { o.classList.toggle('active', o.dataset.angle === String(deg)); });
     }
+    window._setTilt = setTilt;
     function setDepth(px) {
       px = Math.max(DEPTH_MIN, Math.min(DEPTH_MAX, Number(px) || DEFAULTS.depth));
       document.body.style.setProperty('--field-perspective', px + 'px');
