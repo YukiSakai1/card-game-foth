@@ -2080,8 +2080,8 @@
             return c.type === 'horse' && (c.dist || '').indexOf(distKey) >= 0;
           });
 
-          // ガード馬があり、相手の手札温存等を考慮したガード判断（走破値が2以上、または高確率でガード）
-          var shouldGuard = guardHorses.length > 0 && (totalRun >= 2 || Math.random() < 0.7);
+          // ガード馬がある場合、33%の確率でガードを行う
+          var shouldGuard = guardHorses.length > 0 && (Math.random() < 0.33);
 
           if (!shouldGuard) {
             showOpponentBubble('ガードしません');
