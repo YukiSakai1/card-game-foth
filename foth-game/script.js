@@ -2977,6 +2977,15 @@
     return matches[0].card;
   }
 
+  function scrollHandCardToCenter(el) {
+    var row = $('hand-row');
+    if (!row || !el) return;
+    var rowRect = row.getBoundingClientRect();
+    var elRect = el.getBoundingClientRect();
+    var offset = (elRect.left + elRect.width / 2) - (rowRect.left + rowRect.width / 2);
+    row.scrollBy({ left: offset, behavior: 'smooth' });
+  }
+
   /* ===================== main tutorial flow ===================== */
   var tutorialRunId = 0;
 
@@ -3023,7 +3032,7 @@
     setProgress(2);
     var targetForce = findHandCardClosestToCenter('force');
     var forceEl = targetForce ? cardElById(targetForce.id) : null;
-    if (forceEl) forceEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    if (forceEl) scrollHandCardToCenter(forceEl);
     if (targetForce) cardExplainShow(targetForce);
     await explainStep(forceEl, null, 'このカードが<b>フォースカード</b>だ！ お気に入りの馬を走破させるとき、コストとして使うんだ。');
     cardExplainHide();
@@ -3033,7 +3042,7 @@
     setProgress(3);
     var targetHorse = findHandCardClosestToCenter('horse');
     var horseEl = targetHorse ? cardElById(targetHorse.id) : null;
-    if (horseEl) horseEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    if (horseEl) scrollHandCardToCenter(horseEl);
     // 馬カードを画面に大きく出して、各部の見方を順番に解説する
     if (targetHorse) cardExplainShow(targetHorse);
     await explainStep(horseEl, null, 'このカードが<b>馬カード</b>だ！ このカードを使って相手と勝負するよ。');
@@ -3052,7 +3061,7 @@
     setProgress(4);
     var targetItem = findHandCardClosestToCenter(function (c) { return c.type === 'item' || c.type === 'jockey'; });
     var itemEl = targetItem ? cardElById(targetItem.id) : null;
-    if (itemEl) itemEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    if (itemEl) scrollHandCardToCenter(itemEl);
     if (targetItem) cardExplainShow(targetItem);
     await explainStep(itemEl, null, '次はアイテムカードを紹介するよ。<b>アイテムカード</b>は走破のタイミングで、自分と相手が交互に好きな枚数だけ使える、競走馬をサポートするカードなんだ。');
     cardExplainHide();
@@ -3946,6 +3955,7 @@
       }
 
       document.body.style.setProperty('--field-tilt-shift-y', shiftY.toFixed(1) + 'px');
+      document.body.style.setProperty('--field-tilt-margin-bottom', '0px');
       document.body.style.setProperty('--narrator-margin-top', nTop.toFixed(1) + 'px');
       document.body.style.setProperty('--narrator-margin-bottom', nBottom.toFixed(1) + 'px');
       document.body.style.setProperty('--hand-margin-top', hTop.toFixed(1) + 'px');
@@ -3963,92 +3973,7 @@
       var rounded = Math.round(d);
       document.body.dataset.tilt = String(rounded);
       document.body.classList.toggle('tilt-20-plus', d >= 18);
-      fitFieldGaps();
-      scheduleFieldCorrection();
-    }
-
-    // ---- 相手バーと相手山札、および自分山札と手札／ナレーターの間隔を、傾き0°時と完全同期 ----------
-    // 傾きやパースペクティブを付与した際に発生する上下の余白（特に自分山札と手札ゾーンの間の空き）を
-    // 実測値ベースで精密補正し、どの角度でも常に無駄なスペースなくスマートに接続する。
-    function fitFieldGaps() {
-      var tiltEl = $('field-tilt');
-      var wrapEl = $('field-image-wrap');
-      var stripEl = $('zone-opponent');
-      var oppLanesEl = $('opp-lanes');
-      var playerLanesEl = $('lanes');
-      var narratorEl = $('narrator');
-      var handEl = $('zone-hand');
-      if (!tiltEl || !wrapEl || !stripEl || !oppLanesEl) return;
-      var oppLaneEl = oppLanesEl.querySelector('.opp-lane') || oppLanesEl;
-      var playerLaneEl = playerLanesEl ? (playerLanesEl.querySelector('.lane') || playerLanesEl) : null;
-      var nextEl = (narratorEl && narratorEl.offsetHeight > 0 && !document.body.classList.contains('manual-mode')) ? narratorEl : handEl;
-
-      var st = document.body.style;
-      var deg = st.getPropertyValue('--tilt-angle') || '0deg';
-      var prevShiftY = st.getPropertyValue('--field-tilt-shift-y');
-      var prevBottomShift = st.getPropertyValue('--field-tilt-margin-bottom');
-
-      function oppGap() {
-        var s = stripEl.getBoundingClientRect();
-        var l = oppLaneEl.getBoundingClientRect();
-        if (!s.height || !l.height) return null;
-        return l.top - s.bottom;
-      }
-
-      function playerBottomGap() {
-        if (!playerLaneEl || !nextEl) return null;
-        var p = playerLaneEl.getBoundingClientRect();
-        var n = nextEl.getBoundingClientRect();
-        if (!p.height || !n.height) return null;
-        return n.top - p.bottom;
-      }
-
-      var prevTiltTr = tiltEl.style.transition;
-      var prevWrapTr = wrapEl.style.transition;
-      tiltEl.style.transition = 'none';
-      wrapEl.style.transition = 'none';
-
-      st.setProperty('--field-tilt-shift-y', '0px');
-      st.setProperty('--field-tilt-margin-bottom', '0px');
-      st.setProperty('--tilt-angle', '0deg');
-      void tiltEl.offsetHeight;
-      var g0 = oppGap();
-      var b0 = playerBottomGap();
-
-      st.setProperty('--tilt-angle', deg);
-      void tiltEl.offsetHeight;
-      var gt = oppGap();
-
-      if (g0 !== null && gt !== null) {
-        var shift = Math.max(-1200, Math.min(300, g0 - gt));
-        st.setProperty('--field-tilt-shift-y', shift.toFixed(1) + 'px');
-      } else if (prevShiftY) {
-        st.setProperty('--field-tilt-shift-y', prevShiftY);
-      }
-
-      void tiltEl.offsetHeight;
-      var bt = playerBottomGap();
-
-      if (b0 !== null && bt !== null) {
-        // 傾きによって生じた下側の余分な隙間 (bt - b0) を margin-bottom で相殺して手札を引き上げる
-        var bottomShift = Math.max(-800, Math.min(200, b0 - bt));
-        st.setProperty('--field-tilt-margin-bottom', bottomShift.toFixed(1) + 'px');
-      } else if (prevBottomShift) {
-        st.setProperty('--field-tilt-margin-bottom', prevBottomShift);
-      }
-
-      void tiltEl.offsetHeight;
-      tiltEl.style.transition = prevTiltTr;
-      wrapEl.style.transition = prevWrapTr;
-    }
-
-    var fieldCorrectionTimer = null;
-    function scheduleFieldCorrection() {
-      if (fieldCorrectionTimer) clearTimeout(fieldCorrectionTimer);
-      fieldCorrectionTimer = setTimeout(function () {
-        fitFieldGaps();
-        if (typeof adjustFieldDiagonalLayout === 'function') adjustFieldDiagonalLayout();
-      }, 480);
+      if (typeof adjustFieldDiagonalLayout === 'function') adjustFieldDiagonalLayout();
     }
 
     function setTilt(deg) {

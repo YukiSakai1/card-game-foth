@@ -2214,12 +2214,9 @@
     }
 
     body.has-hand-cards .board,
-    body:has(.hand-zone.has-cards) .board {
-      padding-bottom: 155px;
-    }
-
+    body:has(.hand-zone.has-cards) .board,
     body.manual-mode .board {
-      padding-bottom: 20px;
+      padding-bottom: 155px;
     }
 
     /* opponent-strip と盤面の間に適切な余白を確保（相手山札との重なり防止） */
@@ -2413,12 +2410,9 @@
     }
 
     body.has-hand-cards .board,
-    body:has(.hand-zone.has-cards) .board {
-      padding-bottom: 145px;
-    }
-
+    body:has(.hand-zone.has-cards) .board,
     body.manual-mode .board {
-      padding-bottom: 16px;
+      padding-bottom: 145px;
     }
 
     .narrator-portrait {
