@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=30">
+  <link rel="stylesheet" href="style.css?v=36">
   <script type="importmap">
 {
     "imports": {
@@ -118,7 +118,7 @@
               <div class="preset-grid" id="tilt-select">
                 <button class="preset-btn tilt-opt" data-angle="0" type="button">0°(真上・平面)</button>
                 <button class="preset-btn tilt-opt active" data-angle="10" type="button">10°(標準)</button>
-                <button class="preset-btn tilt-opt" data-angle="25" type="button">25°(奥行き)</button>
+                <button class="preset-btn tilt-opt" data-angle="25" type="button">25°(奥行き重視)</button>
               </div>
             </div>
             <div class="settings-group">
@@ -219,58 +219,57 @@
               <span class="slot-bracket bl"></span><span class="slot-bracket br"></span>
             </div>
           </div>
+          <!-- コマンドバー（状況カード置き場とデッキの間） -->
+          <div id="command-bar" hidden>
+            <div class="cmd-menu" id="cmd-menu">
+              <button class="cmd-menu-btn primary" data-cmd="run" type="button">
+                <div class="btn-text-wrap">
+                  <span class="btn-sub">コマンド</span>
+                  <span class="btn-label">走破</span>
+                </div>
+              </button>
+              <button class="cmd-menu-btn" data-cmd="situation" type="button">
+                <div class="btn-text-wrap">
+                  <span class="btn-sub">コマンド</span>
+                  <span class="btn-label">状況</span>
+                </div>
+              </button>
+              <button class="cmd-menu-btn" data-cmd="item" type="button">
+                <div class="btn-text-wrap">
+                  <span class="btn-sub">コマンド</span>
+                  <span class="btn-label">アイテム</span>
+                </div>
+              </button>
+              <button class="cmd-menu-btn" data-cmd="end" type="button">
+                <div class="btn-text-wrap">
+                  <span class="btn-sub">フェイズ切替</span>
+                  <span class="btn-label">ターンエンド</span>
+                </div>
+              </button>
+            </div>
+            <!-- デュエルリンクス風 丸型シルエット FAB -->
+            <button class="cmd-fab" id="cmd-fab" type="button" aria-label="コマンドメニュー">
+              <span class="cmd-fab-badge" id="cmd-fab-badge">COMMAND</span>
+              <span class="cmd-fab-icon-wrap">
+                <svg class="cmd-fab-arrow" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Dark shadow outline -->
+                  <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
+                    stroke="#000000" stroke-width="6" stroke-linecap="round" />
+                  <path d="M 4.2 27.5 L 9.8 20.2 L 15.8 28.5 Z" fill="#000000" stroke="#000000" stroke-width="2.6"
+                    stroke-linejoin="round" />
+                  <!-- White crisp arrow body -->
+                  <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
+                    stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" />
+                  <path d="M 4.8 27.2 L 9.8 20.8 L 15.2 28 Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.8"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+            </button>
+          </div>
           <div class="overlay ov-deck" id="zone-deck">
             <div class="lanes" id="lanes"></div>
           </div>
         </div>
-      </div>
-
-      <!-- コマンドバー（傾き・ズームの影響を受けない固定位置） -->
-      <div id="command-bar" hidden>
-        <div class="cmd-menu" id="cmd-menu">
-          <button class="cmd-menu-btn primary" data-cmd="run" type="button">
-            <div class="btn-text-wrap">
-              <span class="btn-sub">コマンド</span>
-              <span class="btn-label">走破</span>
-            </div>
-          </button>
-          <button class="cmd-menu-btn" data-cmd="situation" type="button">
-            <div class="btn-text-wrap">
-              <span class="btn-sub">コマンド</span>
-              <span class="btn-label">状況</span>
-            </div>
-          </button>
-          <button class="cmd-menu-btn" data-cmd="item" type="button">
-            <div class="btn-text-wrap">
-              <span class="btn-sub">コマンド</span>
-              <span class="btn-label">アイテム</span>
-            </div>
-          </button>
-          <button class="cmd-menu-btn" data-cmd="end" type="button">
-            <div class="btn-text-wrap">
-              <span class="btn-sub">フェイズ切替</span>
-              <span class="btn-label">ターンエンド</span>
-            </div>
-          </button>
-        </div>
-        <!-- デュエルリンクス風 丸型シルエット FAB -->
-        <button class="cmd-fab" id="cmd-fab" type="button" aria-label="コマンドメニュー">
-          <span class="cmd-fab-badge" id="cmd-fab-badge">COMMAND</span>
-          <span class="cmd-fab-icon-wrap">
-            <svg class="cmd-fab-arrow" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Dark shadow outline -->
-              <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
-                stroke="#000000" stroke-width="6" stroke-linecap="round" />
-              <path d="M 4.2 27.5 L 9.8 20.2 L 15.8 28.5 Z" fill="#000000" stroke="#000000" stroke-width="2.6"
-                stroke-linejoin="round" />
-              <!-- White crisp arrow body -->
-              <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
-                stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" />
-              <path d="M 4.8 27.2 L 9.8 20.8 L 15.2 28 Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.8"
-                stroke-linejoin="round" />
-            </svg>
-          </span>
-        </button>
       </div>
 
       <footer class="narrator" id="narrator">
@@ -287,6 +286,15 @@
         <button class="hand-nav-btn hand-next" id="hand-next" type="button" aria-label="手札を右へスクロール">▶</button>
       </section>
     </main>
+
+    <!-- 馬カード解説オーバーレイ（ナレーターの下・盤面の上に、馬カードを大きく表示） -->
+    <div class="card-explain" id="card-explain" aria-hidden="true">
+      <div class="card-explain-stage" id="card-explain-stage">
+        <div class="card-explain-card" id="card-explain-card"></div>
+        <div class="card-explain-ring ring-cost" id="ring-cost"></div>
+        <div class="card-explain-ring ring-stats" id="ring-stats"></div>
+      </div>
+    </div>
 
     <div class="banner-overlay" id="banner-overlay">
       <div class="banner-stage" id="banner-stage">
@@ -381,7 +389,7 @@
 
   </div>
 
-  <script src="script.js?v=26"></script>
+  <script src="script.js?v=34"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -907,7 +915,7 @@
 
       // Tilt responsiveness matching board tilt angle
       const tiltStr = getComputedStyle(document.body).getPropertyValue('--tilt-angle') || '10deg';
-      const currentDeg = parseFloat(tiltStr) || 10;
+      const currentDeg = parseFloat(tiltStr) || 25;
       const targetRotX = THREE.MathUtils.degToRad(-currentDeg * 0.40);
       const targetPosY = (currentDeg / 10) * 18;
 
