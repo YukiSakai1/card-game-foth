@@ -3411,7 +3411,6 @@
   var BGM_TRACKS = {
     'banners_opt': { name: 'Banners in the Gale (Opt 2分オーケストラArr.)', src: 'audio/bgm_banners_gale_opt.wav?v=4' },
     'banners': { name: 'Banners in the Gale (疾風の旗手 / Arranged Loop)', src: 'audio/bgm_banners_gale.wav?v=3' },
-    'cyber': { name: 'Cyber Turf (疾走電脳)', src: 'audio/bgm_cyber_turf.wav?v=3' },
     'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' }
   };
 
