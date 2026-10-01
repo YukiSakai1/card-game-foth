@@ -1005,7 +1005,7 @@
     }
     var isFreeplay = (interactionMode === 'freeplay');
     var waitClick = isFreeplay || isGuard;
-    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:10px;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;text-shadow:0 2px 8px rgba(0,0,0,0.8);">👆 画面をタップ／クリックして次へ進む</div>' : '';
+    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:8px;font-size:12.5px;color:#0284c7;font-weight:800;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>' : '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
     box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
     box.classList.add('show');

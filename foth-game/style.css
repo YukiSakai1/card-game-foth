@@ -7022,15 +7022,15 @@
   }
 
 /* =====================================================================
-   ポップアップ類をナレーター吹き出し（.narrator-bubble）と同じデザインに統一
-   白 97% 背景 / 2px シアン枠 / シアンの発光 / 濃グレー文字 / 強調は #0284c7
-   全テーマ（Cyber / Dark / White / Nature）共通
+   ポップアップ類：まぶしさを抑えた落ち着いたくすみ白（Muted Slate White）
+   ソフトなグレアフリー背景 / シアン・ブルーの細枠 / 濃色テキストで視認性を最適化
+   全テーマ（Cyber / Dark / Nature）共通
    ===================================================================== */
 :root {
-  --bubble-bg: rgba(255, 255, 255, 0.97);
-  --bubble-border: 2px solid #00d2ff;
-  --bubble-shadow: 0 0 12px rgba(0, 210, 255, 0.55), 0 0 24px rgba(0, 210, 255, 0.25), 0 4px 16px rgba(0, 0, 0, 0.12);
-  --bubble-text: #2b323b;
+  --bubble-bg: linear-gradient(175deg, rgba(232, 238, 244, 0.98) 0%, rgba(218, 226, 235, 0.98) 100%);
+  --bubble-border: 1.5px solid rgba(2, 132, 199, 0.55);
+  --bubble-shadow: 0 16px 44px rgba(0, 0, 0, 0.75), 0 0 20px rgba(2, 132, 199, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --bubble-text: #0f172a;
   --bubble-accent: #0284c7;
 }
 
@@ -7044,12 +7044,12 @@ body.field-white #guard-popup .popup-box,
 body.field-cyber.field-white #guard-popup .popup-box {
   background: var(--bubble-bg) !important;
   border: var(--bubble-border) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow: var(--bubble-shadow) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--bubble-text) !important;
-  padding: 18px 26px !important;
+  padding: 20px 28px !important;
 }
 
 body #guard-popup .popup-box::before {
@@ -7063,10 +7063,12 @@ body #opponent-thinking-popup .popup-title,
 body #notice-action-popup .popup-title,
 body.field-white #guard-popup .popup-title {
   font-family: inherit !important;
-  color: var(--bubble-accent) !important;
-  font-weight: 700 !important;
+  color: #0c2b48 !important;
+  font-weight: 800 !important;
+  font-size: 17.5px !important;
   text-shadow: none !important;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
 }
 
 body #guard-popup .popup-desc,
@@ -7076,23 +7078,48 @@ body #opponent-thinking-popup .popup-desc,
 body #notice-action-popup .popup-desc,
 body.field-white #guard-popup .popup-desc {
   font-family: inherit !important;
-  color: var(--bubble-text) !important;
+  color: #1e293b !important;
   font-weight: 600 !important;
-  line-height: 1.55 !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
   text-shadow: none !important;
   letter-spacing: 0.01em;
 }
 
 body #guard-popup .popup-desc b,
+body #guard-popup .popup-desc strong,
 body #run-support-popup .popup-desc b,
 body #situation-hint-popup .popup-desc b,
 body #opponent-thinking-popup .popup-desc b,
 body #notice-action-popup .popup-desc b {
-  color: var(--bubble-accent) !important;
-  font-weight: 700 !important;
+  color: #0284c7 !important;
+  font-weight: 800 !important;
 }
 
-/* ボタン：主ボタン＝シアン／副ボタン＝ライトグレー地に濃いスレート枠 */
+/* ポップアップ内の文字色衝突対策：ゴールド系や淡色文字を明瞭な濃色に上書き */
+body .popup-box [style*="color:var(--rail-dim)"],
+body .popup-box [style*="color: var(--rail-dim)"] {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+body .popup-box [style*="color:var(--gold-2)"],
+body .popup-box [style*="color: var(--gold-2)"],
+body .popup-box [style*="color: var(--gold)"] {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+body .popup-box div[style*="background:rgba(227,178,60"],
+body .popup-box div[style*="background: rgba(227,178,60"] {
+  background: rgba(2, 132, 199, 0.08) !important;
+  border: 1px solid rgba(2, 132, 199, 0.25) !important;
+  color: #0f172a !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+}
+
+/* ボタン：主ボタン＝シアンブルー／副ボタン＝ライトグレー地に濃いスレート枠 */
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
@@ -7119,7 +7146,8 @@ body #situation-hint-popup .btn-skip {
 
 body #guard-popup .btn-guard:hover,
 body #run-support-popup .btn-guard:hover,
-body #situation-hint-popup .btn-guard:hover {
+body #situation-hint-popup .btn-guard:hover,
+body #notice-action-popup .btn-guard:hover {
   background: linear-gradient(180deg, #0390dc 0%, #0284c7 100%) !important;
 }
 
@@ -7133,7 +7161,8 @@ body #situation-hint-popup .btn-skip:hover {
 
 body #guard-popup .popup-btns button,
 body #run-support-popup .popup-btns button,
-body #situation-hint-popup .popup-btns button {
+body #situation-hint-popup .popup-btns button,
+body #notice-action-popup .popup-btns button {
   white-space: nowrap;
 }
 
