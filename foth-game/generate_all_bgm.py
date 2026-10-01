@@ -1798,6 +1798,106 @@ def generate_banners_in_the_gale():
         
     save_wav('audio/bgm_banners_gale.wav', full_loop[:, 0], full_loop[:, 1])
 
+def generate_banners_opt_2min():
+    print("Generating: Banners in the Gale Opt (Arranged 2-Minute Symphonic Suite)...")
+    mp3_path = 'Banners_in_the_Gale_loop_optimized.mp3'
+    if not os.path.exists(mp3_path):
+        mp3_path = 'foth-game/audio/Banners_in_the_Gale_loop_optimized.mp3'
+    if not os.path.exists(mp3_path):
+        print("MP3 file not found:", mp3_path)
+        return
+        
+    try:
+        import miniaudio
+    except ImportError:
+        print("miniaudio not installed. Skipping.")
+        return
+
+    f = miniaudio.decode_file(mp3_path)
+    base = np.frombuffer(f.samples, dtype=np.int16).reshape(-1, 2).astype(np.float32) / 32768.0
+    sr = f.sample_rate # 44100
+    n_base = len(base)
+    
+    # 5-Pass Progression (Total ~125 seconds = 2 min 5 sec):
+    # Pass 1: Exposition (Clean authentic Celtic sound)
+    p1 = base.copy()
+    
+    # Pass 2: Equestrian Gallop & Bodhran Rhythm
+    p2 = base.copy()
+    bar_len = int(sr * 2.0)
+    sixteenth_len = bar_len // 16
+    for idx in range(0, n_base // sixteenth_len):
+        pos = idx * sixteenth_len
+        sub = idx % 16
+        is_downbeat = (sub % 4 == 0)
+        is_gallop = (sub % 4 == 2 or sub % 4 == 3)
+        
+        if is_gallop and pos + int(0.07 * sr) < n_base:
+            t = np.linspace(0, 0.07, int(0.07 * sr))
+            env = np.exp(-t * 50.0)
+            click = (np.random.rand(len(t)) * 2 - 1) * env * 0.08
+            p2[pos:pos+len(t), 0] += click * 0.4
+            p2[pos:pos+len(t), 1] += click * 0.6
+            
+        if is_downbeat and pos + int(0.22 * sr) < n_base:
+            t = np.linspace(0, 0.22, int(0.22 * sr))
+            env = np.exp(-t * 14.0)
+            f_bod = 73.42 * (1.0 + 0.4 * env) # D2 / Low Bodhran
+            bod = np.sin(2 * np.pi * f_bod * t) * env * 0.12
+            p2[pos:pos+len(t), 0] += bod * 0.5
+            p2[pos:pos+len(t), 1] += bod * 0.5
+
+    # Pass 3: Brass Choir & Celtic Strings Harmonies
+    p3 = base.copy()
+    t_full = np.linspace(0, n_base / sr, n_base)
+    pad = np.zeros_like(p3)
+    pad_freqs = [164.81, 246.94, 329.63, 493.88] # E3, B3, E4, B4
+    for fq in pad_freqs:
+        wave_s = np.sin(2 * np.pi * fq * t_full) * 0.035
+        pad[:, 0] += wave_s * 0.5
+        pad[:, 1] += wave_s * 0.5
+    env_pad = np.minimum(1.0, t_full / 2.0) * np.minimum(1.0, (n_base/sr - t_full) / 2.0)
+    p3 += pad * env_pad[:, None]
+    
+    # Pass 4: High Energy Turf Climax
+    p4 = (p2 + p3) * 0.58
+    for bar_i in range(0, n_base // bar_len):
+        pos = bar_i * bar_len
+        if pos + int(0.5 * sr) < n_base:
+            t = np.linspace(0, 0.5, int(0.5 * sr))
+            env_cym = np.exp(-t * 5.0)
+            cym = (np.random.rand(len(t)) * 2 - 1) * env_cym * 0.075
+            p4[pos:pos+len(t), 0] += cym * 0.4
+            p4[pos:pos+len(t), 1] += cym * 0.6
+            
+    # Pass 5: Grand Maestoso & Loop Turnaround
+    p5 = base.copy() * 0.95
+    for bar_i in range(0, n_base // bar_len):
+        pos = bar_i * bar_len
+        if pos + int(0.35 * sr) < n_base:
+            t = np.linspace(0, 0.35, int(0.35 * sr))
+            env = np.exp(-t * 9.0)
+            f_timp = 82.41 * (1.0 + 0.3 * env)
+            timp = np.sin(2 * np.pi * f_timp * t) * env * 0.15
+            p5[pos:pos+len(t), 0] += timp * 0.5
+            p5[pos:pos+len(t), 1] += timp * 0.5
+
+    # Connect seamlessly: Pass 1 -> Pass 2 -> Pass 3 -> Pass 4 -> Pass 5
+    full_track = np.concatenate([p1, p2, p3, p4, p5], axis=0)
+    
+    # Seamless Crossfade loop for start and end (100ms)
+    xfade = int(sr * 0.10)
+    w_out = np.cos(np.linspace(0, np.pi/2, xfade))[:, None]
+    w_in = np.sin(np.linspace(0, np.pi/2, xfade))[:, None]
+    full_track[-xfade:] = full_track[-xfade:] * w_out + full_track[:xfade] * w_in
+    
+    # Master Normalization
+    peak = np.max(np.abs(full_track))
+    if peak > 0.01:
+        full_track = (full_track / peak) * 0.92
+        
+    save_wav('audio/bgm_banners_gale_opt.wav', full_track[:, 0], full_track[:, 1])
+
 if __name__ == '__main__':
     print("=== Generating FORCE OF THE HORSE Music Suite ===")
     generate_turkish_march()
@@ -1809,6 +1909,7 @@ if __name__ == '__main__':
     generate_dq_overture()
     generate_green_pasture_gallop()
     generate_banners_in_the_gale()
+    generate_banners_opt_2min()
     print("=== All BGM Tracks Generated Successfully ===")
 
 
