@@ -1772,6 +1772,25 @@
       titleEl.innerHTML = horseCard ? ('相手が「<b>' + horseCard.name + '</b>」で走破！') : '相手が走破してきました！';
     }
 
+    // 内訳（基礎、アイテム上昇、適性補正）の組み立て
+    var breakdownParts = [];
+    if (horseCard) {
+      breakdownParts.push('基礎 ' + horseCard.run);
+      if (cpuRunBonus > 0) {
+        breakdownParts.push('<span style="color:#5eead4;font-weight:700;">アイテム +' + cpuRunBonus + '</span>');
+      }
+      var mods = runModifiers(horseCard);
+      mods.forEach(function (m) {
+        breakdownParts.push(m.label);
+      });
+    }
+    var breakdownHtml = '';
+    if (breakdownParts.length > 1 || cpuRunBonus > 0) {
+      breakdownHtml = '<div style="margin-top:6px;margin-bottom:6px;font-size:12px;padding:4px 10px;background:rgba(227,178,60,0.12);border-radius:6px;border:1px solid rgba(227,178,60,0.25);color:var(--card-fg);">' +
+        '内訳: ' + breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b>' + runValue + '</b>' +
+        '</div>';
+    }
+
     var canGuard = hand.some(function (c) { return c.type === 'horse'; });
     var descEl = $('guard-desc');
     var btnsEl = $('guard-btns');
@@ -1780,8 +1799,9 @@
     if (canGuard) {
       descEl.innerHTML =
         '相手の走破を手札の馬カードでガードしますか？<br>' +
-        '（ガード値分だけ相手のドローを減らせます）<br>' +
-        '相手の実効走破値: <b>' + runValue + '</b>';
+        '<span style="font-size:12px;color:var(--rail-dim);">（ガード値分だけ相手のドローを減らせます）</span><br>' +
+        '相手の実効走破値: <b style="color:var(--gold-2);font-size:15px;">' + runValue + '</b>' +
+        breakdownHtml;
       btnsEl.innerHTML =
         '<button class="btn-guard" id="guard-yes">🛡️ ガードする</button>' +
         '<button class="btn-skip" id="guard-no">⏭ ガードしない</button>';
@@ -1800,8 +1820,9 @@
       });
     } else {
       descEl.innerHTML =
-        '相手の実効走破値: <b>' + runValue + '</b><br>' +
-        '（手札にガード可能な馬カードがありません）';
+        '相手の実効走破値: <b style="color:var(--gold-2);font-size:15px;">' + runValue + '</b>' +
+        breakdownHtml +
+        '<span style="font-size:12px;color:var(--rail-dim);">（手札にガード可能な馬カードがありません）</span>';
       btnsEl.innerHTML =
         '<button class="btn-guard" id="guard-ok">OK（相手がドロー）</button>';
 
