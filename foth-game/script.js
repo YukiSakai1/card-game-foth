@@ -1946,7 +1946,7 @@
       if (interactionMode === 'freeplay' && !isCpuTurn) {
         var thinkingPopup = $('opponent-thinking-popup');
         thinkingPopup.style.display = 'flex';
-        setNarrator('🤔 相手プレイヤーはガードをするか考えています。');
+        setNarrator('相手プレイヤーはガードをするか考えています。');
         return sleep(1200).then(function () {
           thinkingPopup.style.display = 'none';
 
@@ -2111,7 +2111,7 @@
   // 新しい効果タイプを追加する場合はここに case を増やすだけでよい。
   function applyItemEffect(card) {
     CardCloseup.show(card, { label: '発動！', autoHideMs: 1100 });
-    var msg = '🧪 アイテム「' + card.name + '」を使った！';
+    var msg = 'アイテム「' + card.name + '」を使った！';
     switch (card.effectType) {
       case 'run_bonus':
         runBonus += card.effectValue;
@@ -2474,7 +2474,7 @@
     if (!hasItem) { setNarrator('今使えるアイテムカードが手札にありません。'); return; }
     prevPhase = phase;
     phase = 'select_item_idle';
-    setNarrator('🧪 使う<b>アイテムカード</b>を選んでタップしてください。');
+    setNarrator('使う<b>アイテムカード</b>を選んでタップしてください。');
     renderAll();
   }
 
