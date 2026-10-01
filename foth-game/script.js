@@ -1149,6 +1149,7 @@
     var layer = $('card-explain');
     var slot = $('card-explain-card');
     if (!layer || !slot) return;
+    cardExplainRing(null);
     slot.innerHTML = '';
     var el = buildCardEl(card);
     slot.appendChild(el);
@@ -3023,7 +3024,9 @@
     var targetForce = findHandCardClosestToCenter('force');
     var forceEl = targetForce ? cardElById(targetForce.id) : null;
     if (forceEl) forceEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    if (targetForce) cardExplainShow(targetForce);
     await explainStep(forceEl, null, 'このカードが<b>フォースカード</b>だ！ お気に入りの馬を走破させるとき、コストとして使うんだ。');
+    cardExplainHide();
     if (myRunId !== tutorialRunId) return;
 
     // STEP 2: 馬カード（中央に近いカードを紹介）
@@ -3050,7 +3053,9 @@
     var targetItem = findHandCardClosestToCenter(function (c) { return c.type === 'item' || c.type === 'jockey'; });
     var itemEl = targetItem ? cardElById(targetItem.id) : null;
     if (itemEl) itemEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    if (targetItem) cardExplainShow(targetItem);
     await explainStep(itemEl, null, '次はアイテムカードを紹介するよ。<b>アイテムカード</b>は走破のタイミングで、自分と相手が交互に好きな枚数だけ使える、競走馬をサポートするカードなんだ。');
+    cardExplainHide();
     if (myRunId !== tutorialRunId) return;
 
     // STEP 4: ファーム
