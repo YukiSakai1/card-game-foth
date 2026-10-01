@@ -7542,7 +7542,10 @@ body #situation-hint-popup .popup-desc {
   overflow-wrap: anywhere;
 }
 
-/* 走破宣言・走破成功・ガード共通：馬カードの上に重ねず、「カード → 下にバナー」の縦並びにする */
+/* =====================================================================
+   カード演出時のレイアウト統一：すべての演出で「カードが上・文字吹き出しがその真下」に並び、カードを絶対に覆わない
+   ===================================================================== */
+/* 1. バナー演出（走破宣言・走破成功・ガードなど） */
 body .banner-stage.has-card,
 body .banner-stage.has-card:not(.is-guard),
 body .banner-stage.has-card.is-guard {
@@ -7597,6 +7600,56 @@ body .banner-stage.has-card:not(.is-guard) .banner-box.show,
 body .banner-stage.has-card.is-guard .banner-box.show {
   opacity: 1 !important;
   transform: scale(1) translateY(0) !important;
+}
+
+/* 2. ガード確認ポップアップ（相手の走破宣言時：馬カードが上、確認吹き出し・ボタンが真下） */
+body #guard-popup {
+  display: none;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+body #guard-popup .guard-horse-slot {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+body #guard-popup .guard-horse-slot .card {
+  width: min(280px, 74vw) !important;
+  max-height: 48vh !important;
+  border-radius: 12px !important;
+}
+
+body #guard-popup .popup-box {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  width: min(340px, 88vw) !important;
+}
+
+/* 3. カード拡大・詳細レイヤー（カードが上、詳細吹き出し・アクションボタンが下） */
+body #closeup-layer {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
+body #closeup-layer .closeup-card {
+  max-height: 52vh !important;
+  width: min(280px, 72vw) !important;
+}
+
+body #closeup-layer .closeup-toast {
+  margin-top: 6px !important;
 }
 
 
