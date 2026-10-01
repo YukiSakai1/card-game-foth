@@ -3242,7 +3242,7 @@
 
   /* ===================== BGM（音源ファイル再生 / シームレスループ） ===================== */
   var BGM = (function () {
-    var SRC = 'audio/force_of_the_horse_bgm.wav';
+    var SRC = 'audio/force_of_the_horse_bgm.wav?v=2';
     var TARGET_VOLUME = 0.40;
     var FADE_IN_MS = 1200;
     var FADE_OUT_MS = 600;

@@ -2,14 +2,16 @@ import numpy as np
 import wave
 
 SAMPLE_RATE = 32000
-BPM = 128.0
+BPM = 126.0
 BEAT_SEC = 60.0 / BPM
-BAR_SEC = BEAT_SEC * 4.0
-NUM_BARS = 32  # 32 measures = 60.00 seconds exact seamless loop
-TOTAL_SEC = NUM_BARS * BAR_SEC
+SIXTEENTH_SEC = BEAT_SEC / 4.0  # 1/16 note duration in 2/4 (4 per beat)
+MEASURE_16THS = 8              # 8 sixteenth notes per measure (2/4 time)
+NUM_MEASURES = 64              # 64 measures of 2/4 = 32 bars of 4/4
+TOTAL_16THS = NUM_MEASURES * MEASURE_16THS
+TOTAL_SEC = TOTAL_16THS * SIXTEENTH_SEC
 TOTAL_SAMPLES = int(TOTAL_SEC * SAMPLE_RATE)
 
-print(f"Generating BGM: BPM={BPM}, Bars={NUM_BARS}, Duration={TOTAL_SEC:.2f}s, Samples={TOTAL_SAMPLES}")
+print(f"Synthesizing Mozart's Turkish March: BPM={BPM}, Measures={NUM_MEASURES}, Duration={TOTAL_SEC:.2f}s, Samples={TOTAL_SAMPLES}")
 
 NOTE_MAP = {
     'C': 0, 'C#': 1, 'DB': 1,
@@ -22,280 +24,335 @@ NOTE_MAP = {
 }
 
 def note_to_freq(note_name):
+    if not note_name or note_name == '_':
+        return 0.0
     name = note_name[:-1].upper()
     octave = int(note_name[-1])
     semitone = NOTE_MAP[name]
     midi = 12 + octave * 12 + semitone
     return 440.0 * (2.0 ** ((midi - 69) / 12.0))
 
-CHORDS = [
-    # Section A (Bars 1-8: Driving Dm build)
-    ('D3', 'F3', 'A3', 'D4'),
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('C3', 'E3', 'G3', 'C4'),
-    ('A2', 'C3', 'E3', 'A3'),
-    ('D3', 'F3', 'A3', 'D4'),
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('F3', 'A3', 'C4', 'F4'),
-    ('C3', 'E3', 'G3', 'C4'),
-    # Section B (Bars 9-16: Main Theme melody)
-    ('D3', 'F3', 'A3', 'D4'),
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('C3', 'E3', 'G3', 'C4'),
-    ('A2', 'C3', 'E3', 'A3'),
-    ('D3', 'F3', 'A3', 'D4'),
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('G2', 'Bb2', 'D3', 'G3'),
-    ('A2', 'C#3', 'E3', 'A3'),
-    # Section C (Bars 17-24: Climax & High Energy)
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('C3', 'E3', 'G3', 'C4'),
-    ('D3', 'F3', 'A3', 'D4'),
-    ('F3', 'A3', 'C4', 'F4'),
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('C3', 'E3', 'G3', 'C4'),
-    ('D3', 'F3', 'A3', 'D4'),
-    ('A2', 'C3', 'E3', 'A3'),
-    # Section D (Bars 25-32: Epic Outro resolving back into Bar 1 Dm)
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('C3', 'E3', 'G3', 'C4'),
-    ('D3', 'F3', 'A3', 'D4'),
-    ('G2', 'Bb2', 'D3', 'G3'),
-    ('Bb2', 'D3', 'F3', 'Bb3'),
-    ('C3', 'E3', 'G3', 'C4'),
-    ('A2', 'C#3', 'E3', 'A3'),
-    ('A2', 'D3', 'E3', 'A3'),
-]
+# Build Melody sequence (list of (start_16th, duration_16th, note_name))
+melody_events = []
 
+def add_melody(start_m, notes_with_durations):
+    curr_16th = start_m * MEASURE_16THS
+    for note, dur in notes_with_durations:
+        if note != '_':
+            melody_events.append((curr_16th, dur, note))
+        curr_16th += dur
+
+# --- Section 1: Theme A (A minor) Measures 0 - 15 ---
+theme_a_part1 = [
+    # M0: pick up motif
+    ('B4', 1), ('A4', 1), ('G#4', 1), ('A4', 1), ('C5', 4),
+    # M1: second motif
+    ('D5', 1), ('C5', 1), ('B4', 1), ('C5', 1), ('E5', 4),
+    # M2: rising run
+    ('F5', 1), ('E5', 1), ('D#5', 1), ('E5', 1), ('B5', 1), ('A5', 1), ('G#5', 1), ('A5', 1),
+    # M3: high climax
+    ('B5', 1), ('A5', 1), ('G#5', 1), ('A5', 1), ('C6', 4),
+    # M4: descending run
+    ('B5', 2), ('A5', 1), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 1), ('C5', 1),
+    # M5: cadence 1
+    ('B4', 2), ('C5', 1), ('D5', 1), ('E4', 4),
+    # M6: repeat pick up motif
+    ('B4', 1), ('A4', 1), ('G#4', 1), ('A4', 1), ('C5', 4),
+    # M7: repeat second motif
+    ('D5', 1), ('C5', 1), ('B4', 1), ('C5', 1), ('E5', 4),
+    # M8: rising run
+    ('F5', 1), ('E5', 1), ('D#5', 1), ('E5', 1), ('A5', 1), ('G#5', 1), ('F#5', 1), ('G#5', 1),
+    # M9: resolution in A minor
+    ('E5', 1), ('D5', 1), ('C5', 1), ('B4', 1), ('A4', 4),
+]
+add_melody(0, theme_a_part1)
+
+# Repeat Theme A variation with octave/harmony (Measures 10 - 19)
+theme_a_part2 = [
+    ('B4', 1), ('A4', 1), ('G#4', 1), ('A4', 1), ('C5', 4),
+    ('D5', 1), ('C5', 1), ('B4', 1), ('C5', 1), ('E5', 4),
+    ('F5', 1), ('E5', 1), ('D#5', 1), ('E5', 1), ('B5', 1), ('A5', 1), ('G#5', 1), ('A5', 1),
+    ('B5', 1), ('A5', 1), ('G#5', 1), ('A5', 1), ('C6', 4),
+    ('B5', 2), ('A5', 1), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 1), ('C5', 1),
+    ('B4', 2), ('C5', 1), ('D5', 1), ('E4', 4),
+    ('B4', 1), ('A4', 1), ('G#4', 1), ('A4', 1), ('C5', 4),
+    ('D5', 1), ('C5', 1), ('B4', 1), ('C5', 1), ('E5', 4),
+    ('F5', 1), ('E5', 1), ('D#5', 1), ('E5', 1), ('A5', 1), ('G#5', 1), ('F#5', 1), ('G#5', 1),
+    ('E5', 1), ('D5', 1), ('C5', 1), ('B4', 1), ('A4', 4),
+]
+add_melody(10, theme_a_part2)
+
+# --- Section 2: Theme B (C Major / G Major) Measures 20 - 31 ---
+theme_b = [
+    # M20-21
+    ('G4', 2), ('E5', 1), ('D5', 1), ('C5', 2), ('B4', 1), ('A4', 1),
+    ('G4', 2), ('G4', 1), ('A4', 1), ('B4', 1), ('C5', 1), ('D5', 1), ('E5', 1),
+    # M22-23
+    ('F5', 2), ('E5', 1), ('D5', 1), ('C5', 2), ('B4', 1), ('A4', 1),
+    ('G4', 2), ('F#4', 1), ('G4', 1), ('A4', 1), ('B4', 1), ('C5', 1), ('D5', 1),
+    # M24-25
+    ('E5', 2), ('D5', 1), ('C5', 1), ('B4', 2), ('A4', 1), ('G#4', 1),
+    ('A4', 2), ('B4', 1), ('C5', 1), ('D5', 1), ('E5', 1), ('F5', 1), ('G5', 1),
+    # M26-27 (Cadence into A Major)
+    ('A5', 2), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 1), ('C5', 1), ('B4', 1),
+    ('A4', 2), ('B4', 2), ('C#5', 4),
+    # M28-31
+    ('E5', 2), ('D5', 1), ('C#5', 1), ('B4', 2), ('A4', 1), ('G#4', 1),
+    ('A4', 2), ('B4', 1), ('C#5', 1), ('D5', 1), ('E5', 1), ('F#5', 1), ('G#5', 1),
+    ('A5', 2), ('G#5', 1), ('F#5', 1), ('E5', 1), ('D5', 1), ('C#5', 1), ('B4', 1),
+    ('A4', 4), ('E4', 4),
+]
+add_melody(20, theme_b)
+
+# --- Section 3: Theme C (A Major Triumphant March - The Famous Alla Turca Theme!) Measures 32 - 47 ---
+theme_c = [
+    # M32-33: A Major march motif
+    ('C#5', 1), ('D5', 1), ('E5', 1), ('C#5', 1), ('A4', 1), ('C#5', 1), ('E5', 1), ('C#5', 1),
+    ('D5', 1), ('E5', 1), ('F#5', 1), ('D5', 1), ('B4', 1), ('D5', 1), ('F#5', 1), ('D5', 1),
+    # M34-35
+    ('C#5', 1), ('D5', 1), ('E5', 1), ('C#5', 1), ('A4', 1), ('C#5', 1), ('E5', 1), ('C#5', 1),
+    ('B4', 1), ('C#5', 1), ('D5', 1), ('B4', 1), ('G#4', 1), ('B4', 1), ('D5', 1), ('B4', 1),
+    # M36-37: repeat march motif
+    ('C#5', 1), ('D5', 1), ('E5', 1), ('C#5', 1), ('A4', 1), ('C#5', 1), ('E5', 1), ('C#5', 1),
+    ('D5', 1), ('E5', 1), ('F#5', 1), ('D5', 1), ('B4', 1), ('D5', 1), ('F#5', 1), ('D5', 1),
+    # M38-39: resolution
+    ('C#5', 1), ('D5', 1), ('E5', 1), ('C#5', 1), ('B4', 1), ('C#5', 1), ('D5', 1), ('B4', 1),
+    ('A4', 2), ('C#5', 2), ('A4', 4),
+    # M40-47: Second iteration with octave upper bells
+    ('C#6', 1), ('D6', 1), ('E6', 1), ('C#6', 1), ('A5', 1), ('C#6', 1), ('E6', 1), ('C#6', 1),
+    ('D6', 1), ('E6', 1), ('F#6', 1), ('D6', 1), ('B5', 1), ('D6', 1), ('F#6', 1), ('D6', 1),
+    ('C#6', 1), ('D6', 1), ('E6', 1), ('C#6', 1), ('A5', 1), ('C#6', 1), ('E6', 1), ('C#6', 1),
+    ('B5', 1), ('C#6', 1), ('D6', 1), ('B5', 1), ('G#5', 1), ('B5', 1), ('D6', 1), ('B5', 1),
+    ('C#6', 1), ('D6', 1), ('E6', 1), ('C#6', 1), ('A5', 1), ('C#6', 1), ('E6', 1), ('C#6', 1),
+    ('D6', 1), ('E6', 1), ('F#6', 1), ('D6', 1), ('B5', 1), ('D6', 1), ('F#6', 1), ('D6', 1),
+    ('C#6', 1), ('D6', 1), ('E6', 1), ('C#6', 1), ('B5', 1), ('C#6', 1), ('D6', 1), ('B5', 1),
+    ('A5', 2), ('C#6', 2), ('A5', 4),
+]
+add_melody(32, theme_c)
+
+# --- Section 4: Grand Reprise & Coda (Measures 48 - 63) ---
+theme_reprise = [
+    # Theme A High Octave Reprise with energetic march rhythm
+    ('B4', 1), ('A4', 1), ('G#4', 1), ('A4', 1), ('C5', 4),
+    ('D5', 1), ('C5', 1), ('B4', 1), ('C5', 1), ('E5', 4),
+    ('F5', 1), ('E5', 1), ('D#5', 1), ('E5', 1), ('B5', 1), ('A5', 1), ('G#5', 1), ('A5', 1),
+    ('B5', 1), ('A5', 1), ('G#5', 1), ('A5', 1), ('C6', 4),
+    ('B5', 2), ('A5', 1), ('G5', 1), ('F5', 1), ('E5', 1), ('D5', 1), ('C5', 1),
+    ('B4', 2), ('C5', 1), ('D5', 1), ('E4', 4),
+    ('B4', 1), ('A4', 1), ('G#4', 1), ('A4', 1), ('C5', 4),
+    ('D5', 1), ('C5', 1), ('B4', 1), ('C5', 1), ('E5', 4),
+    # Coda ending leading cleanly back into measure 0 pick up!
+    ('F5', 1), ('E5', 1), ('D#5', 1), ('E5', 1), ('A5', 1), ('G#5', 1), ('F#5', 1), ('G#5', 1),
+    ('E5', 1), ('D5', 1), ('C5', 1), ('B4', 1), ('A4', 4),
+    ('C#5', 1), ('D5', 1), ('E5', 1), ('C#5', 1), ('A4', 1), ('C#5', 1), ('E5', 1), ('C#5', 1),
+    ('D5', 1), ('E5', 1), ('F#5', 1), ('D5', 1), ('B4', 1), ('D5', 1), ('F#5', 1), ('D5', 1),
+    ('C#5', 1), ('D5', 1), ('E5', 1), ('C#5', 1), ('B4', 1), ('C#5', 1), ('D5', 1), ('B4', 1),
+    ('A4', 2), ('E5', 2), ('A5', 4),
+    ('E5', 2), ('C5', 2), ('A4', 4),
+    ('E4', 4), ('A4', 4),  # Sustains and lands on A4 at loop turnaround
+]
+add_melody(48, theme_reprise)
+
+# Harmony / Chords for each of the 64 measures
+chords_by_measure = []
+for m in range(NUM_MEASURES):
+    if m in (0, 6, 10, 16, 48, 54):
+        chords_by_measure.append(('A2', 'E3', 'A3', 'C4'))  # Am
+    elif m in (1, 7, 11, 17, 49, 55):
+        chords_by_measure.append(('C3', 'G3', 'C4', 'E4'))  # C
+    elif m in (2, 8, 12, 18, 50, 56):
+        chords_by_measure.append(('D3', 'F3', 'A3', 'D4'))  # Dm
+    elif m in (3, 13, 51):
+        chords_by_measure.append(('A2', 'E3', 'A3', 'C4'))  # Am
+    elif m in (4, 14, 52):
+        chords_by_measure.append(('D3', 'F3', 'A3', 'D4'))  # Dm
+    elif m in (5, 15, 53):
+        chords_by_measure.append(('E2', 'B2', 'E3', 'G#3')) # E
+    elif m in (9, 19, 57):
+        chords_by_measure.append(('A2', 'E3', 'A3', 'C4'))  # Am
+    elif m in (20, 22):
+        chords_by_measure.append(('C3', 'G3', 'C4', 'E4'))  # C
+    elif m in (21, 23):
+        chords_by_measure.append(('G2', 'D3', 'G3', 'B3'))  # G
+    elif m in (24, 25):
+        chords_by_measure.append(('A2', 'E3', 'A3', 'C4'))  # Am
+    elif m in (26, 27):
+        chords_by_measure.append(('E2', 'B2', 'E3', 'G#3')) # E
+    elif 28 <= m <= 31:
+        chords_by_measure.append(('A2', 'E3', 'A3', 'C#4')) # A
+    elif 32 <= m <= 47 or 58 <= m <= 63:
+        if m % 2 == 0:
+            chords_by_measure.append(('A2', 'E3', 'A3', 'C#4')) # A Major
+        else:
+            chords_by_measure.append(('E2', 'B2', 'E3', 'G#3')) # E Major
+    else:
+        chords_by_measure.append(('A2', 'E3', 'A3', 'C4'))
+
+# Audio buffers
 left = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
 right = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
 
+# 1. DRUMS & PERCUSSION (Turkish March Janissary Style: Concert Bass Drum + Crisp Snare + Cymbals)
+print("Rendering Turkish March Percussion...")
 samples_per_beat = int(BEAT_SEC * SAMPLE_RATE)
-samples_per_16th = int((BEAT_SEC / 4.0) * SAMPLE_RATE)
+samples_per_16th = int(SIXTEENTH_SEC * SAMPLE_RATE)
 
-# 1. DRUMS & PERCUSSION
-print("Synthesizing drums...")
-for bar in range(NUM_BARS):
-    bar_start = int(bar * BAR_SEC * SAMPLE_RATE)
-    # Energy curve
-    drum_energy = 0.85 if bar < 4 else 1.0
+for m in range(NUM_MEASURES):
+    m_start = int(m * MEASURE_16THS * samples_per_16th)
+    is_major = (32 <= m <= 47) or (58 <= m <= 63)
+    is_heavy = is_major or (m >= 48)
     
-    for beat in range(4):
-        beat_start = bar_start + beat * samples_per_beat
+    # 2 beats per measure in 2/4
+    for beat in range(2):
+        beat_start = m_start + beat * samples_per_beat
         
-        # Punchy Kick
-        kick_len = int(0.24 * SAMPLE_RATE)
-        kt = np.linspace(0, 0.24, kick_len, endpoint=False)
-        k_freq = 150.0 * np.exp(-kt * 26.0) + 40.0
+        # Bass Drum on downbeats
+        kick_len = int(0.20 * SAMPLE_RATE)
+        kt = np.linspace(0, 0.20, kick_len, endpoint=False)
+        k_freq = 130.0 * np.exp(-kt * 24.0) + 42.0
         k_phase = 2.0 * np.pi * np.cumsum(k_freq) / SAMPLE_RATE
-        k_env = np.exp(-kt * 15.0)
-        kick = np.sin(k_phase) * k_env * (1.15 * drum_energy)
-        kick[:int(0.004 * SAMPLE_RATE)] += np.random.uniform(-0.25, 0.25, int(0.004 * SAMPLE_RATE)) * drum_energy
+        k_env = np.exp(-kt * (14.0 if is_heavy else 18.0))
+        kick = np.sin(k_phase) * k_env * (1.1 if is_heavy else 0.85)
         
         end_k = min(TOTAL_SAMPLES, beat_start + kick_len)
         actual_k = end_k - beat_start
         if actual_k > 0:
-            left[beat_start:end_k] += kick[:actual_k] * 0.72
-            right[beat_start:end_k] += kick[:actual_k] * 0.72
+            left[beat_start:end_k] += kick[:actual_k] * 0.65
+            right[beat_start:end_k] += kick[:actual_k] * 0.65
             
-        # Snare / Cyber Clap (beats 2 & 4)
-        if beat in (1, 3):
-            snare_len = int(0.22 * SAMPLE_RATE)
-            st = np.linspace(0, 0.22, snare_len, endpoint=False)
-            s_noise = np.random.uniform(-1.0, 1.0, snare_len) * np.exp(-st * 22.0)
-            s_tone = np.sin(2.0 * np.pi * 190.0 * st) * np.exp(-st * 30.0)
-            snare = (s_noise * 0.65 + s_tone * 0.35) * drum_energy
+        # Snare / Turkish March Percussion
+        snare_len = int(0.18 * SAMPLE_RATE)
+        st = np.linspace(0, 0.18, snare_len, endpoint=False)
+        s_noise = np.random.uniform(-1.0, 1.0, snare_len) * np.exp(-st * 28.0)
+        s_tone = np.sin(2.0 * np.pi * 220.0 * st) * np.exp(-st * 36.0)
+        snare = (s_noise * 0.7 + s_tone * 0.3) * (0.95 if (beat == 1 or is_heavy) else 0.5)
+        
+        end_s = min(TOTAL_SAMPLES, beat_start + snare_len)
+        actual_s = end_s - beat_start
+        if actual_s > 0:
+            left[beat_start:end_s] += snare[:actual_s] * 0.45
+            right[beat_start:end_s] += snare[:actual_s] * 0.45
             
-            end_s = min(TOTAL_SAMPLES, beat_start + snare_len)
-            actual_s = end_s - beat_start
-            if actual_s > 0:
-                left[beat_start:end_s] += snare[:actual_s] * 0.52
-                right[beat_start:end_s] += snare[:actual_s] * 0.52
+        # Turkish Metallic Cymbals / Tambourine on beat 2 or offbeats
+        if is_heavy or beat == 1:
+            cym_len = int(0.26 * SAMPLE_RATE)
+            ct = np.linspace(0, 0.26, cym_len, endpoint=False)
+            c_noise = np.random.uniform(-1.0, 1.0, cym_len) * np.exp(-ct * (16.0 if is_major else 24.0))
+            cym = c_noise * (0.55 if is_major else 0.35)
+            end_c = min(TOTAL_SAMPLES, beat_start + cym_len)
+            actual_c = end_c - beat_start
+            if actual_c > 0:
+                left[beat_start:end_c] += cym[:actual_c] * 0.40
+                right[beat_start:end_c] += cym[:actual_c] * 0.40
 
-        # Galloping 16th Hi-Hats
-        for s16 in range(4):
-            hat_start = beat_start + s16 * samples_per_16th
-            hat_len = int(0.05 * SAMPLE_RATE)
-            ht = np.linspace(0, 0.05, hat_len, endpoint=False)
-            h_env = np.exp(-ht * (70.0 if s16 % 2 == 1 else 105.0))
-            accent = 0.85 if s16 % 2 == 1 else 0.42
-            if s16 == 0 and beat % 2 == 0:
-                accent = 0.65
-            hat = np.random.uniform(-1.0, 1.0, hat_len) * h_env * accent * 0.35 * drum_energy
-            
-            end_h = min(TOTAL_SAMPLES, hat_start + hat_len)
-            actual_h = end_h - hat_start
-            if actual_h > 0:
-                pan_l = 0.5 + 0.18 * np.sin(s16)
-                pan_r = 0.5 - 0.18 * np.sin(s16)
-                left[hat_start:end_h] += hat[:actual_h] * pan_l
-                right[hat_start:end_h] += hat[:actual_h] * pan_r
-
-# 2. DRIVING CYBER BASSLINE
-print("Synthesizing bassline...")
-for bar in range(NUM_BARS):
-    chord = CHORDS[bar]
-    root_freq = note_to_freq(chord[0]) / 2.0
-    bar_start = int(bar * BAR_SEC * SAMPLE_RATE)
+# 2. ACCOMPANIMENT & BASS (Alberti Bass / March Chords)
+print("Rendering Accompaniment & Bass...")
+for m in range(NUM_MEASURES):
+    chord = chords_by_measure[m]
+    m_start = int(m * MEASURE_16THS * samples_per_16th)
     
-    for b16 in range(16):
-        note_start = bar_start + b16 * samples_per_16th
-        note_len = int(samples_per_16th * 0.85)
-        bt = np.linspace(0, note_len / SAMPLE_RATE, note_len, endpoint=False)
+    # 8 sixteenth notes per measure: classical Alberti pattern (root, 5th, 3rd, 5th, root, 5th, 3rd, 5th)
+    pattern_notes = [chord[0], chord[1], chord[2], chord[1], chord[0], chord[1], chord[2], chord[3]]
+    
+    for s in range(MEASURE_16THS):
+        note_name = pattern_notes[s]
+        freq = note_to_freq(note_name)
+        note_start = m_start + s * samples_per_16th
+        dur_samples = int(samples_per_16th * 1.8)  # slightly sustained for warmth
         
-        oct = 2.0 if (b16 % 4 in (1, 3)) else 1.0
-        f = root_freq * oct
-        
-        saw = 2.0 * (f * bt - np.floor(0.5 + f * bt))
-        sqr = np.sign(np.sin(2.0 * np.pi * f * bt))
-        sub = np.sin(2.0 * np.pi * root_freq * bt)
-        
-        env = np.exp(-bt * 15.0)
-        if b16 % 4 == 0:
-            env[:int(0.03 * SAMPLE_RATE)] *= np.linspace(0.3, 1.0, int(0.03 * SAMPLE_RATE))
+        end_sample = min(TOTAL_SAMPLES, note_start + dur_samples)
+        actual_samples = end_sample - note_start
+        if actual_samples <= 0:
+            continue
             
-        bass_snd = (saw * 0.45 + sqr * 0.25 + sub * 0.45) * env * 0.52
+        t = np.linspace(0, actual_samples / SAMPLE_RATE, actual_samples, endpoint=False)
+        env = np.exp(-t * 9.0)
         
-        end_b = min(TOTAL_SAMPLES, note_start + note_len)
-        actual_b = end_b - note_start
-        if actual_b > 0:
-            left[note_start:end_b] += bass_snd[:actual_b]
-            right[note_start:end_b] += bass_snd[:actual_b]
+        # Warm piano acoustic tone: fundamental + harmonics
+        tone = np.sin(2.0 * np.pi * freq * t) * 0.65
+        tone += np.sin(2.0 * np.pi * freq * 2.0 * t) * 0.28
+        tone += np.sin(2.0 * np.pi * freq * 3.0 * t) * 0.12
+        tone += np.sin(2.0 * np.pi * freq * 4.0 * t) * 0.05
+        
+        sig = tone * env * 0.32
+        
+        # Panning
+        pan = 0.42 + 0.16 * (s % 2)
+        left[note_start:end_sample] += sig * pan
+        right[note_start:end_sample] += sig * (1.0 - pan)
 
-# 3. SYNTH ARPEGGIO
-print("Synthesizing arpeggios...")
-for bar in range(NUM_BARS):
-    chord = CHORDS[bar]
-    freqs = [note_to_freq(n) for n in chord] + [note_to_freq(chord[0]) * 2.0, note_to_freq(chord[1]) * 2.0]
-    bar_start = int(bar * BAR_SEC * SAMPLE_RATE)
-    
-    for a16 in range(16):
-        arp_start = bar_start + a16 * samples_per_16th
-        arp_len = int(samples_per_16th * 1.7)
-        at = np.linspace(0, arp_len / SAMPLE_RATE, arp_len, endpoint=False)
-        
-        idx = (a16 * 2 + (bar % 3)) % len(freqs)
-        f = freqs[idx]
-        
-        a_env = np.exp(-at * 19.0)
-        arp_l = np.sin(2.0 * np.pi * f * at) + 0.5 * np.sin(2.0 * np.pi * (f * 1.004) * at)
-        arp_r = np.sin(2.0 * np.pi * (f * 0.996) * at) + 0.5 * np.sin(2.0 * np.pi * (f * 2.0) * at)
-        
-        snd_l = arp_l * a_env * 0.20
-        snd_r = arp_r * a_env * 0.20
-        
-        end_a = min(TOTAL_SAMPLES, arp_start + arp_len)
-        actual_a = end_a - arp_start
-        if actual_a > 0:
-            left[arp_start:end_a] += snd_l[:actual_a]
-            right[arp_start:end_a] += snd_r[:actual_a]
-        if arp_start + arp_len > TOTAL_SAMPLES:
-            wrap_len = (arp_start + arp_len) - TOTAL_SAMPLES
-            left[:wrap_len] += snd_l[actual_a:actual_a + wrap_len]
-            right[:wrap_len] += snd_r[actual_a:actual_a + wrap_len]
-
-# 4. EPIC HEROIC LEAD MELODY
-print("Synthesizing lead melody...")
-MELODY = [
-    # Bars 1-8 (Theme A)
-    ('D4', 0, 1.5), ('E4', 1.5, 0.5), ('F4', 2.0, 2.0),
-    ('G4', 4.0, 1.5), ('A4', 5.5, 0.5), ('D5', 6.0, 2.0),
-    ('C5', 8.0, 1.5), ('A4', 9.5, 0.5), ('G4', 10.0, 1.0), ('F4', 11.0, 1.0),
-    ('E4', 12.0, 2.0), ('F4', 14.0, 1.0), ('E4', 15.0, 1.0),
-    ('D4', 16.0, 1.5), ('F4', 17.5, 0.5), ('A4', 18.0, 2.0),
-    ('Bb4', 20.0, 1.5), ('C5', 21.5, 0.5), ('D5', 22.0, 2.0),
-    ('E5', 24.0, 1.5), ('F5', 25.5, 0.5), ('E5', 26.0, 1.0), ('D5', 27.0, 1.0),
-    ('C5', 28.0, 2.0), ('A4', 30.0, 1.0), ('C5', 31.0, 1.0),
-    # Bars 9-16 (Theme B - Climactic ascent)
-    ('D5', 32.0, 2.0), ('C5', 34.0, 1.0), ('Bb4', 35.0, 1.0),
-    ('A4', 36.0, 2.0), ('F4', 38.0, 1.0), ('G4', 39.0, 1.0),
-    ('A4', 40.0, 1.5), ('Bb4', 41.5, 0.5), ('C5', 42.0, 2.0),
-    ('D5', 44.0, 1.5), ('E5', 45.5, 0.5), ('F5', 46.0, 2.0),
-    # Bars 17-24 (Theme C - Gallop rush)
-    ('G5', 48.0, 1.5), ('F5', 49.5, 0.5), ('E5', 50.0, 1.0), ('D5', 51.0, 1.0),
-    ('C5', 52.0, 2.0), ('A4', 54.0, 2.0),
-    ('Bb4', 56.0, 1.5), ('C5', 57.5, 0.5), ('D5', 58.0, 2.0),
-    ('E5', 60.0, 1.5), ('F5', 61.5, 0.5), ('G5', 62.0, 2.0),
-    ('A5', 64.0, 2.0), ('G5', 66.0, 1.0), ('F5', 67.0, 1.0),
-    ('E5', 68.0, 2.0), ('D5', 70.0, 1.0), ('C5', 71.0, 1.0),
-    ('D5', 72.0, 2.0), ('E5', 74.0, 2.0),
-    ('F5', 76.0, 2.0), ('G5', 78.0, 2.0),
-    # Bars 25-32 (Theme D - Climax & Harmonic resolution to loop point)
-    ('A5', 80.0, 2.5), ('G5', 82.5, 0.5), ('F5', 83.0, 1.0),
-    ('E5', 84.0, 2.0), ('F5', 86.0, 1.0), ('D5', 87.0, 1.0),
-    ('C5', 88.0, 1.5), ('D5', 89.5, 0.5), ('E5', 90.0, 2.0),
-    ('F5', 92.0, 1.5), ('G5', 93.5, 0.5), ('A5', 94.0, 2.0),
-    ('Bb5', 96.0, 2.0), ('A5', 98.0, 1.0), ('G5', 99.0, 1.0),
-    ('F5', 100.0, 2.0), ('E5', 102.0, 2.0),
-    ('D5', 104.0, 3.0), ('E5', 107.0, 1.0),
-    ('D5', 108.0, 4.0),
-    ('A4', 112.0, 2.0), ('D5', 114.0, 2.0),
-    ('C#5', 116.0, 4.0),
-    ('D5', 120.0, 4.0), # Seamless resolution matching Bar 1 D4/D5
-]
-
-for note, beat_offset, dur_beats in MELODY:
-    start_samp = int(beat_offset * samples_per_beat)
-    dur_samp = int((dur_beats * BEAT_SEC) * SAMPLE_RATE)
-    
-    if start_samp >= TOTAL_SAMPLES:
+# 3. MELODY (Crystal Clear High Piano / Harpsichord Lead)
+print("Rendering Melody...")
+for start_16th, dur_16th, note_name in melody_events:
+    freq = note_to_freq(note_name)
+    if freq <= 0:
         continue
         
-    freq = note_to_freq(note)
-    lt = np.linspace(0, dur_samp / SAMPLE_RATE, dur_samp, endpoint=False)
+    start_sample = int(start_16th * samples_per_16th)
+    dur_sec = dur_16th * SIXTEENTH_SEC
+    note_samples = int((dur_sec + 0.12) * SAMPLE_RATE)  # slight ring-out
     
-    vib = np.sin(2.0 * np.pi * 5.6 * lt) * 4.0
-    lead1 = np.sin(2.0 * np.pi * (freq + vib) * lt)
-    lead2 = 0.5 * np.sin(2.0 * np.pi * (freq * 1.006 + vib) * lt)
-    lead3 = 0.5 * np.sin(2.0 * np.pi * (freq * 0.994 + vib) * lt)
-    lead4 = 0.35 * np.sin(2.0 * np.pi * (freq * 2.0) * lt)
-    
-    env = np.ones_like(lt)
-    attack_len = min(len(lt), int(0.035 * SAMPLE_RATE))
-    decay_len = min(len(lt), int(0.075 * SAMPLE_RATE))
-    env[:attack_len] = np.linspace(0, 1, attack_len)
-    env[-decay_len:] = np.linspace(1, 0, decay_len)
-    
-    lead_snd = (lead1 + lead2 + lead3 + lead4) * env * 0.30
-    
-    end_samp = min(TOTAL_SAMPLES, start_samp + dur_samp)
-    act_len = end_samp - start_samp
-    if act_len > 0:
-        left[start_samp:end_samp] += lead_snd[:act_len] * 0.75
-        right[start_samp:end_samp] += lead_snd[:act_len] * 0.75
+    end_sample = min(TOTAL_SAMPLES, start_sample + note_samples)
+    actual_samples = end_sample - start_sample
+    if actual_samples <= 0:
+        continue
         
-    if start_samp + dur_samp > TOTAL_SAMPLES:
-        wrap = (start_samp + dur_samp) - TOTAL_SAMPLES
-        left[:wrap] += lead_snd[act_len:act_len + wrap] * 0.75
-        right[:wrap] += lead_snd[act_len:act_len + wrap] * 0.75
-
-# 5. VECTORIZED AMBIENT STEREO REVERB & DELAY WITH CIRCULAR WRAPAROUND
-print("Applying reverb & circular loop wrap...")
-delay_samples_l = int(0.35 * SAMPLE_RATE)
-delay_samples_r = int(0.48 * SAMPLE_RATE)
-
-delay_buf_l = np.roll(right, delay_samples_l) * 0.26
-delay_buf_r = np.roll(left, delay_samples_r) * 0.26
-
-left += delay_buf_l
-right += delay_buf_r
-
-# Normalize & Soft Limiter
-print("Mastering & Normalizing...")
-max_val = max(np.max(np.abs(left)), np.max(np.abs(right)))
-if max_val > 0:
-    left = np.tanh(left / max_val * 1.35) * 0.92
-    right = np.tanh(right / max_val * 1.35) * 0.92
-
-out_path = 'audio/force_of_the_horse_bgm.wav'
-with wave.open(out_path, 'w') as wf:
-    wf.setnchannels(2)
-    wf.setsampwidth(2)
-    wf.setframerate(SAMPLE_RATE)
+    t = np.linspace(0, actual_samples / SAMPLE_RATE, actual_samples, endpoint=False)
     
-    interleaved = np.empty((TOTAL_SAMPLES * 2,), dtype=np.int16)
-    interleaved[0::2] = (left * 32767.0).astype(np.int16)
-    interleaved[1::2] = (right * 32767.0).astype(np.int16)
-    wf.writeframes(interleaved.tobytes())
+    # Sharp attack, singing decay
+    attack = np.minimum(1.0, t / 0.003)
+    decay = np.exp(-t * (4.5 if dur_16th >= 4 else 7.5))
+    env = attack * decay
+    
+    # Acoustic Piano / Bells Lead
+    lead = np.sin(2.0 * np.pi * freq * t) * 0.60
+    lead += np.sin(2.0 * np.pi * freq * 2.0 * t) * 0.30
+    lead += np.sin(2.0 * np.pi * freq * 3.0 * t) * 0.18
+    lead += np.sin(2.0 * np.pi * freq * 4.0 * t) * 0.08
+    lead += np.sin(2.0 * np.pi * freq * 5.0 * t) * 0.04
+    
+    # Upper octave shine
+    lead += np.sin(2.0 * np.pi * freq * 2.002 * t) * 0.12
+    
+    sig = lead * env * 0.48
+    
+    # Slight stereo chorus
+    left[start_sample:end_sample] += sig * 0.52
+    right[start_sample:end_sample] += sig * 0.48
 
-print(f"BGM generated successfully at {out_path}!")
+# 4. MASTERING & SEAMLESS LOOP CROSSFADE
+print("Mastering & Applying Seamless Loop...")
+
+# Soft clipping / Limiter
+mix_l = np.tanh(left * 1.35)
+mix_r = np.tanh(right * 1.35)
+
+# Normalization to -0.6 dB
+peak = max(np.max(np.abs(mix_l)), np.max(np.abs(mix_r)))
+if peak > 0:
+    mix_l = (mix_l / peak) * 0.94
+    mix_r = (mix_r / peak) * 0.94
+
+# Seamless loop crossfade at the boundary (100ms)
+fade_len = int(0.10 * SAMPLE_RATE)
+for i in range(fade_len):
+    w = i / float(fade_len)
+    mix_l[i] = mix_l[i] * w + mix_l[TOTAL_SAMPLES - fade_len + i] * (1.0 - w)
+    mix_r[i] = mix_r[i] * w + mix_r[TOTAL_SAMPLES - fade_len + i] * (1.0 - w)
+
+# Convert to 16-bit PCM
+audio_int16_l = np.int16(mix_l * 32767)
+audio_int16_r = np.int16(mix_r * 32767)
+
+interleaved = np.empty((TOTAL_SAMPLES * 2,), dtype=np.int16)
+interleaved[0::2] = audio_int16_l
+interleaved[1::2] = audio_int16_r
+
+output_path = 'audio/force_of_the_horse_bgm.wav'
+with wave.open(output_path, 'wb') as wav_file:
+    wav_file.setnchannels(2)
+    wav_file.setsampwidth(2)
+    wav_file.setframerate(SAMPLE_RATE)
+    wav_file.writeframes(interleaved.tobytes())
+
+print(f"Successfully generated Mozart's Turkish March BGM at: {output_path} ({TOTAL_SEC:.2f}s, {len(interleaved.tobytes())} bytes)")
