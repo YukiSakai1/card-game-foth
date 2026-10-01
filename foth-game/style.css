@@ -7811,20 +7811,20 @@ body #closeup-layer .closeup-toast {
   0%, 100% { box-shadow: 0 0 0 2px rgba(255, 213, 74, .25), 0 0 14px 2px rgba(255, 213, 74, .7); }
   50% { box-shadow: 0 0 0 4px rgba(255, 213, 74, .35), 0 0 26px 8px rgba(255, 213, 74, 1); }
 }
-/* コスト：左上の円形マーク */
+/* コスト：左上の円形マーク（馬蹄形コスト枠に正確に配置） */
 .card-explain-ring.ring-cost {
-  left: 2%;
-  top: 0.5%;
-  width: 21%;
+  left: 3.5%;
+  top: 3.0%;
+  width: 18.5%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
 }
-/* 走破数・ガード値：下部の2つの数値 */
+/* 走破数・ガード値：下部の2つの数値（走破・ガードバッジ枠に正確に配置） */
 .card-explain-ring.ring-stats {
-  left: 49%;
-  top: 90.5%;
-  width: 50.5%;
-  height: 9%;
+  left: 48.5%;
+  top: 85.2%;
+  width: 47.5%;
+  height: 11.0%;
   border-radius: 10px;
 }
 .card-explain-ring.ring-cost.on { transform: scale(1); }
