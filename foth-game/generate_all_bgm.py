@@ -928,6 +928,366 @@ def generate_yugioh_arena():
 
     save_wav('audio/bgm_yugioh_arena.wav', left, right)
 
+# ==========================================
+# 7. TRACK 7: DRAGON QUEST OVERTURE (ロトの序曲風 冒険のファンファーレ＆マーチ)
+# ==========================================
+def generate_dq_overture():
+    BPM = 122.0
+    BEAT_SEC = 60.0 / BPM
+    SIXTEENTH_SEC = BEAT_SEC / 4.0
+    MEASURE_16THS = 16 # 4/4 Time Signature
+    NUM_MEASURES = 40
+    TOTAL_16THS = NUM_MEASURES * MEASURE_16THS
+    TOTAL_SAMPLES = int(TOTAL_16THS * SIXTEENTH_SEC * SAMPLE_RATE)
+
+    left = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    right = np.zeros(TOTAL_SAMPLES, dtype=np.float64)
+    samples_per_beat = int(BEAT_SEC * SAMPLE_RATE)
+    samples_per_16th = int(SIXTEENTH_SEC * SAMPLE_RATE)
+
+    melody_events = []
+    harmony_events = []
+    strings_events = []
+
+    def add_m(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': melody_events.append((c, dur, n))
+            c += dur
+
+    def add_h(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': harmony_events.append((c, dur, n))
+            c += dur
+
+    def add_s(start_m, notes):
+        c = start_m * MEASURE_16THS
+        for n, dur in notes:
+            if n != '_': strings_events.append((c, dur, n))
+            c += dur
+
+    # --- PART 1: ROYAL BRASS FANFARE (Measures 0 - 7) ---
+    fanfare_m = [
+        # M0
+        ('C4', 3), ('E4', 1), ('G4', 4), ('C5', 4), ('E5', 4),
+        # M1
+        ('G5', 6), ('E5', 2), ('C5', 4), ('G4', 4),
+        # M2
+        ('F5', 3), ('E5', 1), ('D5', 4), ('G4', 4), ('D5', 4),
+        # M3
+        ('E5', 8), ('C5', 6), ('_', 2),
+        # M4
+        ('G4', 3), ('A4', 1), ('B4', 4), ('C5', 4), ('D5', 4),
+        # M5
+        ('E5', 3), ('F5', 1), ('G5', 4), ('A5', 4), ('B5', 4),
+        # M6
+        ('C6', 6), ('G5', 2), ('E5', 4), ('C5', 4),
+        # M7
+        ('G5', 8), ('G4', 4), ('_', 4),
+    ]
+    add_m(0, fanfare_m)
+
+    fanfare_h = [
+        # M0
+        ('C3', 3), ('C4', 1), ('E4', 4), ('G4', 4), ('C5', 4),
+        # M1
+        ('E5', 6), ('C5', 2), ('G4', 4), ('E4', 4),
+        # M2
+        ('D5', 3), ('C5', 1), ('B4', 4), ('D4', 4), ('B4', 4),
+        # M3
+        ('C5', 8), ('G4', 6), ('_', 2),
+        # M4
+        ('E4', 3), ('F4', 1), ('G4', 4), ('A4', 4), ('B4', 4),
+        # M5
+        ('C5', 3), ('D5', 1), ('E5', 4), ('F5', 4), ('G5', 4),
+        # M6
+        ('A5', 6), ('E5', 2), ('C5', 4), ('G4', 4),
+        # M7
+        ('D5', 8), ('B3', 4), ('_', 4),
+    ]
+    add_h(0, fanfare_h)
+
+    # --- PART 2: HEROIC ADVENTURE MARCH (Measures 8 - 23) ---
+    march_theme = [
+        # M8
+        ('C5', 3), ('D5', 1), ('E5', 2), ('C5', 2), ('G4', 4), ('C5', 4),
+        # M9
+        ('D5', 3), ('E5', 1), ('F5', 2), ('D5', 2), ('G4', 4), ('D5', 4),
+        # M10
+        ('E5', 2), ('F5', 2), ('G5', 2), ('A5', 2), ('G5', 4), ('E5', 4),
+        # M11
+        ('D5', 6), ('C5', 2), ('D5', 6), ('_', 2),
+        # M12
+        ('C5', 3), ('D5', 1), ('E5', 2), ('C5', 2), ('G4', 4), ('C5', 4),
+        # M13
+        ('F5', 3), ('G5', 1), ('A5', 2), ('F5', 2), ('C5', 4), ('A5', 4),
+        # M14
+        ('G5', 3), ('E5', 1), ('C5', 2), ('G4', 2), ('A4', 2), ('B4', 2), ('C5', 2), ('D5', 2),
+        # M15
+        ('C5', 8), ('C5', 6), ('_', 2),
+
+        # M16 (Soaring Trio / Adventure Bridge)
+        ('A4', 4), ('C5', 4), ('E5', 4), ('A5', 4),
+        # M17
+        ('G5', 3), ('F5', 1), ('E5', 4), ('D5', 4), ('C5', 4),
+        # M18
+        ('F5', 4), ('A5', 4), ('C6', 4), ('F6', 2), ('E6', 2),
+        # M19
+        ('D6', 8), ('G5', 6), ('_', 2),
+        # M20
+        ('E5', 3), ('F5', 1), ('G5', 2), ('E5', 2), ('C5', 4), ('G4', 4),
+        # M21
+        ('A4', 3), ('B4', 1), ('C5', 2), ('A4', 2), ('F4', 4), ('C4', 4),
+        # M22
+        ('D4', 2), ('F4', 2), ('A4', 2), ('C5', 2), ('B4', 3), ('A4', 1), ('B4', 4),
+        # M23
+        ('C5', 8), ('C5', 6), ('_', 2),
+    ]
+    add_m(8, march_theme)
+
+    march_harmony = [
+        # M8
+        ('G4', 3), ('A4', 1), ('C5', 2), ('G4', 2), ('E4', 4), ('G4', 4),
+        # M9
+        ('B4', 3), ('C5', 1), ('D5', 2), ('B4', 2), ('D4', 4), ('B4', 4),
+        # M10
+        ('C5', 2), ('D5', 2), ('E5', 2), ('F5', 2), ('E5', 4), ('C5', 4),
+        # M11
+        ('B4', 6), ('A4', 2), ('B4', 6), ('_', 2),
+        # M12
+        ('G4', 3), ('A4', 1), ('C5', 2), ('G4', 2), ('E4', 4), ('G4', 4),
+        # M13
+        ('A4', 3), ('B4', 1), ('C5', 2), ('A4', 2), ('F4', 4), ('C5', 4),
+        # M14
+        ('E5', 3), ('C5', 1), ('G4', 2), ('E4', 2), ('F4', 2), ('G4', 2), ('A4', 2), ('B4', 2),
+        # M15
+        ('G4', 8), ('E4', 6), ('_', 2),
+
+        # M16
+        ('E4', 4), ('A4', 4), ('C5', 4), ('E5', 4),
+        # M17
+        ('E5', 3), ('D5', 1), ('C5', 4), ('B4', 4), ('A4', 4),
+        # M18
+        ('D5', 4), ('F5', 4), ('A5', 4), ('D6', 2), ('C6', 2),
+        # M19
+        ('B5', 8), ('D5', 6), ('_', 2),
+        # M20
+        ('C5', 3), ('D5', 1), ('E5', 2), ('C5', 2), ('G4', 4), ('E4', 4),
+        # M21
+        ('F4', 3), ('G4', 1), ('A4', 2), ('F4', 2), ('C4', 4), ('A3', 4),
+        # M22
+        ('B3', 2), ('D4', 2), ('F4', 2), ('A4', 2), ('G4', 3), ('F#4', 1), ('G4', 4),
+        # M23
+        ('G4', 8), ('E4', 6), ('_', 2),
+    ]
+    add_h(8, march_harmony)
+
+    # --- PART 3: FULL ORCHESTRAL REPRISE WITH SOARING STRINGS (Measures 24 - 39) ---
+    # Octave up for majestic climax
+    march_high = [
+        # M24
+        ('C6', 3), ('D6', 1), ('E6', 2), ('C6', 2), ('G5', 4), ('C6', 4),
+        # M25
+        ('D6', 3), ('E6', 1), ('F6', 2), ('D6', 2), ('G5', 4), ('D6', 4),
+        # M26
+        ('E6', 2), ('F6', 2), ('G6', 2), ('A6', 2), ('G6', 4), ('E6', 4),
+        # M27
+        ('D6', 6), ('C6', 2), ('D6', 6), ('_', 2),
+        # M28
+        ('C6', 3), ('D6', 1), ('E6', 2), ('C6', 2), ('G5', 4), ('C6', 4),
+        # M29
+        ('F6', 3), ('G6', 1), ('A6', 2), ('F6', 2), ('C6', 4), ('A6', 4),
+        # M30
+        ('G6', 3), ('E6', 1), ('C6', 2), ('G5', 2), ('A5', 2), ('B5', 2), ('C6', 2), ('D6', 2),
+        # M31
+        ('C6', 8), ('C6', 6), ('_', 2),
+
+        # M32 (Outro March / Heroic Finale before Loop)
+        ('E6', 3), ('F6', 1), ('G6', 2), ('E6', 2), ('C6', 4), ('G5', 4),
+        # M33
+        ('A5', 3), ('B5', 1), ('C6', 2), ('A5', 2), ('F5', 4), ('C5', 4),
+        # M34
+        ('D5', 2), ('F5', 2), ('A5', 2), ('C6', 2), ('B5', 3), ('A5', 1), ('B5', 4),
+        # M35
+        ('C6', 8), ('G5', 4), ('E5', 4),
+        # M36 (Grand Royal Fanfare Cadence)
+        ('C5', 3), ('E5', 1), ('G5', 4), ('C6', 4), ('E6', 4),
+        # M37
+        ('G6', 6), ('E6', 2), ('C6', 4), ('G5', 4),
+        # M38
+        ('F6', 3), ('E6', 1), ('D6', 4), ('G5', 4), ('B5', 4),
+        # M39
+        ('C6', 8), ('C5', 6), ('_', 2),
+    ]
+    add_m(24, march_high)
+    add_s(24, march_high)
+
+    # 1. BATTLE / ROYAL PERCUSSION (Timpani Rolls, March Snare & Crash Cymbals)
+    for m in range(NUM_MEASURES):
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        is_fanfare = (m < 8 or m >= 36)
+
+        # Timpani Kick on downbeats (Beat 1 & Beat 3 in 4/4)
+        for beat in range(4):
+            b_start = m_start + beat * samples_per_beat
+            if beat == 0 or beat == 2 or is_fanfare:
+                tlen = int(0.35 * SAMPLE_RATE)
+                tt = np.linspace(0, 0.35, tlen, endpoint=False)
+                # Resonant Orchestral Timpani
+                timp_pitch = 65.0 if (m % 2 == 0) else 49.0 # C vs G
+                timp = np.sin(2 * np.pi * (timp_pitch * (1.0 + 0.8 * np.exp(-tt * 25.0))) * tt) * np.exp(-tt * 8.0) * 1.35
+                et = min(TOTAL_SAMPLES, b_start + tlen)
+                at = et - b_start
+                if at > 0:
+                    left[b_start:et] += timp[:at] * 0.70
+                    right[b_start:et] += timp[:at] * 0.70
+
+            # March Snare (Crisp orchestral march rolls on beats 2 & 4 + 16th ghost notes)
+            if not is_fanfare or (m in [3, 7, 39]):
+                for s in range(4):
+                    s_start = b_start + s * samples_per_16th
+                    slen = int(0.08 * SAMPLE_RATE)
+                    st = np.linspace(0, 0.08, slen, endpoint=False)
+                    is_accent = (beat in [1, 3] and s == 0)
+                    sn_vol = 0.85 if is_accent else 0.35
+                    sn = np.random.uniform(-1, 1, slen) * np.exp(-st * 36.0) * sn_vol
+                    es = min(TOTAL_SAMPLES, s_start + slen)
+                    as_ = es - s_start
+                    if as_ > 0:
+                        left[s_start:es] += sn[:as_] * 0.40
+                        right[s_start:es] += sn[:as_] * 0.40
+
+        # Crash Cymbal on M0, M4, M8, M16, M24, M36
+        if m in [0, 4, 8, 16, 24, 32, 36]:
+            clen = int(1.2 * SAMPLE_RATE)
+            ct = np.linspace(0, 1.2, clen, endpoint=False)
+            cym = np.random.uniform(-1, 1, clen) * np.exp(-ct * 3.8) * 0.55
+            ec = min(TOTAL_SAMPLES, m_start + clen)
+            ac = ec - m_start
+            if ac > 0:
+                left[m_start:ec] += cym[:ac] * 0.45
+                right[m_start:ec] += cym[:ac] * 0.55
+
+    # 2. TUBA & BASS SECTION (Marching Oom-Pah Bass)
+    bass_notes = []
+    for m in range(NUM_MEASURES):
+        if m < 8:
+            # Fanfare Pedals
+            if m in [0, 1, 3]: chord = ['C2', 'G2', 'C3', 'G2']
+            elif m == 2: chord = ['G2', 'D2', 'G2', 'B2']
+            elif m in [4, 5]: chord = ['C2', 'F2', 'G2', 'B2']
+            elif m == 6: chord = ['A2', 'E2', 'F2', 'G2']
+            else: chord = ['G2', 'D2', 'G2', 'G1']
+        elif 8 <= m < 16 or 24 <= m < 32:
+            # March Section A
+            idx = (m - 8) % 8
+            if idx == 0: chord = ['C2', 'G2', 'E2', 'G2']
+            elif idx == 1: chord = ['G2', 'D2', 'B1', 'D2']
+            elif idx == 2: chord = ['C2', 'G2', 'A2', 'E2']
+            elif idx == 3: chord = ['G2', 'D2', 'G2', 'B1']
+            elif idx == 4: chord = ['C2', 'G2', 'E2', 'G2']
+            elif idx == 5: chord = ['F2', 'C2', 'A1', 'C2']
+            elif idx == 6: chord = ['G2', 'E2', 'F2', 'G2']
+            else: chord = ['C2', 'G2', 'C3', 'G2']
+        elif 16 <= m < 24:
+            # Bridge
+            idx = (m - 16) % 8
+            if idx == 0: chord = ['A1', 'E2', 'C2', 'E2']
+            elif idx == 1: chord = ['E2', 'B1', 'G#1', 'B1']
+            elif idx == 2: chord = ['F1', 'C2', 'A1', 'C2']
+            elif idx == 3: chord = ['G1', 'D2', 'B1', 'D2']
+            elif idx == 4: chord = ['C2', 'G2', 'E2', 'G2']
+            elif idx == 5: chord = ['F1', 'C2', 'A1', 'C2']
+            elif idx == 6: chord = ['D2', 'F2', 'G2', 'B1']
+            else: chord = ['C2', 'G2', 'C3', 'G2']
+        else:
+            # Outro / Loop
+            chord = ['C2', 'G2', 'E2', 'G2'] if m % 2 == 0 else ['G2', 'D2', 'G2', 'B1']
+        bass_notes.append(chord)
+
+    for m in range(NUM_MEASURES):
+        chord = bass_notes[m]
+        m_start = int(m * MEASURE_16THS * samples_per_16th)
+        for beat in range(4):
+            fq = note_to_freq(chord[beat])
+            b_start = m_start + beat * samples_per_beat
+            blen = int(samples_per_beat * 0.92)
+            eb = min(TOTAL_SAMPLES, b_start + blen)
+            ab = eb - b_start
+            if ab > 0:
+                t = np.linspace(0, ab / SAMPLE_RATE, ab, endpoint=False)
+                # Rich Warm Brass Tuba
+                saw = 2.0 * (fq * t - np.floor(0.5 + fq * t))
+                sin = np.sin(2 * np.pi * fq * t)
+                env = np.exp(-t * 6.5) * np.minimum(1.0, t / 0.01)
+                tuba = (saw * 0.45 + sin * 0.55) * env * 0.65
+                left[b_start:eb] += tuba * 0.50
+                right[b_start:eb] += tuba * 0.50
+
+    # 3. FRENCH HORNS & BRASS HARMONY
+    for s16, dur, n_name in harmony_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.18) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.015) * np.exp(-t * (2.8 if dur >= 6 else 6.0))
+            vib = 1.0 + 0.006 * np.sin(2 * np.pi * 5.2 * t)
+            f_vib = fq * vib
+            # Warm Horns
+            horn = (np.sin(2 * np.pi * f_vib * t) * 0.60 +
+                    np.sin(4 * np.pi * f_vib * t) * 0.28 +
+                    np.sin(6 * np.pi * f_vib * t) * 0.12) * env * 0.38
+            left[n_start:es] += horn * 0.42
+            right[n_start:es] += horn * 0.58
+
+    # 4. HEROIC TRUMPET LEAD (Glorious Dragon Quest Fanfare & Adventure Lead)
+    for s16, dur, n_name in melody_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.20) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.008) * np.exp(-t * (2.2 if dur >= 6 else 5.2))
+            vib = 1.0 + (0.009 if dur >= 4 else 0.003) * np.sin(2 * np.pi * 5.8 * t)
+            f_vib = fq * vib
+            # Brilliant multi-harmonic Royal Trumpet
+            lead = (np.sin(2 * np.pi * f_vib * t) * 0.50 +
+                    np.sin(4 * np.pi * f_vib * t) * 0.30 +
+                    np.sin(6 * np.pi * f_vib * t) * 0.20 +
+                    np.sin(8 * np.pi * f_vib * t) * 0.12 +
+                    np.sin(10 * np.pi * f_vib * t) * 0.06) * env * 0.52
+            left[n_start:es] += lead * 0.54
+            right[n_start:es] += lead * 0.46
+
+    # 5. SOARING ORCHESTRAL STRINGS & FLUTE (High Octaves in Climax)
+    for s16, dur, n_name in strings_events:
+        fq = note_to_freq(n_name)
+        if fq <= 0: continue
+        n_start = int(s16 * samples_per_16th)
+        dur_s = int((dur * SIXTEENTH_SEC + 0.25) * SAMPLE_RATE)
+        es = min(TOTAL_SAMPLES, n_start + dur_s)
+        as_ = es - n_start
+        if as_ > 0:
+            t = np.linspace(0, as_ / SAMPLE_RATE, as_, endpoint=False)
+            env = np.minimum(1.0, t / 0.02) * np.exp(-t * (1.8 if dur >= 6 else 4.5))
+            vib = 1.0 + 0.012 * np.sin(2 * np.pi * 6.0 * t)
+            f_vib = fq * vib
+            flute = (np.sin(2 * np.pi * f_vib * t) * 0.70 +
+                     np.sin(4 * np.pi * f_vib * t) * 0.20 +
+                     np.sin(6 * np.pi * f_vib * t) * 0.10) * env * 0.35
+            left[n_start:es] += flute * 0.48
+            right[n_start:es] += flute * 0.52
+
+    save_wav('audio/bgm_dq_overture.wav', left, right)
+
 if __name__ == '__main__':
     print("=== Generating FORCE OF THE HORSE Music Suite ===")
     generate_turkish_march()
@@ -936,6 +1296,8 @@ if __name__ == '__main__':
     generate_grand_prix()
     generate_rydeen()
     generate_yugioh_arena()
+    generate_dq_overture()
     print("=== All BGM Tracks Generated Successfully ===")
+
 
 

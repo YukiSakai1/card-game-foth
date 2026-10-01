@@ -3281,7 +3281,8 @@
     'william': { name: 'ウィリアム・テル序曲 (Gallop)', src: 'audio/bgm_william_tell.wav?v=3' },
     'cyber': { name: 'Cyber Turf (疾走電脳)', src: 'audio/bgm_cyber_turf.wav?v=3' },
     'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' },
-    'yugioh': { name: '決闘闘技場 (遊戯王風 古代コロシアム)', src: 'audio/bgm_yugioh_arena.wav?v=3' }
+    'yugioh': { name: '決闘闘技場 (遊戯王風 古代コロシアム)', src: 'audio/bgm_yugioh_arena.wav?v=3' },
+    'dq': { name: '冒険のファンファーレ＆マーチ (ドラクエ序曲風)', src: 'audio/bgm_dq_overture.wav?v=3' }
   };
 
   var currentBgmTrackKey = 'turkish';
