@@ -1487,6 +1487,11 @@
     phase = 'idle';
     hasRunThisTurn = false;
     cpuHorseCard = null;
+    fieldGuard = null;
+    field = null;
+    selectedHorse = null;
+    selectedForces = [];
+    runBonus = 0;
     renderAll();
     checkVictory();
     if (!victoryShown) cmdDraw();
@@ -2034,48 +2039,10 @@
     if (!selectedHorse || isCpuTurn) return;
     var totalRun = effectiveRun(selectedHorse, runBonus);
     var horseInPlay = selectedHorse;
-    var forcesToPay = selectedForces.slice();
     var modifierText = runModifiers(selectedHorse).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
 
-    function flyCardOut(card, destRect) {
-      var el = cardElById(card.id);
-      if (el) {
-        return flyGhost(el, destRect);
-      }
-      var handRect = $('hand-row').getBoundingClientRect();
-      var dummy = makeCardDummy(card, handRect);
-      return flyGhost(dummy, destRect).then(function () { dummy.remove(); });
-    }
-
-    /* STEP 1: フォースカードを支払う → STEP 2: 馬カードをフィールドに出す */
-    function payForcesThenPlaceHorse() {
-      setNarrator('コストとして<b>フォースカード</b>を支払うよ…');
-      var chain = Promise.resolve();
-      forcesToPay.forEach(function (fc) {
-        chain = chain.then(function () {
-          var farmRect = $('zone-farm').getBoundingClientRect();
-          return flyCardOut(fc, farmRect).then(function () {
-            hand = hand.filter(function (c) { return c.id !== fc.id; });
-            farm.push(fc);
-            renderAll();
-            return sleep(220);
-          });
-        });
-      });
-      return chain.then(function () {
-        setNarrator('<b>' + horseInPlay.name + '</b> をフィールドに出した！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。');
-        var fieldRect = $('zone-field').getBoundingClientRect();
-        return flyCardOut(horseInPlay, fieldRect).then(function () {
-          hand = hand.filter(function (c) { return c.id !== horseInPlay.id; });
-          if (field) farm.push(field);
-          field = horseInPlay;
-          fieldGuard = null;
-          renderAll();
-          CardCloseup.show(horseInPlay, { label: '走破！', autoHideMs: 1800 });
-          return sleep(500);
-        });
-      });
-    }
+    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。');
+    CardCloseup.show(horseInPlay, { label: '走破！', autoHideMs: 1800 });
 
     /* STEP 3: 相手が考える → STEP 4: 走破成功/失敗の結果表示 */
     function afterField() {
@@ -2237,17 +2204,15 @@
       });
     }
 
-    payForcesThenPlaceHorse().then(function () {
-      if (interactionMode === 'freeplay' && !isCpuTurn && runSupportCards().length > 0) {
-        pendingAfterField = function () {
-          totalRun = effectiveRun(horseInPlay, runBonus);
-          afterField();
-        };
-        offerRunSupport();
-      } else {
+    if (interactionMode === 'freeplay' && !isCpuTurn && runSupportCards().length > 0) {
+      pendingAfterField = function () {
+        totalRun = effectiveRun(horseInPlay, runBonus);
         afterField();
-      }
-    });
+      };
+      offerRunSupport();
+    } else {
+      afterField();
+    }
   }
 
   /* ===================== アイテム効果の適用 ===================== */
@@ -2352,11 +2317,10 @@
 
       if (phase === 'select_horse') {
         if (card.type !== 'horse') { shakeCard(id); return; }
-        selectedHorse = card;
         var cost = card.cost || 2;
         var forces = hand.filter(function (c) { return c.type === 'force'; });
         if (forces.length < cost) {
-          showToast('フォースカードが不足しています');
+          showToast('フォースカードが不足しています（必要: ' + cost + '枚）');
           setNarrator('⚠️ コストとなる<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
           Haptics.warn();
           shakeCard(id);
@@ -2364,7 +2328,27 @@
           renderAll();
           return;
         }
-        beginForceSelection();
+
+        selectedHorse = card;
+        selectedForces = [];
+
+        // 馬カードを手札からフィールドへ即座に移動・アニメーション
+        el.style.pointerEvents = 'none';
+        el.classList.add('selected');
+        var fieldRect = $('zone-field').getBoundingClientRect();
+        flyGhost(el, fieldRect).then(function () {
+          hand = hand.filter(function (c) { return c.id !== card.id; });
+          if (field) farm.push(field);
+          field = card;
+          fieldGuard = null;
+          phase = 'select_force';
+          renderAll();
+          Haptics.place();
+          if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+          var horseName = card.name || '馬カード';
+          setNarrator('<b>' + horseName + '</b>をフィールドに出しました！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
+          showToast('【' + horseName + '】を出しました！ フォースカードを' + cost + '枚選んでください');
+        });
         return;
       }
 
@@ -2374,15 +2358,28 @@
         selectedForces.push(card);
         el.style.pointerEvents = 'none';
         el.classList.add('selected');
-        var cost = selectedHorse.cost || 2;
-        if (selectedForces.length >= cost) {
-          executeRun();
-        } else {
-          var remaining = cost - selectedForces.length;
-          var horseName = (selectedHorse && selectedHorse.name) ? selectedHorse.name : '馬カード';
-          setNarrator('<b>' + horseName + '</b>のコスト分のフォースカードを捨ててください。（残り ' + remaining + ' 枚）');
-          updateCommandButtons();
-        }
+        var cost = selectedHorse ? (selectedHorse.cost || 2) : 2;
+
+        var farmRect = $('zone-farm').getBoundingClientRect();
+        flyGhost(el, farmRect).then(function () {
+          hand = hand.filter(function (c) { return c.id !== card.id; });
+          farm.push(card);
+          renderAll();
+          Haptics.place();
+          if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+
+          if (selectedForces.length >= cost) {
+            // コスト支払い完了！
+            showToast('コスト支払い完了！ 走破を開始します');
+            executeRun();
+          } else {
+            var remaining = cost - selectedForces.length;
+            var horseName = (selectedHorse && selectedHorse.name) ? selectedHorse.name : '馬カード';
+            setNarrator('<b>' + horseName + '</b>のコスト分のフォースカードを捨ててください。（残り ' + remaining + ' 枚）');
+            showToast('あと ' + remaining + ' 枚フォースカードを選んでください');
+            updateCommandButtons();
+          }
+        });
         return;
       }
 
