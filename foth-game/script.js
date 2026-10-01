@@ -1582,26 +1582,45 @@
     opponentHandCount = cpuHand.length;
     updateOpponentHandDisplay();
 
-    showOpponentBubble('アイテム「' + cpuItem.name + '」！');
-    setNarrator('相手が手札からアイテム「<b>' + cpuItem.name + '</b>」を使用！');
+    // 効果説明テキストの組み立て
+    var effectDesc = cpuItem.stat || '';
+    if (cpuItem.effectType === 'run_bonus') {
+      effectDesc = '走破ボーナス +' + cpuItem.effectValue;
+    } else if (cpuItem.effectType === 'elite_jockey') {
+      effectDesc = '走破ボーナス +1 / ガード +1';
+    } else if (cpuItem.effectType === 'farm_recovery') {
+      effectDesc = 'ファームからフォース／馬を手札に回収';
+    } else if (cpuItem.effectType === 'guard_bonus') {
+      effectDesc = 'ガードボーナス +' + cpuItem.effectValue;
+    }
 
-    // 手札からファームへアイテムが飛ぶ演出
+    if (window.SoundFX && typeof SoundFX.shimmer === 'function') SoundFX.shimmer();
+    showOpponentBubble('アイテム「' + cpuItem.name + '」発動！');
+    setNarrator('⚡ 相手が手札からアイテム「<b>' + cpuItem.name + '</b>」を使用！（効果: <b>' + effectDesc + '</b>）');
+    showToast('相手が「' + cpuItem.name + '」を発動！ (' + effectDesc + ')', 'info', 2400);
+
+    // アイテムカードの強調バナー表示（何を使ったか全体に大きく表示）
+    await showBanner('相手がアイテム発動！', 2200, cpuItem, '【' + cpuItem.name + '】 ' + effectDesc);
+
+    // アイテムカードがファームへ送られるアニメーション演出
     var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
     var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
-    if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+    if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
     await flyCpuCard(cpuItem, farmRect, 0.75);
 
     oppFarm.push(cpuItem);
     renderOppFarm();
 
-    // アイテム効果の適用
+    // アイテム効果の適用と結果の明示
     if (cpuItem.effectType === 'run_bonus') {
       cpuRunBonus += cpuItem.effectValue;
-      showToast('相手の走破ボーナス +' + cpuItem.effectValue, 'info', 2200);
+      showToast('相手の走破ボーナス +' + cpuItem.effectValue + '（現在ボーナス計: +' + cpuRunBonus + '）', 'info', 2200);
+      setNarrator('相手の走破値が <b>+' + cpuItem.effectValue + '</b> アップ！（累計ボーナス: +' + cpuRunBonus + '）');
     } else if (cpuItem.effectType === 'elite_jockey') {
       cpuRunBonus += 1;
       cpuItemGuardBonus += 1;
-      showToast('相手の走破+1、ガード+1！', 'info', 2200);
+      showToast('相手の走破+1、ガード+1！（走破ボーナス計: +' + cpuRunBonus + '）', 'info', 2200);
+      setNarrator('相手の走破値とガード値がそれぞれ <b>+1</b> アップ！（走破ボーナス計: +' + cpuRunBonus + '）');
     } else if (cpuItem.effectType === 'farm_recovery') {
       var recovered = null;
       var fIdx = oppFarm.findIndex(function (c) { return c.type === 'force' && c.id !== cpuItem.id; });
@@ -1613,18 +1632,22 @@
       }
       if (recovered) {
         var oppHandEl = $('opponent-hand-display') || $('zone-opponent');
-        var oppHandRect = oppHandEl.getBoundingClientRect();
+        var oppHandRect = oppHandEl ? oppHandEl.getBoundingClientRect() : { left: 200, top: 40, width: 80, height: 30 };
         var dummy = makeCpuCardDummy(recovered, farmRect);
+        if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
         var pRec = flyGhost(dummy, oppHandRect, 0.65);
         dummy.remove();
         await pRec;
         cpuHand.push(recovered);
         opponentHandCount = cpuHand.length;
         renderAll();
-        showOpponentBubble('手札に回収！');
+        showOpponentBubble('「' + recovered.name + '」を手札に回収！');
+        setNarrator('相手が「' + cpuItem.name + '」の効果でファームから「<b>' + recovered.name + '</b>」を手札に回収しました。');
+        showToast('相手がファームから「' + recovered.name + '」を回収！', 'info', 2400);
       }
     } else if (cpuItem.effectType === 'guard_bonus') {
       cpuItemGuardBonus += cpuItem.effectValue;
+      showToast('相手のガードボーナス +' + cpuItem.effectValue, 'info', 2200);
     }
 
     renderAll();
