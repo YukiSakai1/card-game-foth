@@ -5625,9 +5625,11 @@
 
   body.field-cyber.field-white .lane-card-back,
   body.field-cyber.field-white .opp-lane .lane-card-back {
-    border-color: rgba(0, 160, 255, 0.6);
-    background: rgba(220, 238, 255, 0.75);
-    box-shadow: inset 0 0 10px rgba(0, 180, 255, 0.2), 0 2px 8px rgba(0, 120, 220, 0.1);
+    border: 1.5px solid rgba(0, 180, 255, 0.7) !important;
+    background-image: var(--card-back-image) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    box-shadow: 0 0 10px rgba(0, 180, 255, 0.4) !important;
   }
 
   body.field-cyber.field-white .lane-label,
@@ -6531,9 +6533,11 @@
   body.field-nature .lane-card-back,
   body[data-theme="nature"] .lane-card-back,
   body.field-classic .lane-card-back {
-    border: 1px dashed rgba(74, 222, 128, 0.6) !important;
-    background: rgba(6, 36, 18, 0.35) !important;
-    box-shadow: inset 0 0 8px rgba(74, 222, 128, 0.25) !important;
+    border: 1.5px solid #34d399 !important;
+    background-image: var(--card-back-image) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.45) !important;
   }
 
   /* プレイヤー側山札ラベル・バッジ */
@@ -6596,9 +6600,11 @@
   body.field-nature .opp-lane .lane-card-back,
   body[data-theme="nature"] .opp-lane .lane-card-back,
   body.field-classic .opp-lane .lane-card-back {
-    border: 1px dashed rgba(248, 113, 113, 0.6) !important;
-    background: rgba(48, 10, 16, 0.35) !important;
-    box-shadow: inset 0 0 8px rgba(248, 113, 113, 0.25) !important;
+    border: 1.5px solid #f87171 !important;
+    background-image: var(--card-back-image) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.45) !important;
   }
 
   body.field-nature .opp-lane .lane-label,
@@ -7176,11 +7182,11 @@ body[data-theme="nature"] .lane {
   box-shadow: inset 0 0 16px rgba(52, 211, 153, 0.16), 0 0 10px rgba(45, 212, 191, 0.22) !important;
 }
 body[data-theme="nature"] .lane-card-back {
-  border-color: rgba(94, 234, 212, 0.7) !important;
-  background:
-    radial-gradient(ellipse at 50% 40%, rgba(45, 212, 191, 0.30) 0%, transparent 75%),
-    linear-gradient(135deg, rgba(6, 60, 50, 0.92) 0%, rgba(3, 34, 30, 0.96) 100%) !important;
-  box-shadow: inset 0 0 10px rgba(94, 234, 212, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  border: 1.5px solid rgba(94, 234, 212, 0.8) !important;
+  background-image: var(--card-back-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: 0 0 10px rgba(94, 234, 212, 0.45) !important;
 }
 body[data-theme="nature"] .lane-label {
   background: rgba(2, 26, 23, 0.92) !important;
@@ -7216,10 +7222,11 @@ body[data-theme="nature"] .opp-lane {
   box-shadow: inset 0 0 16px rgba(244, 63, 94, 0.14), 0 0 10px rgba(251, 113, 133, 0.2) !important;
 }
 body[data-theme="nature"] .opp-lane .lane-card-back {
-  border-color: rgba(251, 146, 160, 0.75) !important;
-  background:
-    radial-gradient(ellipse at 50% 40%, rgba(244, 63, 94, 0.30) 0%, transparent 75%),
-    linear-gradient(135deg, rgba(74, 14, 32, 0.92) 0%, rgba(40, 8, 20, 0.96) 100%) !important;
+  border: 1.5px solid rgba(251, 146, 160, 0.8) !important;
+  background-image: var(--card-back-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: 0 0 10px rgba(251, 146, 160, 0.45) !important;
 }
 body[data-theme="nature"] .opp-lane .lane-label {
   background: rgba(40, 8, 20, 0.92) !important;
@@ -7370,9 +7377,11 @@ body[data-theme="white"] .zone-body {
 }
 html body.field-cyber.field-white .lane-card-back,
 body[data-theme="white"] .lane-card-back {
-  border-color: rgba(0, 160, 255, 0.6) !important;
-  background: linear-gradient(135deg, #dbeafe, #bae6fd) !important;
-  box-shadow: 0 0 10px rgba(0, 160, 255, 0.25) !important;
+  border: 1.5px solid rgba(0, 180, 255, 0.8) !important;
+  background-image: var(--card-back-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.4) !important;
 }
 html body.field-cyber.field-white .lane-label,
 body[data-theme="white"] .lane-label {
@@ -7417,9 +7426,11 @@ body[data-theme="white"] #zone-opp-farm .farm-pile {
 }
 html body.field-cyber.field-white .opp-lane .lane-card-back,
 body[data-theme="white"] .opp-lane .lane-card-back {
-  border-color: rgba(0, 160, 255, 0.55) !important;
-  background: linear-gradient(135deg, #e0f2fe, #bae6fd) !important;
-  box-shadow: 0 0 8px rgba(0, 160, 255, 0.2) !important;
+  border: 1.5px solid rgba(0, 180, 255, 0.7) !important;
+  background-image: var(--card-back-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.35) !important;
 }
 html body.field-cyber.field-white .opp-lane .lane-label,
 body[data-theme="white"] .opp-lane .lane-label {
