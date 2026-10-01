@@ -1813,27 +1813,8 @@
                 if (!discarded) return;
                 var currentHandEl = $('opponent-hand-display') || $('zone-opponent');
                 var currentHandRect = currentHandEl ? currentHandEl.getBoundingClientRect() : { left: 200, top: 20, width: 80, height: 30 };
-                var dummy = document.createElement('div');
-                dummy.className = 'farm-mini type-' + (discarded.type || 'force');
-                dummy.style.position = 'fixed';
-                dummy.style.left = (currentHandRect.left + (currentHandRect.width - cardW) / 2) + 'px';
-                dummy.style.top = (currentHandRect.top + (currentHandRect.height - cardH) / 2) + 'px';
-                dummy.style.width = cardW + 'px';
-                dummy.style.height = cardH + 'px';
-                dummy.style.borderRadius = '6px';
-                dummy.style.zIndex = '999';
-                dummy.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)';
-                dummy.style.pointerEvents = 'none';
-                if (discarded.img) {
-                  dummy.classList.add('farm-mini-img');
-                  dummy.style.backgroundImage = 'url(' + discarded.img + ')';
-                } else {
-                  dummy.textContent = discarded.icon || '';
-                  dummy.style.fontSize = '14px';
-                }
-                document.body.appendChild(dummy);
-
-                var p = flyGhost(dummy, farmRect, 1.0);
+                var dummy = makeCpuCardDummy(discarded, currentHandRect);
+                var p = flyGhost(dummy, farmRect, 0.75);
                 dummy.remove();
                 return p.then(function () {
                   oppFarm.push(discarded);

@@ -1757,31 +1757,21 @@
   .deck-card {
     width: 64px;
     height: 90px;
-    border-radius: 8px;
+    border-radius: 6px;
     background-image: var(--card-back-image);
     background-size: cover;
     background-position: center;
-    border: 2.5px solid #d7b25a;
-    box-shadow:
-      0 4px 10px rgba(0, 0, 0, .55),
-      1px 1px 0 0 #cbb050,
-      2px 2px 0 0 #c4a949,
-      3px 3px 0 0 #bda042,
-      4px 4px 0 0 #b3963e,
-      5px 5px 0 0 #a88c38,
-      6px 6px 0 0 #9d8132,
-      7px 7px 0 0 #92772c,
-      8px 8px 0 0 #876d27,
-      9px 9px 0 0 #7c6321,
-      10px 10px 0 0 #71591c,
-      11px 11px 0 0 #664f18,
-      12px 12px 0 0 #5b4614,
-      13px 13px 0 0 #503d10,
-      14px 14px 1px 0 rgba(0, 0, 0, .55),
-      inset 0 0 0 1px rgba(0, 0, 0, .55);
+    border: 1.5px solid #d7b25a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .45), 0 0 8px rgba(227, 178, 60, .3);
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  body.field-cyber .deck-card,
+  body[data-theme="cyber"] .deck-card {
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .6), 0 0 12px rgba(62, 224, 255, .5);
   }
 
   .mini-wrap {
@@ -3062,6 +3052,18 @@
 
   .ghost {
     pointer-events: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .55) !important;
+  }
+  .ghost.lane-stack .lane-back-2,
+  .ghost.lane-stack .lane-back-1,
+  .ghost .lane-back-2,
+  .ghost .lane-back-1 {
+    display: none !important;
+  }
+  .ghost.lane-stack .lane-back-0,
+  .ghost .lane-back-0 {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .5) !important;
   }
 
   /* ---------- Banner ---------- */
