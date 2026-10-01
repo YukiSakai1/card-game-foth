@@ -3378,19 +3378,13 @@
 
   /* ===================== BGM（音源ファイル再生 / シームレスループ / トラック選択） ===================== */
   var BGM_TRACKS = {
-    'turkish': { name: 'トルコ行進曲 (モーツァルト)', src: 'audio/bgm_turkish_march.wav?v=3' },
     'banners_opt': { name: 'Banners in the Gale (Opt 2分オーケストラArr.)', src: 'audio/bgm_banners_gale_opt.wav?v=4' },
     'banners': { name: 'Banners in the Gale (疾風の旗手 / Arranged Loop)', src: 'audio/bgm_banners_gale.wav?v=3' },
-    'pasture': { name: '緑の草原を駆ける風 (大草原ギャロップ)', src: 'audio/bgm_green_pasture.wav?v=3' },
-    'rydeen': { name: 'RYDEEN (YMO風テクノポップ)', src: 'audio/bgm_rydeen.wav?v=3' },
-    'william': { name: 'ウィリアム・テル序曲 (Gallop)', src: 'audio/bgm_william_tell.wav?v=3' },
     'cyber': { name: 'Cyber Turf (疾走電脳)', src: 'audio/bgm_cyber_turf.wav?v=3' },
-    'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' },
-    'yugioh': { name: '決闘闘技場 (遊戯王風 古代コロシアム)', src: 'audio/bgm_yugioh_arena.wav?v=3' },
-    'dq': { name: '冒険のファンファーレ＆マーチ (ドラクエ序曲風)', src: 'audio/bgm_dq_overture.wav?v=3' }
+    'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' }
   };
 
-  var currentBgmTrackKey = 'turkish';
+  var currentBgmTrackKey = 'banners_opt';
   try {
     var savedTrack = localStorage.getItem('foth_bgm_track');
     if (savedTrack && BGM_TRACKS[savedTrack]) currentBgmTrackKey = savedTrack;
@@ -3424,7 +3418,7 @@
     function loadBuffer(trackKey) {
       trackKey = trackKey || currentBgmTrackKey;
       if (buffers[trackKey]) return Promise.resolve(buffers[trackKey]);
-      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['turkish'];
+      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['banners_opt'];
       var ctx = getAudioContext();
       if (!ctx) return Promise.resolve(null);
       return fetch(trackInfo.src)
@@ -3475,7 +3469,7 @@
     }
 
     function startFallback(trackKey) {
-      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['turkish'];
+      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['banners_opt'];
       if (fallbackAudio) {
         fallbackAudio.pause();
         fallbackAudio = null;
