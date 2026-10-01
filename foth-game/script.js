@@ -403,6 +403,7 @@
   var cpuHand = []; // CPU側の実際の手札（表には出さないが、走破できるかの判定に使う）
   var cpuRunBonus = 0; // CPUのアイテム等による走破ボーナス
   var cpuItemGuardBonus = 0; // CPUのアイテム等によるガードボーナス
+  var cpuConsecutiveGuardCount = 0; // CPUが連続でガードした回数（2回連続で次はガード不可）
   var guardValue = 0;
   var itemGuardBonus = 0; // guard_bonus アイテムの効果を一時的に積んでおく変数
   var isCpuTurn = false;
@@ -2127,10 +2128,12 @@
             return c.type === 'horse' && (c.dist || '').indexOf(distKey) >= 0;
           });
 
-          // ガード馬がある場合、33%の確率でガードを行う
-          var shouldGuard = guardHorses.length > 0 && (Math.random() < 0.33);
+          // 相手がガードを2回連続でしたら、次はガードを選択しない（3回連続ガード防止）
+          var canConsecutiveGuard = (cpuConsecutiveGuardCount < 2);
+          var shouldGuard = canConsecutiveGuard && guardHorses.length > 0 && (Math.random() < 0.33);
 
           if (!shouldGuard) {
+            cpuConsecutiveGuardCount = 0; // ガードしなかった場合は連続カウントをリセット
             showOpponentBubble('ガードしません');
             if (totalRun <= 0) {
               return showBanner('走破失敗').then(function () {
@@ -2143,6 +2146,7 @@
               return continueRunLogic(totalRun, false, 0);
             });
           } else {
+            cpuConsecutiveGuardCount++; // ガード成立で連続カウントを加算
             // ガード値の高い馬、または走破値が控えめな馬を優先してガードに使用
             guardHorses.sort(function (a, b) { return (b.guard || 0) - (a.guard || 0); });
             var guardHorse = guardHorses[0];
@@ -3111,6 +3115,7 @@
     fieldGuard = null;
     situation = null;
     gameTurn = 1;
+    cpuConsecutiveGuardCount = 0;
     resetPlayerDeck(true);
     renderAll();
 
@@ -3302,6 +3307,7 @@
     itemGuardBonus = 0;
     cpuRunBonus = 0;
     cpuItemGuardBonus = 0;
+    cpuConsecutiveGuardCount = 0;
     canDraw = true;
     isCpuTurn = false;
     hasRunThisTurn = false;
