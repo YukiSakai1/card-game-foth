@@ -679,7 +679,7 @@
   function renderDeckLanes() {
     var wrap = $('lanes');
     var active = currentLane();
-    var maxLaneCount = (interactionMode === 'freeplay') ? 7 : 10;
+    var maxLaneCount = (interactionMode === 'freeplay') ? 8 : 10;
     wrap.innerHTML = LANES.map(function (lane) {
       var isActive = active && lane.key === active.key;
       var isEmpty = lane.count <= 0;
@@ -717,7 +717,7 @@
     var wrap = $('opp-lanes');
     if (!wrap) return;
     var active = cpuCurrentLane();
-    var maxLaneCount = (interactionMode === 'freeplay') ? 7 : 10;
+    var maxLaneCount = (interactionMode === 'freeplay') ? 8 : 10;
     wrap.innerHTML = CPU_LANES.map(function (lane) {
       var isActive = active && lane.key === active.key;
       var isEmpty = lane.count <= 0;
@@ -2808,8 +2808,8 @@
 
   /* ===================== 初期カード配布演出 ===================== */
   async function dealInitialCards(isManual, runId) {
-    var laneCountPerZone = isManual ? 7 : 10;
-    var totalCards = (laneCountPerZone * 4) + 3 + 7; // manual: 28+3+7 = 38枚, tutorial: 40+3+7 = 50枚
+    var laneCountPerZone = isManual ? 8 : 10;
+    var totalCards = (laneCountPerZone * 4) + 3 + 7; // manual: 32+3+7 = 42枚, tutorial: 40+3+7 = 50枚
     // 画面中央にデッキスタックを生成
     var centerEl = document.createElement('div');
     centerEl.className = 'deal-center-deck';
@@ -3234,7 +3234,7 @@
     // 相手（CPU）の初期手札とデッキを既存カード画像から初期化
     initCpuHandAndDeck();
     cpuHorseCard = null;
-    if (cpuTotalDeck() <= 0) CPU_LANES.forEach(function (l) { l.count = 7; });
+    if (cpuTotalDeck() <= 0) CPU_LANES.forEach(function (l) { l.count = 8; });
     renderRaceInfo();
     showNextButton(false);
     $('free-hint').hidden = true;
@@ -3265,7 +3265,7 @@
 
     // 盤面を一旦初期化（カードを空にしてから配り始める）
     LANES.forEach(function (l) { l.count = 0; });
-    CPU_LANES.forEach(function (l) { l.count = 7; });
+    CPU_LANES.forEach(function (l) { l.count = 8; });
     farm = [];
     oppFarm = [];
     hand = [];
