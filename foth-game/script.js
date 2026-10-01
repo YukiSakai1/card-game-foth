@@ -3279,6 +3279,7 @@
   /* ===================== BGM（音源ファイル再生 / シームレスループ / トラック選択） ===================== */
   var BGM_TRACKS = {
     'turkish': { name: 'トルコ行進曲 (モーツァルト)', src: 'audio/bgm_turkish_march.wav?v=3' },
+    'banners': { name: 'Banners in the Gale (疾風の旗手 / Arranged Loop)', src: 'audio/bgm_banners_gale.wav?v=3' },
     'pasture': { name: '緑の草原を駆ける風 (大草原ギャロップ)', src: 'audio/bgm_green_pasture.wav?v=3' },
     'rydeen': { name: 'RYDEEN (YMO風テクノポップ)', src: 'audio/bgm_rydeen.wav?v=3' },
     'william': { name: 'ウィリアム・テル序曲 (Gallop)', src: 'audio/bgm_william_tell.wav?v=3' },

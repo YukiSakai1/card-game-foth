@@ -1714,6 +1714,90 @@ def generate_green_pasture_gallop():
 
     save_wav('audio/bgm_green_pasture.wav', left, right)
 
+def generate_banners_in_the_gale():
+    print("Generating: Banners in the Gale (Arranged Seamless Loop)...")
+    mp3_path = 'Banners_in_the_Gale.mp3'
+    if not os.path.exists(mp3_path):
+        print("MP3 file not found:", mp3_path)
+        return
+    
+    try:
+        import miniaudio
+    except ImportError:
+        print("miniaudio not installed. Skipping Banners in the Gale.")
+        return
+
+    f = miniaudio.decode_file(mp3_path)
+    samples = np.frombuffer(f.samples, dtype=np.int16).reshape(-1, 2).astype(np.float32) / 32768.0
+    sr = f.sample_rate # 44100
+    
+    b1 = 11400 # beat 1 downbeat sample (0.2585s)
+    bar = 88200 # 2.000s per 4-beat bar at 120BPM
+    
+    # Extract pickup upbeat
+    upbeat = samples[:b1]
+    up_len = len(upbeat)
+    
+    # 1. First 14 bars (Bars 1-14)
+    part1_14 = samples[b1 : b1 + 14*bar].copy()
+    
+    # 2. Bar 15 and Bar 16
+    bar15 = samples[b1 + 14*bar : b1 + 15*bar].copy()
+    # Bar 8 turnaround used as the base for Bar 16 turnaround
+    bar16_base = samples[b1 + 7*bar : b1 + 8*bar].copy()
+    
+    # Crossfade the upbeat pickup seamlessly into the end of Bar 16
+    w_up = np.sin(np.linspace(0, np.pi/2, up_len))[:, None]
+    bar16_base[-up_len:] = bar16_base[-up_len:] * (1 - w_up) + upbeat * w_up
+    
+    # Base 16-bar pass (32.0s)
+    pass1 = np.concatenate([part1_14, bar15, bar16_base], axis=0)
+    
+    # Create Pass 2 (Arranged Variation with extra percussion, brass swells, and Celtic accents)
+    pass2 = pass1.copy()
+    
+    # Add equestrian bodhran & galloping percussion layer to Pass 2
+    n_samples = len(pass2)
+    sixteenth_samples = bar // 16
+    for s_idx in range(0, n_samples // sixteenth_samples):
+        pos = s_idx * sixteenth_samples
+        sub_beat = s_idx % 16
+        is_downbeat = (sub_beat % 4 == 0)
+        is_gallop = (sub_beat % 4 == 2 or sub_beat % 4 == 3)
+        
+        # Snare / rimshot tap on gallop
+        if is_gallop and pos + int(0.08*sr) < n_samples:
+            env = np.exp(-np.linspace(0, 0.08, int(0.08*sr)) * 45.0)
+            noise = (np.random.rand(len(env)) * 2 - 1) * env * 0.075
+            pass2[pos : pos + len(env), 0] += noise * 0.45
+            pass2[pos : pos + len(env), 1] += noise * 0.55
+            
+        # Timpani / low tom hit on bar downbeats
+        if is_downbeat and pos + int(0.25*sr) < n_samples:
+            env = np.exp(-np.linspace(0, 0.25, int(0.25*sr)) * 12.0)
+            f_timp = 82.41 * (1.0 + 0.5 * env) # E2
+            timp = np.sin(2 * np.pi * f_timp * np.linspace(0, 0.25, int(0.25*sr))) * env * 0.11
+            pass2[pos : pos + len(env), 0] += timp * 0.5
+            pass2[pos : pos + len(env), 1] += timp * 0.5
+            
+        # Cymbal / brass accent on Bar 1, 5, 9, 13
+        bar_idx = s_idx // 16
+        if sub_beat == 0 and (bar_idx in [0, 4, 8, 12]) and pos + int(0.6*sr) < n_samples:
+            env_cym = np.exp(-np.linspace(0, 0.6, int(0.6*sr)) * 6.0)
+            cym = (np.random.rand(len(env_cym)) * 2 - 1) * env_cym * 0.065
+            pass2[pos : pos + len(env_cym), 0] += cym * 0.4
+            pass2[pos : pos + len(env_cym), 1] += cym * 0.6
+    
+    # Combine Pass 1 (Exposition) + Pass 2 (Arranged Gallop) = 64.0s full loop
+    full_loop = np.concatenate([pass1, pass2], axis=0)
+    
+    # Master limiter / normalization to -0.6 dB
+    max_val = np.max(np.abs(full_loop))
+    if max_val > 0.01:
+        full_loop = (full_loop / max_val) * 0.93
+        
+    save_wav('audio/bgm_banners_gale.wav', full_loop[:, 0], full_loop[:, 1])
+
 if __name__ == '__main__':
     print("=== Generating FORCE OF THE HORSE Music Suite ===")
     generate_turkish_march()
@@ -1724,6 +1808,7 @@ if __name__ == '__main__':
     generate_yugioh_arena()
     generate_dq_overture()
     generate_green_pasture_gallop()
+    generate_banners_in_the_gale()
     print("=== All BGM Tracks Generated Successfully ===")
 
 
