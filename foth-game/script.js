@@ -3253,20 +3253,31 @@
     runTutorial();
   }
 
-  /* ===================== BGM（音源ファイル再生 / シームレスループ） ===================== */
+  /* ===================== BGM（音源ファイル再生 / シームレスループ / トラック選択） ===================== */
+  var BGM_TRACKS = {
+    'turkish': { name: 'トルコ行進曲 (モーツァルト)', src: 'audio/bgm_turkish_march.wav?v=3' },
+    'william': { name: 'ウィリアム・テル序曲 (Gallop)', src: 'audio/bgm_william_tell.wav?v=3' },
+    'cyber': { name: 'Cyber Turf (疾走電脳)', src: 'audio/bgm_cyber_turf.wav?v=3' },
+    'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' }
+  };
+
+  var currentBgmTrackKey = 'turkish';
+  try {
+    var savedTrack = localStorage.getItem('foth_bgm_track');
+    if (savedTrack && BGM_TRACKS[savedTrack]) currentBgmTrackKey = savedTrack;
+  } catch (e) { }
+
   var BGM = (function () {
-    var SRC = 'audio/force_of_the_horse_bgm.wav?v=2';
     var TARGET_VOLUME = 0.40;
-    var FADE_IN_MS = 1200;
-    var FADE_OUT_MS = 600;
+    var FADE_IN_MS = 1000;
+    var FADE_OUT_MS = 500;
 
     var audioCtx = null;
     var gainNode = null;
     var sourceNode = null;
-    var audioBuffer = null;
+    var buffers = {}; // trackKey -> audioBuffer cache
     var isPlaying = false;
     var fallbackAudio = null;
-    var fadeTimer = null;
 
     function getAudioContext() {
       if (!audioCtx) {
@@ -3281,32 +3292,36 @@
       return audioCtx;
     }
 
-    function loadBuffer() {
-      if (audioBuffer) return Promise.resolve(audioBuffer);
+    function loadBuffer(trackKey) {
+      trackKey = trackKey || currentBgmTrackKey;
+      if (buffers[trackKey]) return Promise.resolve(buffers[trackKey]);
+      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['turkish'];
       var ctx = getAudioContext();
       if (!ctx) return Promise.resolve(null);
-      return fetch(SRC)
+      return fetch(trackInfo.src)
         .then(function (res) { return res.arrayBuffer(); })
         .then(function (arrBuf) { return ctx.decodeAudioData(arrBuf); })
         .then(function (decoded) {
-          audioBuffer = decoded;
-          return audioBuffer;
+          buffers[trackKey] = decoded;
+          return decoded;
         })
         .catch(function () { return null; });
     }
 
-    // Preload buffer on initial script load
-    try { loadBuffer(); } catch (e) {}
+    // Preload current track buffer
+    try { loadBuffer(currentBgmTrackKey); } catch (e) {}
 
-    function start() {
+    function start(trackKey) {
+      if (trackKey) currentBgmTrackKey = trackKey;
       isPlaying = true;
       var ctx = getAudioContext();
+      var activeTrack = currentBgmTrackKey;
       if (ctx) {
         if (ctx.state === 'suspended') {
           ctx.resume().catch(function () {});
         }
-        loadBuffer().then(function (buf) {
-          if (!isPlaying) return;
+        loadBuffer(activeTrack).then(function (buf) {
+          if (!isPlaying || currentBgmTrackKey !== activeTrack) return;
           if (buf) {
             if (sourceNode) {
               try { sourceNode.stop(); sourceNode.disconnect(); } catch (e) {}
@@ -3322,20 +3337,23 @@
             gainNode.gain.setValueAtTime(gainNode.gain.value, now);
             gainNode.gain.linearRampToValueAtTime(TARGET_VOLUME, now + FADE_IN_MS / 1000);
           } else {
-            startFallback();
+            startFallback(activeTrack);
           }
         });
       } else {
-        startFallback();
+        startFallback(activeTrack);
       }
     }
 
-    function startFallback() {
-      if (!fallbackAudio) {
-        fallbackAudio = new Audio(SRC);
-        fallbackAudio.loop = true;
-        fallbackAudio.preload = 'auto';
+    function startFallback(trackKey) {
+      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['turkish'];
+      if (fallbackAudio) {
+        fallbackAudio.pause();
+        fallbackAudio = null;
       }
+      fallbackAudio = new Audio(trackInfo.src);
+      fallbackAudio.loop = true;
+      fallbackAudio.preload = 'auto';
       fallbackAudio.volume = TARGET_VOLUME;
       var p = fallbackAudio.play();
       if (p && p.catch) p.catch(function () {});
@@ -3360,7 +3378,22 @@
       }
     }
 
-    return { start: start, stop: stop };
+    function setTrack(trackKey) {
+      if (!BGM_TRACKS[trackKey]) return;
+      currentBgmTrackKey = trackKey;
+      try { localStorage.setItem('foth_bgm_track', trackKey); } catch (e) {}
+      updateBgmTrackButtons();
+      if (isPlaying && bgmEnabled) {
+        start(trackKey);
+      }
+    }
+
+    return {
+      start: start,
+      stop: stop,
+      setTrack: setTrack,
+      getCurrentTrack: function () { return currentBgmTrackKey; }
+    };
   })();
 
   var bgmEnabled = true;
@@ -3377,6 +3410,14 @@
   }
   updateBgmButton();
 
+  function updateBgmTrackButtons() {
+    var opts = document.querySelectorAll('#bgm-track-select .bgm-track-opt');
+    opts.forEach(function (opt) {
+      opt.classList.toggle('active', opt.dataset.track === currentBgmTrackKey);
+    });
+  }
+  updateBgmTrackButtons();
+
   if ($('bgm-toggle')) {
     $('bgm-toggle').addEventListener('click', function () {
       Haptics.tap();
@@ -3386,6 +3427,26 @@
       if (bgmEnabled) BGM.start(); else BGM.stop();
     });
   }
+
+  // BGM 楽曲選択ボタン
+  var trackOpts = document.querySelectorAll('#bgm-track-select .bgm-track-opt');
+  trackOpts.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      Haptics.tap();
+      var tKey = this.dataset.track;
+      if (tKey) {
+        BGM.setTrack(tKey);
+        if (!bgmEnabled) {
+          bgmEnabled = true;
+          try { localStorage.setItem('foth_bgm_enabled', '1'); } catch (e) {}
+          updateBgmButton();
+          BGM.start(tKey);
+        }
+        var info = BGM_TRACKS[tKey];
+        showToast('BGM変更: ' + (info ? info.name : tKey), 'info', 2200);
+      }
+    });
+  });
 
   // ブラウザの自動再生制限のため、最初のユーザー操作をきっかけに再生を開始する
   document.addEventListener('click', function initBgmOnFirstTap() {

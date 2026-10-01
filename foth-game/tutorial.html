@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=48">
+  <link rel="stylesheet" href="style.css?v=49">
   <script type="importmap">
 {
     "imports": {
@@ -115,9 +115,29 @@
             </div>
 
             <div class="settings-group">
-              <div class="settings-label">サウンド</div>
-              <button class="bgm-toggle settings-bgm-toggle" id="bgm-toggle" type="button" title="BGM切替">🔊 BGM</button>
-              <div class="settings-desc">ゲーム内BGMの再生・停止を切り替えます。</div>
+              <div class="settings-label">BGM (サウンド)</div>
+              <button class="bgm-toggle settings-bgm-toggle" id="bgm-toggle" type="button" title="BGM切替" style="margin-bottom:10px;">🔊 BGM (ON)</button>
+              
+              <div class="settings-label" style="font-size:11.5px;color:var(--gold-2);margin-bottom:6px;">🎵 BGM楽曲セレクト</div>
+              <div class="bgm-track-grid" id="bgm-track-select">
+                <button class="bgm-track-opt active" data-track="turkish" type="button">
+                  <span>🎺 トルコ行進曲</span>
+                  <span class="bgm-badge">モーツァルト (EDM/Classic)</span>
+                </button>
+                <button class="bgm-track-opt" data-track="william" type="button">
+                  <span>🐎 ウィリアム・テル序曲</span>
+                  <span class="bgm-badge">Gallop (大疾走マーチ)</span>
+                </button>
+                <button class="bgm-track-opt" data-track="cyber" type="button">
+                  <span>⚡ Cyber Turf</span>
+                  <span class="bgm-badge">疾走電脳 (メインテーマ)</span>
+                </button>
+                <button class="bgm-track-opt" data-track="grandprix" type="button">
+                  <span>🏆 Grand Prix Royale</span>
+                  <span class="bgm-badge">栄光のグランプリ (壮麗)</span>
+                </button>
+              </div>
+              <div class="settings-desc">ゲームプレイ中のBGM楽曲を選択できます（タップで即座に試聴・切り替え）。</div>
             </div>
           </div>
 
@@ -399,7 +419,7 @@
 
   </div>
 
-  <script src="script.js?v=49"></script>
+  <script src="script.js?v=50"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

@@ -975,6 +975,54 @@
     border-color: var(--gold);
   }
 
+  .bgm-track-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .bgm-track-opt {
+    background: rgba(14, 20, 32, 0.75);
+    border: 1.5px solid rgba(227, 178, 60, 0.28);
+    color: var(--card-fg, #e2e8f0);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: all .18s ease;
+  }
+
+  .bgm-track-opt:hover {
+    border-color: var(--gold-2);
+    background: rgba(30, 42, 64, 0.85);
+  }
+
+  .bgm-track-opt.active {
+    border-color: var(--gold-2);
+    background: linear-gradient(135deg, rgba(227, 178, 60, 0.22), rgba(0, 210, 255, 0.18));
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(227, 178, 60, 0.35);
+  }
+
+  .bgm-track-opt .bgm-badge {
+    font-size: 9.5px;
+    font-weight: 400;
+    color: var(--gold-2);
+    opacity: 0.85;
+  }
+
+  .bgm-track-opt.active .bgm-badge {
+    color: #5eead4;
+    font-weight: 700;
+  }
+
   .settings-row {
     display: flex;
     align-items: center;
