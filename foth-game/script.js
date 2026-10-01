@@ -3498,6 +3498,8 @@
     var depthValue = $('depth-value');
     var zoomRange = $('zoom-range');
     var zoomValue = $('zoom-value');
+    var bgOpacityRange = $('bg-opacity-range');
+    var bgOpacityValue = $('bg-opacity-value');
     var touchToggle = $('touch-tilt-toggle');
 
     var resetBtn = $('settings-reset');
@@ -3737,9 +3739,29 @@
       scheduleFieldCorrection();
     }
 
+    function setBgOpacity(pct) {
+      pct = Math.max(10, Math.min(100, Number(pct) || 100));
+      document.body.style.setProperty('--bg-field-opacity', (pct / 100).toFixed(2));
+      if (bgOpacityRange) bgOpacityRange.value = pct;
+      if (bgOpacityValue) bgOpacityValue.textContent = pct + '%';
+      try {
+        localStorage.setItem('foth_bg_opacity', pct);
+      } catch (e) {}
+    }
+
     setTilt(DEFAULTS.tilt);
     setDepth(DEFAULTS.depth);
     setZoom(DEFAULTS.zoom);
+
+    var initialBgOpacity = 100;
+    try {
+      var savedOp = localStorage.getItem('foth_bg_opacity');
+      if (savedOp !== null && savedOp !== undefined) {
+        var n = Number(savedOp);
+        if (!isNaN(n) && n >= 10 && n <= 100) initialBgOpacity = n;
+      }
+    } catch (e) {}
+    setBgOpacity(initialBgOpacity);
 
     window.addEventListener('load', function () { fitOpponentGap(); });
 
@@ -3806,9 +3828,11 @@
         setZoom(zoomRange.value);
       });
     }
-
-
-
+    if (bgOpacityRange) {
+      bgOpacityRange.addEventListener('input', function () {
+        setBgOpacity(bgOpacityRange.value);
+      });
+    }
 
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
@@ -3819,6 +3843,7 @@
         setTilt(DEFAULTS.tilt);
         setDepth(DEFAULTS.depth);
         setZoom(DEFAULTS.zoom);
+        setBgOpacity(100);
         if (touchToggle) touchToggle.checked = true;
         pointerTiltEnabled = true;
       });

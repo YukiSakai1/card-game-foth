@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=41">
+  <link rel="stylesheet" href="style.css?v=42">
   <script type="importmap">
 {
     "imports": {
@@ -31,6 +31,7 @@
 
 <body class="field-3d field-cyber">
   <canvas id="three-bg"></canvas>
+  <div id="bg-dimmer" class="bg-dimmer" aria-hidden="true"></div>
   <div class="app">
 
 
@@ -102,6 +103,15 @@
                 <button class="theme-opt" data-theme="nature" type="button">Nature (自然・芝)</button>
               </div>
               <div class="settings-desc">3D電脳空間「Cyber」、白ベース「White」、全画面芝生の「Nature」など背景テーマを選択できます。</div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-row">
+                <span>背景・フィールドの濃さ</span>
+                <span class="settings-value" id="bg-opacity-value">100%</span>
+              </div>
+              <input type="range" id="bg-opacity-range" min="10" max="100" value="100" step="5">
+              <div class="settings-desc">背景や盤面全体の模様・光を薄くして、カードや枠を見やすくします。</div>
             </div>
 
             <div class="settings-group">
@@ -389,7 +399,7 @@
 
   </div>
 
-  <script src="script.js?v=37"></script>
+  <script src="script.js?v=38"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

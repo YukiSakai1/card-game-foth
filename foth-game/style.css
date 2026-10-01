@@ -7738,3 +7738,50 @@ body #closeup-layer .closeup-toast {
   border-radius: 10px;
 }
 .card-explain-ring.ring-cost.on { transform: scale(1); }
+
+/* ==================== BACKGROUND & FIELD DIM (薄くする設定) ==================== */
+:root {
+  --bg-field-opacity: 1;
+}
+
+#three-bg {
+  opacity: var(--bg-field-opacity, 1) !important;
+}
+
+body.field-nature #three-bg,
+body[data-theme="nature"] #three-bg,
+body.theme-cyber #three-bg,
+body[data-theme="cyber"] #three-bg,
+body.field-classic #three-bg {
+  opacity: var(--bg-field-opacity, 1) !important;
+}
+
+.field-splash-bg,
+#field-splash-bg {
+  opacity: var(--bg-field-opacity, 1) !important;
+}
+
+.field-situation-bg,
+#field-situation-bg {
+  opacity: calc(var(--bg-field-opacity, 1) * 0.45) !important;
+}
+
+.bg-dimmer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-color: #020712;
+  opacity: calc((1 - var(--bg-field-opacity, 1)) * 0.92);
+  transition: opacity 0.15s ease;
+}
+
+body.field-white .bg-dimmer,
+body.field-cyber.field-white .bg-dimmer {
+  background-color: #dbe4ed;
+}
+
+body.field-nature .bg-dimmer,
+body[data-theme="nature"] .bg-dimmer {
+  background-color: #021207;
+}
