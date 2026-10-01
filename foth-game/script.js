@@ -1027,8 +1027,8 @@
     return new Promise(function (resolve) {
       setTimeout(function () {
         overlay.classList.remove('show');
-        setTimeout(resolve, 140);
-      }, 2500);
+        setTimeout(resolve, 100);
+      }, 2100);
     });
   }
 

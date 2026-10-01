@@ -3463,7 +3463,7 @@
   }
 
   .turn-change-overlay.show .turn-change-wrap {
-    animation: turnChangeAnim 2.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: turnChangeAnim 2.2s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   @keyframes turnChangeAnim {
