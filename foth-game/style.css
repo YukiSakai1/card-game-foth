@@ -5244,86 +5244,92 @@
     background: var(--cyber-cyan);
   }
 
-  /* ===================== White-based Cyber Theme (白ベース電脳テーマ・目に優しいソフトスレート) ===================== */
+  /* ===================== White-based Cyber Theme (電脳サイバー 白＆青ベーステーマ) ===================== */
   body.field-cyber.field-white,
   body.field-white {
-    --rail: #0f2338;
-    --rail-dim: #475569;
-    --gold-2: #0284c7;
-    --line: rgba(2, 132, 199, 0.3);
-    background: #dbe4ed;
-    color: #0f2338;
+    --rail: #02203c;
+    --rail-dim: #38bdf8;
+    --gold-2: #0099ff;
+    --line: rgba(0, 180, 255, 0.45);
+    background:
+      radial-gradient(1200px 700px at 15% 0%, rgba(0, 210, 255, 0.18), transparent 60%),
+      radial-gradient(1000px 600px at 85% 10%, rgba(0, 140, 255, 0.16), transparent 55%),
+      radial-gradient(1100px 800px at 50% 100%, rgba(0, 240, 255, 0.14), transparent 65%),
+      linear-gradient(180deg, #f0f7ff 0%, #e2effd 50%, #d8e9fc 100%);
+    color: #022b52;
   }
 
   body.field-cyber.field-white .app,
   body.field-white .app {
-    color: #0f2338;
+    color: #022b52;
   }
 
   body.field-cyber.field-white .topbar,
   body.field-white .topbar {
-    background: rgba(235, 242, 250, 0.94);
-    border-bottom: 1px solid rgba(2, 132, 199, 0.25);
-    box-shadow: 0 4px 18px rgba(15, 35, 56, 0.08);
+    background: rgba(245, 251, 255, 0.90);
+    border-bottom: 1.5px solid rgba(0, 180, 255, 0.45);
+    box-shadow: 0 4px 20px rgba(0, 120, 220, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   body.field-cyber.field-white .brand,
   body.field-white .brand {
-    color: #0c4a6e;
-    text-shadow: none;
+    color: #022b52;
+    text-shadow: 0 0 10px rgba(0, 190, 255, 0.35);
   }
 
   body.field-cyber.field-white .brand span,
   body.field-white .brand span {
-    color: #0284c7;
-    text-shadow: none;
+    color: #0088ff;
+    text-shadow: 0 0 12px rgba(0, 210, 255, 0.6);
   }
 
   body.field-cyber.field-white .track-wrap,
   body.field-white .track-wrap {
-    background: rgba(226, 235, 245, 0.85);
-    border: 1px solid rgba(2, 132, 199, 0.25);
+    background: rgba(225, 241, 255, 0.92);
+    border: 1.5px solid rgba(0, 180, 255, 0.45);
+    box-shadow: inset 0 0 10px rgba(0, 180, 255, 0.15);
   }
 
   body.field-cyber.field-white .track,
   body.field-white .track {
-    background: rgba(210, 224, 238, 0.6);
+    background: rgba(200, 228, 255, 0.7);
   }
 
   body.field-cyber.field-white .track-grid,
   body.field-white .track-grid {
     background-size: 8px 100%;
-    background-image: linear-gradient(90deg, rgba(2, 132, 199, 0.18) 1px, transparent 1px);
+    background-image: linear-gradient(90deg, rgba(0, 160, 255, 0.28) 1px, transparent 1px);
   }
 
   body.field-cyber.field-white .track-badge,
   body.field-white .track-badge {
-    background: rgba(2, 132, 199, 0.12);
-    border: 1px solid rgba(2, 132, 199, 0.35);
-    color: #0284c7;
+    background: rgba(0, 140, 255, 0.16);
+    border: 1px solid #00a2ff;
+    color: #0055aa;
     font-weight: 700;
+    box-shadow: 0 0 8px rgba(0, 180, 255, 0.25);
   }
 
   body.field-cyber.field-white .badge-dot,
   body.field-white .badge-dot {
-    background: #0284c7;
-    box-shadow: 0 0 6px rgba(2, 132, 199, 0.5);
+    background: #00d2ff;
+    box-shadow: 0 0 8px #00d2ff;
   }
 
   body.field-cyber.field-white .step-label,
   body.field-white .step-label {
-    color: #0c4a6e;
+    color: #022b52;
   }
 
   body.field-cyber.field-white .step-prefix,
   body.field-white .step-prefix {
-    color: #475569;
+    color: #1e5282;
     font-weight: 600;
   }
 
   body.field-cyber.field-white .step-current,
   body.field-white .step-current {
-    color: #0284c7;
+    color: #0088ff;
     font-weight: 800;
   }
 
@@ -5334,23 +5340,24 @@
 
   body.field-cyber.field-white .step-total,
   body.field-white .step-total {
-    color: #475569;
+    color: #1e5282;
     font-weight: 600;
   }
 
   body.field-cyber.field-white .settings-gear,
   body.field-white .settings-gear {
-    background: rgba(240, 246, 252, 0.95);
-    border-color: rgba(2, 132, 199, 0.4);
-    color: #0369a1;
+    background: rgba(245, 251, 255, 0.95);
+    border-color: rgba(0, 180, 255, 0.5);
+    color: #0066cc;
+    box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
   }
 
   body.field-cyber.field-white .settings-gear:hover,
   body.field-white .settings-gear:hover {
-    background: #0284c7;
+    background: #0088ff;
     color: #ffffff;
-    border-color: #0284c7;
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+    border-color: #00f0ff;
+    box-shadow: 0 0 16px rgba(0, 210, 255, 0.6);
   }
 
   /* サイバーテーマ（ダーク）の opponent-strip */
@@ -5390,47 +5397,47 @@
 
   /* サイバーテーマ（ホワイト）の opponent-strip */
   body.field-cyber.field-white .opponent-strip {
-    background: linear-gradient(135deg, rgba(245, 250, 255, 0.94) 0%, rgba(230, 240, 250, 0.94) 100%);
-    border: 1px solid rgba(2, 132, 199, 0.3);
-    box-shadow: 0 3px 12px rgba(15, 35, 56, 0.10);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(235, 246, 255, 0.92) 100%);
+    border: 1.5px solid rgba(0, 180, 255, 0.5);
+    box-shadow: 0 4px 18px rgba(0, 120, 220, 0.12), 0 0 12px rgba(0, 210, 255, 0.2);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
 
   body.field-cyber.field-white .opponent-avatar {
-    border-color: #0284c7;
-    box-shadow: 0 0 6px rgba(2, 132, 199, 0.25);
+    border-color: #00a2ff;
+    box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
   }
 
   body.field-cyber.field-white .opponent-name {
-    color: #0c4a6e;
-    text-shadow: none;
+    color: #022b52;
+    text-shadow: 0 0 8px rgba(0, 180, 255, 0.3);
   }
 
   body.field-cyber.field-white .opponent-sub {
-    color: #0284c7;
+    color: #0077dd;
   }
 
   body.field-cyber.field-white .opponent-hand-area {
-    background: rgba(218, 234, 248, 0.85);
-    border-color: rgba(2, 132, 199, 0.35);
-    color: #0369a1;
+    background: rgba(220, 240, 255, 0.85);
+    border-color: rgba(0, 180, 255, 0.45);
+    color: #023866;
   }
 
   body.field-cyber.field-white .opponent-hand-area .count {
-    color: #0284c7;
+    color: #0077ff;
     font-weight: 800;
-    text-shadow: none;
+    text-shadow: 0 0 6px rgba(0, 140, 255, 0.4);
   }
 
   body.field-cyber.field-white .settings-panel {
-    background: linear-gradient(180deg, rgba(248, 251, 255, 0.97), rgba(235, 243, 250, 0.97));
-    border-left: 1px solid rgba(2, 132, 199, 0.25);
-    box-shadow: -10px 0 40px rgba(15, 35, 56, 0.12);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 248, 255, 0.98));
+    border-left: 1.5px solid rgba(0, 180, 255, 0.45);
+    box-shadow: -10px 0 40px rgba(0, 80, 180, 0.2), 0 0 20px rgba(0, 210, 255, 0.2);
   }
 
   body.field-cyber.field-white .settings-title {
-    color: #0c4a6e;
+    color: #022b52;
   }
 
   body.field-cyber.field-white .settings-close {
@@ -5438,33 +5445,33 @@
   }
 
   body.field-cyber.field-white .settings-close:hover {
-    color: #0c4a6e;
+    color: #022b52;
   }
 
   body.field-cyber.field-white .settings-tabs {
-    border-bottom-color: rgba(2, 132, 199, 0.2);
+    border-bottom-color: rgba(0, 180, 255, 0.35);
   }
 
   body.field-cyber.field-white .settings-tab-btn {
-    border-color: rgba(2, 132, 199, 0.25);
-    background: rgba(230, 240, 250, 0.85);
-    color: #475569;
+    border-color: rgba(0, 180, 255, 0.35);
+    background: rgba(230, 243, 255, 0.85);
+    color: #1e5282;
   }
 
   body.field-cyber.field-white .settings-tab-btn:hover {
-    color: #0c4a6e;
-    border-color: rgba(2, 132, 199, 0.45);
+    color: #0077dd;
+    border-color: rgba(0, 180, 255, 0.65);
   }
 
   body.field-cyber.field-white .settings-tab-btn.active {
-    background: linear-gradient(135deg, #0284c7, #0369a1);
-    border-color: #0284c7;
+    background: linear-gradient(135deg, #0088ff, #0055cc);
+    border-color: #00f0ff;
     color: #ffffff;
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.35);
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.5);
   }
 
   body.field-cyber.field-white .settings-label {
-    color: #334155;
+    color: #022b52;
   }
 
   body.field-cyber.field-white .settings-desc {
@@ -5472,127 +5479,130 @@
   }
 
   body.field-cyber.field-white .settings-row {
-    color: #334155;
+    color: #022b52;
   }
 
   body.field-cyber.field-white .settings-value {
-    color: #0284c7;
+    color: #0088ff;
   }
 
   body.field-cyber.field-white .theme-switch,
   body.field-cyber.field-white .mode-switch {
-    background: rgba(226, 236, 248, 0.95);
-    border-color: rgba(2, 132, 199, 0.25);
+    background: rgba(226, 238, 252, 0.95);
+    border-color: rgba(0, 180, 255, 0.4);
   }
 
   body.field-cyber.field-white .theme-opt,
   body.field-cyber.field-white .mode-opt {
-    color: #475569;
+    color: #1e5282;
   }
 
   body.field-cyber.field-white .theme-opt:hover,
   body.field-cyber.field-white .mode-opt:hover {
-    color: #0c4a6e;
+    color: #0077dd;
   }
 
   body.field-cyber.field-white .preset-btn,
   body.field-cyber.field-white .settings-reset,
   body.field-cyber.field-white .settings-bgm-toggle {
-    border-color: rgba(2, 132, 199, 0.25);
-    background: rgba(230, 240, 250, 0.85);
-    color: #334155;
+    border-color: rgba(0, 180, 255, 0.35);
+    background: rgba(230, 243, 255, 0.85);
+    color: #022b52;
   }
 
   body.field-cyber.field-white .preset-btn:hover,
   body.field-cyber.field-white .settings-reset:hover,
   body.field-cyber.field-white .settings-bgm-toggle:hover {
-    color: #0284c7;
-    border-color: #0284c7;
+    color: #0077dd;
+    border-color: #00a2ff;
   }
 
   body.field-cyber.field-white .preset-btn.active {
-    background: linear-gradient(135deg, #0284c7, #0369a1);
-    border-color: #0284c7;
+    background: linear-gradient(135deg, #0088ff, #0055cc);
+    border-color: #00f0ff;
     color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
   }
 
   body.field-cyber.field-white .settings-group input[type=range] {
-    background: rgba(2, 132, 199, 0.2);
+    background: rgba(0, 180, 255, 0.25);
   }
 
   body.field-cyber.field-white .settings-group input[type=range]::-webkit-slider-thumb {
-    background: #0284c7;
-    box-shadow: 0 0 8px rgba(2, 132, 199, 0.5);
+    background: #0088ff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.7);
   }
 
-  /* ボード盤面マット：目に優しいソフトスレート電脳テクスチャ */
+  /* ボード盤面マット：電脳サイバー 白＆青ベース */
   body.field-cyber.field-white .field-splash-bg {
     background:
-      radial-gradient(ellipse at 50% 130%, rgba(2, 132, 199, .08) 0%, rgba(14, 165, 233, .04) 40%, transparent 75%),
-      repeating-linear-gradient(0deg, rgba(2, 132, 199, .03) 0 1px, transparent 1px 28px),
-      repeating-linear-gradient(90deg, rgba(2, 132, 199, .03) 0 1px, transparent 1px 28px),
-      linear-gradient(180deg, rgba(245, 248, 252, 0.94) 0%, rgba(232, 240, 248, 0.90) 50%, rgba(222, 232, 242, 0.88) 100%);
-    box-shadow: inset 0 0 40px rgba(15, 35, 56, .06), 0 10px 30px rgba(15, 35, 56, 0.08);
-    border: 1.5px solid rgba(2, 132, 199, 0.25);
+      radial-gradient(ellipse at 50% 50%, rgba(0, 210, 255, 0.12) 0%, rgba(0, 140, 255, 0.05) 50%, transparent 80%),
+      repeating-linear-gradient(0deg, rgba(0, 160, 255, 0.09) 0 1px, transparent 1px 32px),
+      repeating-linear-gradient(90deg, rgba(0, 160, 255, 0.09) 0 1px, transparent 1px 32px),
+      linear-gradient(180deg, #ffffff 0%, #f0f7ff 50%, #e6f3ff 100%);
+    box-shadow:
+      inset 0 0 30px rgba(0, 180, 255, 0.15),
+      0 0 20px rgba(0, 190, 255, 0.2),
+      0 20px 50px rgba(0, 70, 160, 0.15);
+    border: 1.5px solid rgba(0, 180, 255, 0.6);
   }
 
   body.field-cyber.field-white .field-splash-bg::before {
     background:
-      repeating-radial-gradient(circle at 50% 100%,
-        rgba(2, 132, 199, .02) 0px,
-        rgba(2, 132, 199, .02) 1.5px,
+      repeating-radial-gradient(circle at 50% 50%,
+        rgba(0, 180, 255, 0.05) 0px,
+        rgba(0, 180, 255, 0.05) 1.5px,
         transparent 1.5px,
-        transparent 18px),
-      linear-gradient(0deg, rgba(2, 132, 199, .04) 0%, transparent 50%);
+        transparent 24px);
     opacity: 0.85;
   }
 
   body.field-cyber.field-white .field-splash-canvas {
     mix-blend-mode: multiply;
-    opacity: 0.5;
+    opacity: 0.55;
   }
 
-  /* フィールド枠・スロット：落ち着いたトーンで目に優しい光彩 */
+  /* フィールド枠・スロット：サイバー白＆青 */
   body.field-cyber.field-white .lane,
   body.field-cyber.field-white .opp-lane,
   body.field-cyber.field-white .field-body,
   body.field-cyber.field-white .farm-pile,
   body.field-cyber.field-white .zone-body {
-    border-color: rgba(2, 132, 199, 0.45);
+    border: 1.5px solid rgba(0, 160, 255, 0.65);
     background:
-      radial-gradient(120% 140% at 50% 0%, rgba(2, 132, 199, .08), transparent 65%),
-      rgba(235, 243, 250, .88);
-    box-shadow: inset 0 0 14px rgba(2, 132, 199, .08), 0 2px 10px rgba(15, 35, 56, .08);
+      radial-gradient(120% 140% at 50% 0%, rgba(0, 210, 255, 0.15), transparent 65%),
+      rgba(240, 248, 255, 0.92);
+    box-shadow: inset 0 0 14px rgba(0, 180, 255, 0.14), 0 2px 10px rgba(0, 120, 220, 0.12);
   }
 
   body.field-cyber.field-white .lane-card-back,
   body.field-cyber.field-white .opp-lane .lane-card-back {
-    border-color: rgba(2, 132, 199, 0.5);
-    background: rgba(225, 237, 248, 0.7);
-    box-shadow: inset 0 0 10px rgba(2, 132, 199, 0.1), 0 2px 8px rgba(15, 35, 56, 0.08);
+    border-color: rgba(0, 160, 255, 0.6);
+    background: rgba(220, 238, 255, 0.75);
+    box-shadow: inset 0 0 10px rgba(0, 180, 255, 0.2), 0 2px 8px rgba(0, 120, 220, 0.1);
   }
 
   body.field-cyber.field-white .lane-label,
   body.field-cyber.field-white .opp-lane .lane-label,
   body.field-white .lane-label,
   body.field-white .opp-lane .lane-label {
-    background: rgba(245, 250, 255, 0.96);
-    color: #0f2338;
-    border-color: rgba(2, 132, 199, 0.5);
-    box-shadow: 0 2px 6px rgba(15, 35, 56, 0.12);
+    background: rgba(255, 255, 255, 0.98);
+    color: #022b52;
+    border-color: rgba(0, 180, 255, 0.65);
+    box-shadow: 0 2px 8px rgba(0, 140, 255, 0.2);
   }
 
-  /* 脚質ごとの枠色・文字色アクセントを白背景で鮮明・高コントラストに最適化 */
+  /* 脚質ごとの枠色・文字色アクセントを鮮明・高コントラストに最適化 */
   body.field-white .lane[data-lane="nige"] .lane-label,
   body.field-white .opp-lane[data-lane="nige"] .lane-label {
-    color: #0369a1 !important;
-    border-color: #0284c7 !important;
+    color: #0077dd !important;
+    border-color: #00a2ff !important;
     background: #ffffff !important;
   }
 
   body.field-white .lane[data-lane="senko"] .lane-label,
   body.field-white .opp-lane[data-lane="senko"] .lane-label {
-    color: #be123c !important;
+    color: #e11d48 !important;
     border-color: #f43f5e !important;
     background: #ffffff !important;
   }
@@ -5614,19 +5624,19 @@
   /* アクティブな山札ラベル（白テーマ） */
   body.field-white .lane.active .lane-label,
   body.field-white .opp-lane.active .lane-label {
-    background: #0f2942 !important;
+    background: linear-gradient(135deg, #0088ff, #0055cc) !important;
     color: #ffffff !important;
-    border-color: #0284c7 !important;
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.6) !important;
+    border-color: #00f0ff !important;
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.75) !important;
   }
 
   /* 山札枚数バッジ（白テーマ） */
   body.field-white .lane-badge {
-    background: #0284c7 !important;
+    background: linear-gradient(135deg, #0099ff, #0066cc) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    border-color: #0369a1 !important;
-    box-shadow: 0 2px 6px rgba(0, 50, 120, 0.25) !important;
+    border-color: #00f0ff !important;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.6) !important;
   }
 
   body.field-cyber.field-white #zone-opp-farm .farm-pile,
@@ -5635,23 +5645,23 @@
   body.field-white #zone-opp-farm .farm-pile,
   body.field-white #zone-field .field-body-opp,
   body.field-white .opp-lane {
-    border: 1.5px solid rgba(244, 63, 94, .55) !important;
+    border: 1.5px solid rgba(0, 160, 255, 0.55) !important;
     background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 120, 140, .18), transparent 65%),
-      rgba(255, 242, 245, .88) !important;
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .18), 0 2px 10px rgba(255, 80, 100, .2) !important;
+      radial-gradient(120% 140% at 50% 0%, rgba(0, 210, 255, 0.12), transparent 65%),
+      rgba(240, 248, 255, 0.90) !important;
+    box-shadow: inset 0 0 14px rgba(0, 180, 255, 0.12), 0 2px 10px rgba(0, 120, 220, 0.10) !important;
   }
 
   body.field-white .opp-lane .lane-badge {
-    background: #e11d48 !important;
+    background: linear-gradient(135deg, #0284c7, #0369a1) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    border-color: #be123c !important;
-    box-shadow: 0 2px 6px rgba(190, 18, 60, 0.25) !important;
+    border-color: #00f0ff !important;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.5) !important;
   }
 
   body.field-white .opp-lane .lane-card-back {
-    border-color: rgba(244, 63, 94, .65) !important;
+    border-color: rgba(0, 160, 255, 0.55) !important;
   }
 
   body.field-cyber.field-white #zone-farm .farm-pile,
@@ -5659,20 +5669,20 @@
   body.field-white #zone-farm .farm-pile,
   body.field-white #zone-field .field-body {
     background:
-      radial-gradient(120% 140% at 50% 0%, rgba(0, 200, 255, .18), transparent 65%),
-      rgba(238, 248, 255, .88);
-    box-shadow: inset 0 0 16px rgba(0, 190, 255, .2), 0 2px 10px rgba(0, 160, 240, .22);
+      radial-gradient(120% 140% at 50% 0%, rgba(0, 210, 255, 0.18), transparent 65%),
+      rgba(240, 248, 255, 0.92);
+    box-shadow: inset 0 0 16px rgba(0, 190, 255, 0.2), 0 2px 10px rgba(0, 160, 240, 0.22);
   }
 
   body.field-cyber.field-white .field-placeholder,
   body.field-white .field-placeholder {
-    color: #0284c7 !important;
+    color: #0077dd !important;
     font-weight: 700;
   }
 
   body.field-cyber.field-white .field-placeholder-opp,
   body.field-white .field-placeholder-opp {
-    color: #e11d48 !important;
+    color: #0284c7 !important;
     font-weight: 700;
   }
 
@@ -5680,7 +5690,7 @@
   body.field-cyber.field-white .zone-body:empty::before,
   body.field-white .farm-pile:empty::before,
   body.field-white .zone-body:empty::before {
-    color: #0284c7 !important;
+    color: #0077dd !important;
     font-weight: 700;
   }
 
@@ -5688,13 +5698,13 @@
   body.field-white .opponent-strip,
   body.field-cyber.field-white .opponent-strip {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 254, 0.96) 100%) !important;
-    border: 1px solid rgba(0, 160, 235, 0.5) !important;
-    box-shadow: 0 4px 14px rgba(0, 60, 120, 0.12) !important;
+    border: 1.5px solid rgba(0, 180, 255, 0.5) !important;
+    box-shadow: 0 4px 14px rgba(0, 80, 180, 0.12) !important;
   }
 
   body.field-white .opponent-avatar,
   body.field-cyber.field-white .opponent-avatar {
-    border-color: #0284c7 !important;
+    border-color: #00a2ff !important;
     box-shadow: 0 0 6px rgba(0, 160, 235, 0.3) !important;
   }
 
@@ -7213,201 +7223,279 @@ body[data-theme="nature"] .cmd-menu-btn .btn-sub { color: #99f6e4 !important; te
 body[data-theme="nature"] .cmd-menu-btn .btn-icon-wrap { border-color: #5eead4 !important; box-shadow: 0 0 10px rgba(45, 212, 191, 0.6) !important; }
 
 /* =====================================================================
-   WHITE v2 — 近代的で見やすいライトUI
-   スレートのインク色＋ブルー(自分)／ローズ(相手)の2色で役割を明確化。
-   ほんのり色づく背景に、白いマット・細い枠線・やわらかい影。
+   WHITE CYBER — サイバー（電脳）白＆青ベーステーマ
+   洗練されたサイバーホワイトパネルにエレクトリックブルー＆シアンの電脳光彩。
+   視認性の高いディープブルーの文字と発光するブラケット。
    ===================================================================== */
-html body.field-cyber.field-white {
-  --w-ink: #0f172a;
-  --w-sub: #475569;
-  --w-line: #dbe3ee;
-  --w-blue: #2563eb;
-  --w-blue-soft: #eff6ff;
-  --w-rose: #e11d48;
-  --w-rose-soft: #fff1f3;
-  --rail: #0f172a;
-  --rail-dim: #475569;
+html body.field-cyber.field-white,
+body[data-theme="white"] {
+  --w-ink: #022b52;
+  --w-sub: #1e5282;
+  --w-line: rgba(0, 180, 255, 0.45);
+  --w-blue: #0088ff;
+  --w-blue-glow: #00d2ff;
+  --w-blue-soft: rgba(224, 242, 254, 0.85);
+  --w-rose: #0284c7;
+  --w-rose-soft: rgba(224, 242, 254, 0.75);
+  --rail: #02203c;
+  --rail-dim: #38bdf8;
   background:
-    radial-gradient(900px 520px at 8% -8%, rgba(96, 165, 250, 0.22), transparent 62%),
-    radial-gradient(800px 480px at 100% 4%, rgba(167, 139, 250, 0.16), transparent 60%),
-    radial-gradient(900px 600px at 50% 110%, rgba(45, 212, 191, 0.14), transparent 60%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2f8 100%) !important;
+    radial-gradient(1200px 700px at 15% 0%, rgba(0, 210, 255, 0.18), transparent 60%),
+    radial-gradient(1000px 600px at 85% 10%, rgba(0, 140, 255, 0.16), transparent 55%),
+    radial-gradient(1100px 800px at 50% 100%, rgba(0, 240, 255, 0.14), transparent 65%),
+    linear-gradient(180deg, #f0f7ff 0%, #e2effd 50%, #d8e9fc 100%) !important;
   background-attachment: fixed !important;
   color: var(--w-ink);
 }
-/* 全体に極薄のドットグリッド */
-html body.field-cyber.field-white::before {
+/* 電脳サイバーの微細回路グリッド */
+html body.field-cyber.field-white::before,
+body[data-theme="white"]::before {
   content: '';
   display: block !important;
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1.2px);
-  background-size: 22px 22px;
+  background-image:
+    linear-gradient(90deg, rgba(0, 160, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0, 160, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-html body.field-cyber.field-white .topbar {
-  background: rgba(255, 255, 255, 0.78) !important;
+html body.field-cyber.field-white .topbar,
+body[data-theme="white"] .topbar {
+  background: rgba(245, 251, 255, 0.90) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--w-line) !important;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 6px 20px rgba(15, 23, 42, 0.06) !important;
+  border-bottom: 1.5px solid rgba(0, 180, 255, 0.45) !important;
+  box-shadow: 0 4px 20px rgba(0, 120, 220, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
 }
-html body.field-cyber.field-white .brand { color: var(--w-ink) !important; }
-html body.field-cyber.field-white .track { background: #e2e8f0 !important; border-color: transparent !important; }
-html body.field-cyber.field-white .track-fill {
-  background: linear-gradient(90deg, #38bdf8, #2563eb) !important;
-  box-shadow: none !important;
+html body.field-cyber.field-white .brand,
+body[data-theme="white"] .brand { color: #022b52 !important; text-shadow: 0 0 10px rgba(0, 190, 255, 0.35) !important; }
+html body.field-cyber.field-white .track,
+body[data-theme="white"] .track { background: rgba(200, 228, 255, 0.7) !important; border-color: rgba(0, 180, 255, 0.3) !important; }
+html body.field-cyber.field-white .track-fill,
+body[data-theme="white"] .track-fill {
+  background: linear-gradient(90deg, #00f0ff, #0077ff) !important;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.6) !important;
 }
 
-/* マット本体：白いカード面＋極薄グリッド＋浮遊する影 */
-html body.field-cyber.field-white .field-splash-bg {
+/* マット本体：サイバー白＆青＋電脳グリッド＋サイバーグロー */
+html body.field-cyber.field-white .field-splash-bg,
+body[data-theme="white"] .field-splash-bg {
   background:
-    repeating-linear-gradient(0deg, rgba(37, 99, 235, 0.045) 0 1px, transparent 1px 32px),
-    repeating-linear-gradient(90deg, rgba(37, 99, 235, 0.045) 0 1px, transparent 1px 32px),
-    linear-gradient(180deg, #ffffff 0%, #f4f8fd 100%) !important;
-  border: 1px solid #cfd9e6 !important;
+    radial-gradient(ellipse at 50% 50%, rgba(0, 210, 255, 0.12) 0%, rgba(0, 140, 255, 0.05) 50%, transparent 80%),
+    repeating-linear-gradient(0deg, rgba(0, 160, 255, 0.09) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, rgba(0, 160, 255, 0.09) 0 1px, transparent 1px 32px),
+    linear-gradient(180deg, #ffffff 0%, #f0f7ff 50%, #e6f3ff 100%) !important;
+  border: 1.5px solid rgba(0, 180, 255, 0.6) !important;
   box-shadow:
-    inset 0 1px 0 #fff,
-    0 1px 2px rgba(15, 23, 42, 0.06),
-    0 18px 44px rgba(30, 58, 110, 0.16) !important;
+    inset 0 0 30px rgba(0, 180, 255, 0.15),
+    0 0 20px rgba(0, 190, 255, 0.2),
+    0 20px 50px rgba(0, 70, 160, 0.15) !important;
 }
-html body.field-cyber.field-white .field-splash-bg::before { background: none !important; }
-html body.field-cyber.field-white .field-splash-canvas { opacity: 0.35; mix-blend-mode: multiply; }
+html body.field-cyber.field-white .field-splash-bg::before,
+body[data-theme="white"] .field-splash-bg::before {
+  background:
+    repeating-radial-gradient(circle at 50% 50%,
+      rgba(0, 180, 255, 0.05) 0px,
+      rgba(0, 180, 255, 0.05) 1.5px,
+      transparent 1.5px,
+      transparent 24px) !important;
+  opacity: 0.85 !important;
+}
+html body.field-cyber.field-white .field-splash-canvas,
+body[data-theme="white"] .field-splash-canvas { opacity: 0.55; mix-blend-mode: multiply; }
 
-/* 自分側スロット：ブルー */
+/* 自分側スロット：エレクトリック・サイバーブルー */
 html body.field-cyber.field-white .lane,
 html body.field-cyber.field-white #zone-field .field-body,
 html body.field-cyber.field-white #zone-farm .farm-pile,
-html body.field-cyber.field-white .zone-body {
-  border: 1.5px solid rgba(37, 99, 235, 0.45) !important;
-  background: linear-gradient(180deg, #ffffff, var(--w-blue-soft)) !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(37, 99, 235, 0.10) !important;
+html body.field-cyber.field-white .zone-body,
+body[data-theme="white"] .lane,
+body[data-theme="white"] #zone-field .field-body,
+body[data-theme="white"] #zone-farm .farm-pile,
+body[data-theme="white"] .zone-body {
+  border: 1.5px solid rgba(0, 160, 255, 0.65) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(225, 243, 255, 0.90)) !important;
+  box-shadow: inset 0 0 14px rgba(0, 180, 255, 0.14), 0 2px 10px rgba(0, 120, 220, 0.12) !important;
 }
-html body.field-cyber.field-white .lane-card-back {
-  border-color: rgba(37, 99, 235, 0.5) !important;
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe) !important;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.18) !important;
+html body.field-cyber.field-white .lane-card-back,
+body[data-theme="white"] .lane-card-back {
+  border-color: rgba(0, 160, 255, 0.6) !important;
+  background: linear-gradient(135deg, #dbeafe, #bae6fd) !important;
+  box-shadow: 0 0 10px rgba(0, 160, 255, 0.25) !important;
 }
-html body.field-cyber.field-white .lane-label {
-  background: #fff !important;
-  color: var(--w-ink) !important;
-  border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12) !important;
-  font-weight: 700 !important;
+html body.field-cyber.field-white .lane-label,
+body[data-theme="white"] .lane-label {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #022b52 !important;
+  border: 1.5px solid rgba(0, 160, 255, 0.6) !important;
+  box-shadow: 0 2px 8px rgba(0, 140, 255, 0.2) !important;
+  font-weight: 800 !important;
 }
-html body.field-cyber.field-white .lane.active .lane-label {
-  background: var(--w-blue) !important;
-  color: #fff !important;
-  border-color: var(--w-blue) !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.45) !important;
+html body.field-cyber.field-white .lane.active .lane-label,
+body[data-theme="white"] .lane.active .lane-label {
+  background: linear-gradient(135deg, #0088ff, #0055cc) !important;
+  color: #ffffff !important;
+  border-color: #00f0ff !important;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.75) !important;
 }
 html body.field-cyber.field-white .lane-badge,
-html body.field-cyber.field-white #farm-count {
-  background: var(--w-blue) !important;
-  color: #fff !important;
-  border: 2px solid #fff !important;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4) !important;
+html body.field-cyber.field-white #farm-count,
+body[data-theme="white"] .lane-badge,
+body[data-theme="white"] #farm-count {
+  background: linear-gradient(135deg, #0099ff, #0066cc) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #00f0ff !important;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.6) !important;
 }
-html body.field-cyber.field-white .slot-bracket {
-  border-color: rgba(37, 99, 235, 0.75) !important;
-  box-shadow: none !important;
+html body.field-cyber.field-white .slot-bracket,
+body[data-theme="white"] .slot-bracket {
+  border-color: #00d2ff !important;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.8) !important;
 }
 
-/* 相手側スロット：ローズ */
+/* 相手側スロット：サイバー白＆青・スカイブルーアクセント */
 html body.field-cyber.field-white .opp-lane,
 html body.field-cyber.field-white #zone-field .field-body-opp,
-html body.field-cyber.field-white #zone-opp-farm .farm-pile {
-  border: 1.5px solid rgba(225, 29, 72, 0.4) !important;
-  background: linear-gradient(180deg, #ffffff, var(--w-rose-soft)) !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(225, 29, 72, 0.10) !important;
+html body.field-cyber.field-white #zone-opp-farm .farm-pile,
+body[data-theme="white"] .opp-lane,
+body[data-theme="white"] #zone-field .field-body-opp,
+body[data-theme="white"] #zone-opp-farm .farm-pile {
+  border: 1.5px solid rgba(0, 160, 255, 0.55) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(230, 242, 255, 0.88)) !important;
+  box-shadow: inset 0 0 14px rgba(0, 180, 255, 0.12), 0 2px 10px rgba(0, 120, 220, 0.10) !important;
 }
-html body.field-cyber.field-white .opp-lane .lane-card-back {
-  border-color: rgba(225, 29, 72, 0.45) !important;
-  background: linear-gradient(135deg, #ffe4e9, #fecdd6) !important;
-  box-shadow: 0 2px 6px rgba(225, 29, 72, 0.18) !important;
+html body.field-cyber.field-white .opp-lane .lane-card-back,
+body[data-theme="white"] .opp-lane .lane-card-back {
+  border-color: rgba(0, 160, 255, 0.55) !important;
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd) !important;
+  box-shadow: 0 0 8px rgba(0, 160, 255, 0.2) !important;
 }
-html body.field-cyber.field-white .opp-lane .lane-label {
-  background: #fff !important;
-  color: #9f1239 !important;
-  border: 1px solid #fecdd3 !important;
+html body.field-cyber.field-white .opp-lane .lane-label,
+body[data-theme="white"] .opp-lane .lane-label {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #034b8c !important;
+  border: 1.5px solid rgba(0, 160, 255, 0.55) !important;
+  box-shadow: 0 2px 8px rgba(0, 140, 255, 0.18) !important;
 }
-html body.field-cyber.field-white .opp-lane.active .lane-label {
-  background: var(--w-rose) !important;
-  color: #fff !important;
-  border-color: var(--w-rose) !important;
-  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.4) !important;
+html body.field-cyber.field-white .opp-lane.active .lane-label,
+body[data-theme="white"] .opp-lane.active .lane-label {
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+  color: #ffffff !important;
+  border-color: #00f0ff !important;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.65) !important;
 }
 html body.field-cyber.field-white .opp-lane .lane-badge,
-html body.field-cyber.field-white #opp-farm-count {
-  background: var(--w-rose) !important;
-  color: #fff !important;
-  border: 2px solid #fff !important;
+html body.field-cyber.field-white #opp-farm-count,
+body[data-theme="white"] .opp-lane .lane-badge,
+body[data-theme="white"] #opp-farm-count {
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #00f0ff !important;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.5) !important;
 }
-html body.field-cyber.field-white .slot-frame-opp .slot-bracket { border-color: rgba(225, 29, 72, 0.7) !important; }
+html body.field-cyber.field-white .slot-frame-opp .slot-bracket,
+body[data-theme="white"] .slot-frame-opp .slot-bracket {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7) !important;
+}
 
-/* 相手バー・設定・ボタン類：白カード＋スレート文字で読みやすく */
-html body.field-cyber.field-white .opponent-strip {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border: 1px solid var(--w-line) !important;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+/* 相手バー・設定・ボタン類：サイバーホワイト＆エレクトリックブルー */
+html body.field-cyber.field-white .opponent-strip,
+body[data-theme="white"] .opponent-strip {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(235, 246, 255, 0.92) 100%) !important;
+  border: 1.5px solid rgba(0, 180, 255, 0.5) !important;
+  box-shadow: 0 4px 18px rgba(0, 120, 220, 0.12), 0 0 12px rgba(0, 210, 255, 0.2) !important;
 }
-html body.field-cyber.field-white .opponent-name { color: var(--w-ink) !important; }
-html body.field-cyber.field-white .opponent-sub { color: var(--w-sub) !important; }
-html body.field-cyber.field-white .opponent-hand-area {
-  background: #f1f5f9 !important;
-  border-color: var(--w-line) !important;
-  color: var(--w-ink) !important;
+html body.field-cyber.field-white .opponent-name,
+body[data-theme="white"] .opponent-name { color: #022b52 !important; text-shadow: 0 0 8px rgba(0, 180, 255, 0.3) !important; }
+html body.field-cyber.field-white .opponent-sub,
+body[data-theme="white"] .opponent-sub { color: #0077dd !important; }
+html body.field-cyber.field-white .opponent-hand-area,
+body[data-theme="white"] .opponent-hand-area {
+  background: rgba(220, 240, 255, 0.85) !important;
+  border-color: rgba(0, 180, 255, 0.45) !important;
+  color: #023866 !important;
 }
-html body.field-cyber.field-white .opponent-hand-area .count { color: var(--w-blue) !important; }
-html body.field-cyber.field-white .settings-gear {
-  background: #fff !important; border: 1px solid var(--w-line) !important; color: var(--w-ink) !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
+html body.field-cyber.field-white .opponent-hand-area .count,
+body[data-theme="white"] .opponent-hand-area .count {
+  color: #0077ff !important;
+  text-shadow: 0 0 6px rgba(0, 140, 255, 0.4) !important;
 }
-html body.field-cyber.field-white .settings-panel {
-  background: #fff !important;
-  border: 1px solid var(--w-line) !important;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18) !important;
+html body.field-cyber.field-white .settings-gear,
+body[data-theme="white"] .settings-gear {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1.5px solid rgba(0, 180, 255, 0.55) !important;
+  color: #0066cc !important;
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.25) !important;
+}
+html body.field-cyber.field-white .settings-panel,
+body[data-theme="white"] .settings-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 248, 255, 0.98)) !important;
+  border: 1.5px solid rgba(0, 180, 255, 0.45) !important;
+  box-shadow: 0 20px 60px rgba(0, 80, 180, 0.2), 0 0 20px rgba(0, 210, 255, 0.2) !important;
 }
 html body.field-cyber.field-white .preset-btn.active,
-html body.field-cyber.field-white .settings-tab-btn.active {
-  background: var(--w-blue) !important; color: #fff !important; border-color: var(--w-blue) !important;
+html body.field-cyber.field-white .settings-tab-btn.active,
+body[data-theme="white"] .preset-btn.active,
+body[data-theme="white"] .settings-tab-btn.active {
+  background: linear-gradient(135deg, #0088ff, #0055cc) !important;
+  color: #ffffff !important;
+  border-color: #00f0ff !important;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.5) !important;
 }
 html body.field-cyber.field-white .cmd-menu-btn,
-html body.field-cyber.field-white .cmd-fab {
-  background: #fff !important;
-  border: 1.5px solid rgba(37, 99, 235, 0.55) !important;
-  color: var(--w-ink) !important;
-  box-shadow: 0 6px 18px rgba(30, 58, 110, 0.22) !important;
+html body.field-cyber.field-white .cmd-fab,
+body[data-theme="white"] .cmd-menu-btn,
+body[data-theme="white"] .cmd-fab {
+  background: linear-gradient(180deg, #ffffff, #edf6ff) !important;
+  border: 1.5px solid rgba(0, 160, 255, 0.65) !important;
+  color: #023866 !important;
+  box-shadow: 0 6px 20px rgba(0, 100, 220, 0.2), 0 0 10px rgba(0, 210, 255, 0.2) !important;
 }
-html body.field-cyber.field-white .cmd-menu-btn .btn-label { color: var(--w-ink) !important; text-shadow: none !important; }
-html body.field-cyber.field-white .cmd-menu-btn .btn-sub { color: var(--w-blue) !important; text-shadow: none !important; }
-html body.field-cyber.field-white .cmd-fab-badge { background: var(--w-blue) !important; color: #fff !important; box-shadow: none !important; }
+html body.field-cyber.field-white .cmd-menu-btn .btn-label,
+body[data-theme="white"] .cmd-menu-btn .btn-label { color: #022b52 !important; text-shadow: none !important; }
+html body.field-cyber.field-white .cmd-menu-btn .btn-sub,
+body[data-theme="white"] .cmd-menu-btn .btn-sub { color: #0077ff !important; text-shadow: none !important; }
+html body.field-cyber.field-white .cmd-fab-badge,
+body[data-theme="white"] .cmd-fab-badge {
+  background: linear-gradient(135deg, #0088ff, #0055cc) !important;
+  border: 1px solid #00f0ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.5) !important;
+}
 
-/* White v2 補正：左右の濃い影を除去し、自分側ラベルの文字を濃くして読みやすく */
-html body.field-3d.field-cyber.field-white .field-image-wrap {
-  box-shadow: 0 24px 40px -18px rgba(30, 58, 110, 0.25) !important;
+/* White 補正：左右の濃い影を除去し、自分側ラベルの文字を濃くして読みやすく */
+html body.field-3d.field-cyber.field-white .field-image-wrap,
+body[data-theme="white"].field-3d .field-image-wrap {
+  box-shadow: 0 24px 40px -18px rgba(0, 100, 220, 0.25) !important;
 }
-html body.field-cyber.field-white .lane[data-lane] .lane-label {
-  background: #fff !important;
-  color: #1e3a8a !important;
-  border: 1px solid rgba(37, 99, 235, 0.45) !important;
+html body.field-cyber.field-white .lane[data-lane] .lane-label,
+body[data-theme="white"] .lane[data-lane] .lane-label {
+  background: #ffffff !important;
+  color: #022b52 !important;
+  border: 1.5px solid rgba(0, 160, 255, 0.6) !important;
 }
-html body.field-cyber.field-white .lane.active[data-lane] .lane-label {
-  background: #2563eb !important;
+html body.field-cyber.field-white .lane.active[data-lane] .lane-label,
+body[data-theme="white"] .lane.active[data-lane] .lane-label {
+  background: linear-gradient(135deg, #0088ff, #0055cc) !important;
   color: #fff !important;
-  border-color: #2563eb !important;
+  border-color: #00f0ff !important;
 }
-html body.field-cyber.field-white .opp-lane[data-lane] .lane-label {
-  background: #fff !important;
-  color: #9f1239 !important;
-  border: 1px solid #fecdd3 !important;
+html body.field-cyber.field-white .opp-lane[data-lane] .lane-label,
+body[data-theme="white"] .opp-lane[data-lane] .lane-label {
+  background: #ffffff !important;
+  color: #034b8c !important;
+  border: 1.5px solid rgba(0, 160, 255, 0.55) !important;
 }
-html body.field-cyber.field-white .opp-lane.active[data-lane] .lane-label {
-  background: #e11d48 !important;
+html body.field-cyber.field-white .opp-lane.active[data-lane] .lane-label,
+body[data-theme="white"] .opp-lane.active[data-lane] .lane-label {
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
   color: #fff !important;
-  border-color: #e11d48 !important;
+  border-color: #00f0ff !important;
+}
 }
 
 

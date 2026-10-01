@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=45">
+  <link rel="stylesheet" href="style.css?v=46">
   <script type="importmap">
 {
     "imports": {
@@ -399,7 +399,7 @@
 
   </div>
 
-  <script src="script.js?v=43"></script>
+  <script src="script.js?v=44"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -448,7 +448,7 @@
 
       // 1. Base Color
       if (isWhite) {
-        ctx.fillStyle = '#dbe3eb';
+        ctx.fillStyle = '#f0f5fc';
       } else if (isNature) {
         ctx.fillStyle = '#010d06';
       } else {
@@ -458,11 +458,11 @@
 
       // Ambient light pools
       const ambientGlows = isWhite ? [
-        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(2, 132, 199, 0.08)' },
-        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(14, 165, 233, 0.07)' },
-        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(2, 132, 199, 0.07)' },
-        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(14, 165, 233, 0.06)' },
-        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(2, 132, 199, 0.06)' },
+        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 190, 255, 0.16)' },
+        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 140, 255, 0.14)' },
+        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(0, 210, 255, 0.14)' },
+        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(0, 160, 255, 0.12)' },
+        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(0, 190, 255, 0.12)' },
       ] : isNature ? [
         { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(5, 120, 60, 0.30)' },
         { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(16, 185, 129, 0.26)' },
@@ -479,7 +479,7 @@
       ambientGlows.forEach(g => {
         const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
         rad.addColorStop(0, g.c);
-        rad.addColorStop(1, isWhite ? 'rgba(219, 227, 235, 0)' : isNature ? 'rgba(1, 13, 6, 0)' : 'rgba(1, 5, 15, 0)');
+        rad.addColorStop(1, isWhite ? 'rgba(240, 245, 252, 0)' : isNature ? 'rgba(1, 13, 6, 0)' : 'rgba(1, 5, 15, 0)');
         ctx.fillStyle = rad;
         ctx.fillRect(0, 0, size, size);
       });
@@ -497,7 +497,7 @@
 
             ctx.save();
             if (shadowGlow) {
-              ctx.shadowColor = shadowGlow.color || (isWhite ? '#0077ee' : isNature ? '#10b981' : '#0099ff');
+              ctx.shadowColor = shadowGlow.color || (isWhite ? '#00c8ff' : isNature ? '#10b981' : '#0099ff');
               ctx.shadowBlur = shadowGlow.blur || 4;
             }
             if (fillStyle) {
@@ -544,33 +544,33 @@
           if (styleRoll < 0.45) {
             // Style 1: Subtle translucent plate
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(235, 244, 252, 0.90)' : isNature ? 'rgba(3, 30, 14, 0.25)' : 'rgba(0, 20, 60, 0.22)',
-              isWhite ? 'rgba(0, 140, 230, 0.45)' : isNature ? 'rgba(16, 185, 129, 0.40)' : 'rgba(0, 150, 255, 0.40)',
-              1.0, { color: isWhite ? '#0088ee' : isNature ? '#10b981' : '#0066dd', blur: 4 });
+              isWhite ? 'rgba(255, 255, 255, 0.95)' : isNature ? 'rgba(3, 30, 14, 0.25)' : 'rgba(0, 20, 60, 0.22)',
+              isWhite ? 'rgba(0, 180, 255, 0.70)' : isNature ? 'rgba(16, 185, 129, 0.40)' : 'rgba(0, 150, 255, 0.40)',
+              1.0, { color: isWhite ? '#00c8ff' : isNature ? '#10b981' : '#0066dd', blur: 5 });
           } else if (styleRoll < 0.75) {
             // Style 2: Micro-grid IC chip
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(228, 238, 250, 0.92)' : isNature ? 'rgba(2, 24, 12, 0.28)' : 'rgba(0, 14, 45, 0.28)',
-              isWhite ? 'rgba(0, 160, 255, 0.55)' : isNature ? 'rgba(34, 197, 94, 0.55)' : 'rgba(0, 190, 255, 0.55)',
+              isWhite ? 'rgba(242, 248, 255, 0.94)' : isNature ? 'rgba(2, 24, 12, 0.28)' : 'rgba(0, 14, 45, 0.28)',
+              isWhite ? 'rgba(0, 160, 255, 0.85)' : isNature ? 'rgba(34, 197, 94, 0.55)' : 'rgba(0, 190, 255, 0.55)',
               1.2, { color: isWhite ? '#0099ff' : isNature ? '#22c55e' : '#0088ff', blur: 5 });
             if (pw > step * 1.5 && ph > step * 1.5) {
               drawWrapRect(px + 6, py + 6, pw - 12, ph - 12,
-                isWhite ? 'rgba(218, 232, 248, 0.85)' : isNature ? 'rgba(1, 18, 8, 0.20)' : 'rgba(0, 30, 80, 0.18)',
-                isWhite ? 'rgba(0, 140, 230, 0.35)' : isNature ? 'rgba(16, 185, 129, 0.35)' : 'rgba(0, 140, 230, 0.35)',
+                isWhite ? 'rgba(230, 242, 255, 0.90)' : isNature ? 'rgba(1, 18, 8, 0.20)' : 'rgba(0, 30, 80, 0.18)',
+                isWhite ? 'rgba(0, 180, 255, 0.55)' : isNature ? 'rgba(16, 185, 129, 0.35)' : 'rgba(0, 140, 230, 0.35)',
                 0.8);
             }
           } else {
             // Style 3: Accent Node Box
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(220, 240, 255, 0.92)' : isNature ? 'rgba(4, 40, 18, 0.20)' : 'rgba(0, 40, 110, 0.20)',
-              isWhite ? 'rgba(0, 180, 255, 0.70)' : isNature ? 'rgba(74, 222, 128, 0.70)' : 'rgba(60, 220, 255, 0.70)',
-              1.4, { color: isWhite ? '#00ccff' : isNature ? '#4ade80' : '#00ccff', blur: 6 });
+              isWhite ? 'rgba(230, 246, 255, 0.95)' : isNature ? 'rgba(4, 40, 18, 0.20)' : 'rgba(0, 40, 110, 0.20)',
+              isWhite ? 'rgba(0, 220, 255, 0.90)' : isNature ? 'rgba(74, 222, 128, 0.70)' : 'rgba(60, 220, 255, 0.70)',
+              1.4, { color: isWhite ? '#00f0ff' : isNature ? '#4ade80' : '#00ccff', blur: 7 });
           }
         }
       });
 
       // 3. Delicate Background Grid Lines
-      ctx.strokeStyle = isWhite ? 'rgba(0, 120, 210, 0.18)' : isNature ? 'rgba(16, 185, 129, 0.16)' : 'rgba(0, 90, 190, 0.16)';
+      ctx.strokeStyle = isWhite ? 'rgba(0, 160, 255, 0.22)' : isNature ? 'rgba(16, 185, 129, 0.16)' : 'rgba(0, 90, 190, 0.16)';
       ctx.lineWidth = 0.8;
       for (let i = 0; i <= gridDivs; i++) {
         const p = i * step;
@@ -587,9 +587,9 @@
 
       // Major grid lines
       ctx.save();
-      ctx.strokeStyle = isWhite ? 'rgba(0, 140, 235, 0.38)' : isNature ? 'rgba(74, 222, 128, 0.35)' : 'rgba(0, 150, 255, 0.32)';
+      ctx.strokeStyle = isWhite ? 'rgba(0, 180, 255, 0.55)' : isNature ? 'rgba(74, 222, 128, 0.35)' : 'rgba(0, 150, 255, 0.32)';
       ctx.lineWidth = 1.2;
-      ctx.shadowColor = isWhite ? '#0077ee' : isNature ? '#10b981' : '#0077ee';
+      ctx.shadowColor = isWhite ? '#00d2ff' : isNature ? '#10b981' : '#0077ee';
       ctx.shadowBlur = 4;
       for (let i = 0; i <= gridDivs; i += 4) {
         const p = i * step;
@@ -617,12 +617,12 @@
 
         const isGlowTrace = pseudoRand() > 0.45;
         ctx.strokeStyle = isWhite
-          ? (isGlowTrace ? 'rgba(0, 160, 245, 0.85)' : 'rgba(0, 130, 225, 0.55)')
+          ? (isGlowTrace ? 'rgba(0, 220, 255, 0.98)' : 'rgba(0, 160, 255, 0.75)')
           : isNature
           ? (isGlowTrace ? 'rgba(74, 222, 128, 0.78)' : 'rgba(34, 197, 94, 0.45)')
           : (isGlowTrace ? 'rgba(0, 210, 255, 0.75)' : 'rgba(0, 140, 240, 0.45)');
         ctx.lineWidth = isGlowTrace ? 1.5 : 1.0;
-        ctx.shadowColor = isWhite ? '#0099ff' : isNature ? '#10b981' : (isGlowTrace ? '#00bbff' : '#0066dd');
+        ctx.shadowColor = isWhite ? '#00e5ff' : isNature ? '#10b981' : (isGlowTrace ? '#00bbff' : '#0066dd');
         ctx.shadowBlur = isGlowTrace ? 5 : 3;
 
         for (let ox of [-size, 0, size]) {
@@ -639,20 +639,20 @@
             ctx.stroke();
 
             // Terminal solder pad
-            ctx.fillStyle = isWhite ? '#0284c7' : isNature ? '#4ade80' : '#ffffff';
+            ctx.fillStyle = isWhite ? '#00f0ff' : isNature ? '#4ade80' : '#ffffff';
             ctx.beginPath();
             ctx.arc(midX, endY, 2.2, 0, Math.PI * 2);
             ctx.fill();
 
             // Solder pad ring
-            ctx.strokeStyle = isWhite ? 'rgba(0, 170, 250, 0.85)' : isNature ? 'rgba(74, 222, 128, 0.85)' : 'rgba(0, 220, 255, 0.85)';
+            ctx.strokeStyle = isWhite ? 'rgba(0, 140, 255, 0.90)' : isNature ? 'rgba(74, 222, 128, 0.85)' : 'rgba(0, 220, 255, 0.85)';
             ctx.lineWidth = 1.0;
             ctx.beginPath();
             ctx.arc(midX, endY, 4.0, 0, Math.PI * 2);
             ctx.stroke();
 
             // Start node dot
-            ctx.fillStyle = isWhite ? 'rgba(0, 140, 230, 0.85)' : isNature ? 'rgba(52, 211, 153, 0.80)' : 'rgba(0, 180, 255, 0.80)';
+            ctx.fillStyle = isWhite ? 'rgba(0, 180, 255, 0.95)' : isNature ? 'rgba(52, 211, 153, 0.80)' : 'rgba(0, 180, 255, 0.80)';
             ctx.beginPath();
             ctx.arc(startX, startY, 1.8, 0, Math.PI * 2);
             ctx.fill();
@@ -662,7 +662,7 @@
       ctx.restore();
 
       // 5. Grid intersection node dots & Data junctions
-      ctx.fillStyle = isWhite ? 'rgba(0, 140, 220, 0.75)' : isNature ? 'rgba(52, 211, 153, 0.70)' : 'rgba(80, 200, 255, 0.70)';
+      ctx.fillStyle = isWhite ? 'rgba(0, 190, 255, 0.85)' : isNature ? 'rgba(52, 211, 153, 0.70)' : 'rgba(80, 200, 255, 0.70)';
       for (let i = 0; i <= gridDivs; i += 2) {
         for (let j = 0; j <= gridDivs; j += 2) {
           if (pseudoRand() > 0.60) {
@@ -759,18 +759,18 @@
         if (!whiteTexture) whiteTexture = createCyberTexture('white');
         planeMat.map = whiteTexture;
         planeMat.needsUpdate = true;
-        scene.background = new THREE.Color(0xdbe3eb);
-        scene.fog = new THREE.Fog(0xdbe3eb, 220, 1750);
-        horizonGlowMat.color.setHex(0x0284c7);
-        horizonGlowMat.opacity = 0.12;
-        bloomPass.strength = 0.12;
-        bloomPass.threshold = 0.45;
+        scene.background = new THREE.Color(0xe8f2fc);
+        scene.fog = new THREE.Fog(0xe8f2fc, 220, 1750);
+        horizonGlowMat.color.setHex(0x00c8ff);
+        horizonGlowMat.opacity = 0.30;
+        bloomPass.strength = 0.35;
+        bloomPass.threshold = 0.30;
         for (let i = 0; i < particleCount; i++) {
           const pColor = new THREE.Color();
-          if (Math.random() > 0.4) {
-            pColor.setHSL(0.57 + Math.random() * 0.05, 0.70, 0.45 + Math.random() * 0.20);
+          if (Math.random() > 0.35) {
+            pColor.setHSL(0.53 + Math.random() * 0.08, 0.95, 0.65 + Math.random() * 0.20);
           } else {
-            pColor.setRGB(0.15, 0.35, 0.55);
+            pColor.setRGB(0.9, 0.96, 1.0);
           }
           colors[i * 3] = pColor.r;
           colors[i * 3 + 1] = pColor.g;
