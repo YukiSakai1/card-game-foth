@@ -405,6 +405,7 @@
   var hasRunThisTurn = false;
   var pendingFinishRun = null;
   var lastDrawer = null; // 'player' | 'cpu' — 山札を最後に引いたのはどちらか
+  var gameTurn = 1; // ターン数（先攻1ターン目は1、以降増える）
 
   /* ===================== dom helpers ===================== */
   function $(id) { return document.getElementById(id); }
@@ -1301,8 +1302,9 @@
   /* ===================== コマンド実行 ===================== */
   function cmdDraw() {
     if (!canDraw || !currentLane() || isCpuTurn) return;
-    drawFreeplayCard();
     canDraw = false;
+    var drawCount = (gameTurn === 1) ? 1 : 2;
+    drawFreeplayCard(drawCount);
     updateCommandButtons();
   }
 
@@ -1476,6 +1478,20 @@
     });
   }
 
+  // プレイヤーのターン開始処理（2ターン目以降は各2枚ドロー）
+  function startPlayerTurn() {
+    gameTurn++;
+    showCommandBar(true);
+    isCpuTurn = false;
+    canDraw = true;
+    phase = 'idle';
+    hasRunThisTurn = false;
+    cpuHorseCard = null;
+    renderAll();
+    checkVictory();
+    if (!victoryShown) cmdDraw();
+  }
+
   // CPU側の手札のうち、指定タイプの枚数を数える
   function cpuHandCountOfType(type) {
     return cpuHand.filter(function (c) { return c.type === type; }).length;
@@ -1623,15 +1639,7 @@
       showOpponentBubble('ターンエンド');
       await sleep(1000);
       showTurnChange('あなたのターン').then(function () {
-        showCommandBar(true);
-        isCpuTurn = false;
-        canDraw = true;
-        phase = 'idle';
-        hasRunThisTurn = false;
-        cpuHorseCard = null;
-        renderAll();
-        checkVictory();
-        if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+        startPlayerTurn();
       });
       return;
     }
@@ -1690,8 +1698,7 @@
       renderAll();
       await sleep(800);
       showTurnChange('あなたのターン').then(function () {
-        isCpuTurn = false; hasRunThisTurn = false; showCommandBar(true); renderAll();
-        cmdDraw();
+        startPlayerTurn();
       });
       return;
     }
@@ -1706,9 +1713,15 @@
     cpuRunBonus = 0;
     cpuItemGuardBonus = 0;
 
-    // 1. 相手のドロー演出（山札から手札へ実カードをドロー）
+    // 1. 相手のドロー演出（後攻1ターン目以降はお互いに各2枚ずつドロー）
     await sleep(300);
-    await cpuDrawOneCardWithAnimation();
+    var cpuDrawCount = 2;
+    for (var i = 0; i < cpuDrawCount; i++) {
+      if (cpuCurrentLane()) {
+        await cpuDrawOneCardWithAnimation();
+        if (i < cpuDrawCount - 1) await sleep(220);
+      }
+    }
 
     await sleep(600);
 
@@ -1833,13 +1846,7 @@
       pHorse.then(function () {
         sleep(800).then(function () {
           showTurnChange('あなたのターン').then(function () {
-            showCommandBar(true);
-            isCpuTurn = false;
-            hasRunThisTurn = false;
-            cpuHorseCard = null;
-            renderAll();
-            checkVictory();
-            if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+            startPlayerTurn();
           });
         });
       });
@@ -1965,14 +1972,7 @@
             }
             return sleep(700).then(function () {
               return showTurnChange('あなたのターン').then(function () {
-                showCommandBar(true);
-                isCpuTurn = false;
-                canDraw = true;
-                phase = 'idle';
-                hasRunThisTurn = false;
-                renderAll();
-                checkVictory();
-                if (!victoryShown) cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+                startPlayerTurn();
               });
             });
           });
@@ -2442,24 +2442,46 @@
     }
   }
 
-  function drawFreeplayCard() {
+  function drawFreeplayCard(count) {
+    var totalToDraw = typeof count === 'number' ? count : (gameTurn === 1 ? 1 : 2);
     if (!currentLane() || isCpuTurn) return;
-    var drawnLaneKey = currentLane().key;
-    var deckRect = deckSourceRect();
-    var handRect = $('hand-row').getBoundingClientRect();
-    var dummy = makeDeckDummy(deckRect);
-    flyGhost(dummy, handRect).then(function () {
-      dummy.remove();
-      var drawnCard = getNextPlayerDrawCard();
-      hand.push(drawnCard);
-      drawOneFromDeck();
-      lastDrawer = 'player';
-      renderAll();
-      SoundFX.deal();
-      var stackEl = document.querySelector('.lane[data-lane="' + drawnLaneKey + '"] .lane-stack');
-      if (stackEl) { stackEl.classList.add('pulse'); setTimeout(function () { stackEl.classList.remove('pulse'); }, 340); }
+
+    var actualCount = Math.min(totalToDraw, totalDeck());
+    if (actualCount <= 0) return;
+
+    var chain = Promise.resolve();
+    for (var i = 0; i < actualCount; i++) {
+      (function (idx) {
+        chain = chain.then(function () {
+          if (!currentLane()) return Promise.resolve();
+          var drawnLaneKey = currentLane().key;
+          var deckRect = deckSourceRect();
+          var handRect = $('hand-row').getBoundingClientRect();
+          var dummy = makeDeckDummy(deckRect);
+          return flyGhost(dummy, handRect).then(function () {
+            dummy.remove();
+            var drawnCard = getNextPlayerDrawCard();
+            hand.push(drawnCard);
+            drawOneFromDeck();
+            lastDrawer = 'player';
+            renderAll();
+            SoundFX.deal();
+            var stackEl = document.querySelector('.lane[data-lane="' + drawnLaneKey + '"] .lane-stack');
+            if (stackEl) {
+              stackEl.classList.add('pulse');
+              setTimeout(function () { stackEl.classList.remove('pulse'); }, 340);
+            }
+            if (idx < actualCount - 1) {
+              return sleep(220);
+            }
+          });
+        });
+      })(i);
+    }
+
+    chain.then(function () {
       checkVictory();
-      setNarrator('1枚引いたよ！');
+      setNarrator(actualCount + '枚引いたよ！');
       if (!victoryShown) checkHintsAvailable();
     });
   }
@@ -2923,6 +2945,7 @@
     field = null;
     fieldGuard = null;
     situation = null;
+    gameTurn = 1;
     resetPlayerDeck(true);
     renderAll();
 
@@ -3110,6 +3133,7 @@
     canDraw = true;
     isCpuTurn = false;
     hasRunThisTurn = false;
+    gameTurn = 1; // 先攻1ターン目
     // 相手（CPU）の初期手札とデッキを既存カード画像から初期化
     initCpuHandAndDeck();
     cpuHorseCard = null;
@@ -3120,7 +3144,7 @@
     showCommandBar(true); // 自分で操作する段階になったらコマンドバーを表示
     renderAll();
     resetDrawQueue();
-    cmdDraw(); // 自分のターンの初めに自動でカードを1枚引く
+    cmdDraw(); // 先攻1ターン目：1枚ドロー
   }
 
   /* ===================== 自分で操作（ナレーターなし・完全手動プレイモード） ===================== */
@@ -3161,6 +3185,7 @@
     canDraw = false;
     isCpuTurn = false;
     hasRunThisTurn = false;
+    gameTurn = 1; // 先攻1ターン目
 
     setProgress(16);
     $('step-label').textContent = '自分で操作';
@@ -3177,7 +3202,7 @@
     showCommandBar(true);
     renderAll();
     resetPlayerDeck(false);
-    cmdDraw(); // 最初の手番ドロー
+    cmdDraw(); // 先攻1ターン目：1枚ドロー
   }
 
   function startTutorialMode() {
