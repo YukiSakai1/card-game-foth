@@ -2559,6 +2559,105 @@
     z-index: 50;
   }
 
+  /* ---- ガード選択時のガード値フローティングバッジ ---- */
+  .card-guard-floating-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85), 0 0 12px rgba(0, 229, 255, 0.6);
+    animation: guardBadgePulse 1.4s ease-in-out infinite alternate;
+  }
+
+  .card-guard-floating-badge.is-valid {
+    background: linear-gradient(135deg, #0284c7 0%, #034f75 100%);
+    border: 2px solid #00f0ff;
+    color: #ffffff;
+  }
+
+  .card-guard-floating-badge.is-valid .guard-lbl {
+    font-size: 10.5px;
+    color: #e0f2fe;
+    font-weight: 700;
+  }
+
+  .card-guard-floating-badge.is-valid .guard-val {
+    font-size: 16px;
+    color: #00f0ff;
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.85);
+    margin-left: 2px;
+  }
+
+  .card-guard-floating-badge.is-valid .guard-dist-ok {
+    font-size: 9.5px;
+    color: #38bdf8;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 3px;
+  }
+
+  .card-guard-floating-badge.is-invalid {
+    background: rgba(30, 41, 59, 0.95);
+    border: 1.5px solid #ef4444;
+    color: #fca5a5;
+    font-size: 11px;
+    opacity: 0.85;
+  }
+
+  .card-guard-floating-badge.is-invalid .guard-lbl {
+    font-size: 10px;
+    color: #f87171;
+  }
+
+  .card-guard-floating-badge.is-invalid .guard-val {
+    font-size: 13px;
+    color: #ef4444;
+    font-weight: 800;
+    margin-left: 2px;
+  }
+
+  .card-guard-floating-badge .guard-dist-warn {
+    font-size: 9.5px;
+    color: #fca5a5;
+    background: rgba(185, 28, 28, 0.5);
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 3px;
+  }
+
+  @keyframes guardBadgePulse {
+    0% {
+      transform: translateX(-50%) scale(1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85), 0 0 10px rgba(0, 229, 255, 0.4);
+    }
+    100% {
+      transform: translateX(-50%) scale(1.08);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.95), 0 0 22px rgba(0, 229, 255, 0.9);
+    }
+  }
+
+  /* ガード選択時にガード適性のある馬カードを浮き上がらせて強調 */
+  body.guard-selecting .card.selectable {
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.9), 0 0 0 2.5px #00f0ff !important;
+    transform: translateY(-20px) scale(1.08) !important;
+    z-index: 55 !important;
+  }
+
   /* ---------- Desktop: use the exact same mobile layout, just centered ----------
      Previously this breakpoint switched to a 2-column grid rearrangement
      (opponent/field/hand/cmd areas), which made desktop look different from

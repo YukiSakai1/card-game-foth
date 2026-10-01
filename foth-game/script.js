@@ -514,11 +514,30 @@
   function renderHand() {
     var row = $('hand-row');
     row.innerHTML = '';
+    var isGuardSelect = (phase === 'guard_select');
+    document.body.classList.toggle('guard-selecting', isGuardSelect);
+    var distKey = race ? raceDistanceKey(race.distance) : '';
+
     hand.forEach(function (c) {
       var el = buildCardEl(c);
-      if (interactionMode === 'select-force') {
+      if (isGuardSelect) {
+        var isHorse = (c.type === 'horse');
+        var isDistMatch = isHorse && ((c.dist || '').indexOf(distKey) >= 0);
+        el.classList.add(isHorse && isDistMatch ? 'selectable' : 'disabled');
+        if (isHorse) {
+          // ガード選択中：ガード値が大きく一目でわかる専用バッジを表示
+          var gBadge = document.createElement('div');
+          gBadge.className = 'card-guard-floating-badge' + (isDistMatch ? ' is-valid' : ' is-invalid');
+          gBadge.innerHTML =
+            '<span class="guard-icon">🛡️</span>' +
+            '<span class="guard-lbl">ガード</span>' +
+            '<span class="guard-val">' + (c.guard || 0) + '</span>' +
+            (!isDistMatch ? '<span class="guard-dist-warn">距離外</span>' : '<span class="guard-dist-ok">適性○</span>');
+          el.appendChild(gBadge);
+        }
+      } else if (interactionMode === 'select-force') {
         el.classList.add(c.type === 'force' ? 'selectable' : 'disabled');
-      } else if (interactionMode === 'select-horse' || phase === 'guard_select') {
+      } else if (interactionMode === 'select-horse') {
         el.classList.add(c.type === 'horse' ? 'selectable' : 'disabled');
       } else if (phase === 'select_horse') {
         el.classList.add(c.type === 'horse' ? 'selectable' : 'disabled');
@@ -1864,7 +1883,7 @@
       $('guard-yes').addEventListener('click', function () {
         popup.style.display = 'none';
         phase = 'guard_select';
-        setNarrator('🛡️ <b>ガードする馬カード</b>を選んでタップしてください。');
+        setNarrator('🛡️ <b>ガードする馬カード</b>を選んでタップしてください。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（カードの上に表示されている 🛡️ガード値 が相手のドローを減らす数値です）</span>');
         renderAll();
       });
       $('guard-no').addEventListener('click', function () {
@@ -4473,8 +4492,8 @@
       if (!card) return '';
       if (card.type === 'horse') {
         var parts = [];
-        parts.push('<b style="color:var(--gold-2);font-size:14px;">' + card.name + '</b>' + (card.en ? ' <span style="font-size:11px;color:var(--rail-dim)">(' + card.en + ')</span>' : ''));
-        parts.push('走破: <b>' + card.run + '</b> / ガード: <b>' + card.guard + '</b> / コスト: <b>' + (card.cost || 2) + '</b>');
+        parts.push('<b style="color:var(--gold-2);font-size:14.5px;">' + card.name + '</b>' + (card.en ? ' <span style="font-size:11px;color:var(--rail-dim)">(' + card.en + ')</span>' : ''));
+        parts.push('<div style="margin:4px 0;padding:3px 8px;background:rgba(2,132,199,0.18);border:1px solid rgba(0,229,255,0.4);border-radius:6px;display:inline-block;"><span style="color:#38bdf8;font-weight:700;">🛡️ ガード値:</span> <b style="color:#00f0ff;font-size:16px;">' + (card.guard || 0) + '</b> ｜ 走破: <b>' + card.run + '</b> ｜ コスト: <b>' + (card.cost || 2) + '</b></div>');
         if (card.style) parts.push('脚質: <b>' + card.style + '</b> | 距離: <b>' + (card.dist || '') + '</b>');
         if (card.fav) parts.push('得意: <b>' + card.fav + '</b>');
         return parts.join('<br>');
