@@ -6881,7 +6881,7 @@ body.field-white #guard-popup .popup-box,
 body.field-cyber.field-white #guard-popup .popup-box {
   background: var(--bubble-bg) !important;
   border: var(--bubble-border) !important;
-  border-radius: 28px !important;
+  border-radius: 12px !important;
   box-shadow: var(--bubble-shadow) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -6926,16 +6926,16 @@ body #opponent-thinking-popup .popup-desc b {
   font-weight: 700 !important;
 }
 
-/* ボタン：主ボタン＝シアン発光のカプセル／副ボタン＝白地にグレー枠 */
+/* ボタン：主ボタン＝シアン／副ボタン＝ライトグレー地に濃いスレート枠 */
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
-  background: linear-gradient(180deg, #19c6f5 0%, #0284c7 100%) !important;
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
   color: #ffffff !important;
-  border: 2px solid #00d2ff !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 0 10px rgba(0, 210, 255, 0.45), 0 3px 10px rgba(0, 0, 0, 0.12) !important;
+  border: 1.5px solid #00b4d8 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4) !important;
   text-shadow: none !important;
 }
 
@@ -6943,23 +6943,25 @@ body #guard-popup .btn-skip,
 body #run-support-popup .btn-skip,
 body #situation-hint-popup .btn-skip {
   background: #f1f5f9 !important;
-  color: var(--bubble-text) !important;
-  border: 2px solid #94a3b8 !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  color: #1e293b !important;
+  border: 1.5px solid #94a3b8 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
   text-shadow: none !important;
 }
 
 body #guard-popup .btn-guard:hover,
 body #run-support-popup .btn-guard:hover,
 body #situation-hint-popup .btn-guard:hover {
-  background: linear-gradient(180deg, #3bd2fa 0%, #0390dc 100%) !important;
+  background: linear-gradient(180deg, #0390dc 0%, #0284c7 100%) !important;
 }
 
 body #guard-popup .btn-skip:hover,
 body #run-support-popup .btn-skip:hover,
 body #situation-hint-popup .btn-skip:hover {
   background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #64748b !important;
 }
 
 body #guard-popup .popup-btns button,
@@ -7431,9 +7433,9 @@ body.awaiting-next .app * {
 
 
 /* =====================================================================
-   ポップアップ調整：角を少し角ばらせる／文字量でも枠からはみ出さない／馬カードと重ねない
+   ポップアップ調整：適度な角丸(12px)／高コントラスト文字色／文字量でも枠からはみ出さない／馬カードと重ねない
    ===================================================================== */
-/* 角丸：ポップアップ・バナー・トースト・ラベルは 12px（ナレーター吹き出しはそのまま） */
+/* 角丸：ポップアップ・バナー・トースト・ラベルは 12px */
 body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
 body #situation-hint-popup .popup-box,
@@ -7449,19 +7451,58 @@ body #closeup-layer .closeup-toast,
 body.field-cyber #closeup-layer .closeup-toast {
   border-radius: 12px !important;
 }
+
 body #closeup-layer .closeup-label,
 body.field-cyber #closeup-layer .closeup-label,
 body.field-white .closeup-label {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
 }
+
+/* ボタン：角丸8px、高コントラストで視認性抜群 */
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
-body .closeup-action-btn.btn-guard,
+body .closeup-action-btn.btn-guard {
+  border-radius: 8px !important;
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #00b4d8 !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  padding: 9px 24px !important;
+  text-shadow: none !important;
+  letter-spacing: 0.02em !important;
+}
+
 body #guard-popup .btn-skip,
 body #run-support-popup .btn-skip,
 body #situation-hint-popup .btn-skip {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+  border: 1.5px solid #94a3b8 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  padding: 9px 24px !important;
+  text-shadow: none !important;
+  letter-spacing: 0.02em !important;
+}
+
+body #guard-popup .btn-guard:hover,
+body #run-support-popup .btn-guard:hover,
+body #situation-hint-popup .btn-guard:hover {
+  background: linear-gradient(180deg, #0390dc 0%, #0284c7 100%) !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.55) !important;
+}
+
+body #guard-popup .btn-skip:hover,
+body #run-support-popup .btn-skip:hover,
+body #situation-hint-popup .btn-skip:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #64748b !important;
 }
 
 /* 文字数に応じて枠が伸び、長い場合は折り返す（枠外へはみ出さない） */
@@ -7540,38 +7581,6 @@ body .banner-stage.has-card:not(.is-guard) .banner-box {
 body .banner-stage.has-card:not(.is-guard) .banner-box.show {
   opacity: 1 !important;
   transform: scale(1) translateY(0) !important;
-}
-
-
-/* 角丸：ナレーター吹き出し（2行表示で約28px / 1行で約20px の見た目）に合わせて 24px に統一 */
-body #guard-popup .popup-box,
-body #run-support-popup .popup-box,
-body #situation-hint-popup .popup-box,
-body #opponent-thinking-popup .popup-box,
-body.field-white #guard-popup .popup-box,
-body.field-cyber.field-white #guard-popup .popup-box,
-body .banner-box,
-body .banner-stage.has-card:not(.is-guard) .banner-box,
-body .banner-stage.has-card.is-guard .banner-box,
-body .game-toast,
-body.field-white .game-toast,
-body #closeup-layer .closeup-toast,
-body.field-cyber #closeup-layer .closeup-toast {
-  border-radius: 24px !important;
-}
-body #closeup-layer .closeup-label,
-body.field-cyber #closeup-layer .closeup-label,
-body.field-white .closeup-label {
-  border-radius: 9999px !important;
-}
-body #guard-popup .btn-guard,
-body #run-support-popup .btn-guard,
-body #situation-hint-popup .btn-guard,
-body .closeup-action-btn.btn-guard,
-body #guard-popup .btn-skip,
-body #run-support-popup .btn-skip,
-body #situation-hint-popup .btn-skip {
-  border-radius: 9999px !important;
 }
 
 

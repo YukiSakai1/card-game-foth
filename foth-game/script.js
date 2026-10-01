@@ -4134,7 +4134,7 @@
       if (card.type === 'situation' && !opts.autoHideMs && !isCpuTurn && hand.some(function (c) { return c.id === card.id; })) {
         var actBtn = document.createElement('button');
         actBtn.className = 'closeup-action-btn btn-guard';
-        actBtn.style.cssText = 'margin-top:14px;padding:9px 24px;font-size:13.5px;font-weight:700;border-radius:24px;cursor:pointer;pointer-events:auto;box-shadow:0 4px 12px rgba(227,178,60,0.4);border:1.5px solid var(--gold);';
+        actBtn.style.cssText = 'margin-top:14px;padding:9px 24px;font-size:13.5px;font-weight:700;border-radius:8px;cursor:pointer;pointer-events:auto;box-shadow:0 4px 12px rgba(227,178,60,0.4);border:1.5px solid var(--gold);';
         actBtn.innerHTML = '☀️ この状況カードを発動する';
         actBtn.addEventListener('click', function (e) {
           e.stopPropagation();
