@@ -983,8 +983,10 @@
       overlay.classList.toggle('has-card', hasCard);
       overlay.classList.toggle('is-guard', isGuard && hasCard);
     }
+    var isFreeplay = (interactionMode === 'freeplay');
+    var tapHintHtml = isFreeplay ? '<div class="banner-tap-hint" style="margin-top:10px;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;text-shadow:0 2px 8px rgba(0,0,0,0.8);">👆 画面をタップ／クリックして次へ進む</div>' : '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
-    box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>';
+    box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
     box.classList.add('show');
     overlay.classList.add('active');
     return new Promise(function (resolve) {
@@ -993,7 +995,7 @@
         if (done) return;
         done = true;
         overlay.removeEventListener('click', finish);
-        clearTimeout(timer);
+        if (timer) clearTimeout(timer);
         box.classList.remove('show');
         overlay.classList.remove('active');
         if (stage) {
@@ -1011,7 +1013,8 @@
         setTimeout(resolve, 250);
       }
       overlay.addEventListener('click', finish);
-      var timer = setTimeout(finish, maxWait || 3200);
+      // マニュアル操作（freeplay）時は秒数自動スキップせず、ユーザーのタップ／クリック操作で次へ進む
+      var timer = isFreeplay ? null : setTimeout(finish, maxWait || 3200);
     });
   }
 
@@ -1434,11 +1437,14 @@
       phase = 'idle';
       SoundFX.shimmer();
       Haptics.place();
-      setNarrator('☀️ 状況カード「<b>' + card.name + '</b>」を発動した！ 馬場状態が<b>良</b>になった！');
-      renderRaceInfo();
-      renderAll();
-      showToast('☀️ 状況カード「' + card.name + '」を発動！');
-      CardCloseup.show(card, { label: '状況カード発動！', autoHideMs: 1500 });
+      var isFreeplay = (interactionMode === 'freeplay');
+      var sitDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
+      var toastHtml = sitDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>' : '');
+      CardCloseup.show(card, {
+        label: '☀️ 状況カード発動！',
+        toast: toastHtml,
+        autoHideMs: isFreeplay ? null : 1500
+      });
       checkHintsAvailable();
     }
 
@@ -2244,7 +2250,14 @@
   // カードごとの effectType に応じて処理を分岐する。
   // 新しい効果タイプを追加する場合はここに case を増やすだけでよい。
   function applyItemEffect(card) {
-    CardCloseup.show(card, { label: '発動！', autoHideMs: 1100 });
+    var isFreeplay = (interactionMode === 'freeplay');
+    var itemDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
+    var toastHtml = itemDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>' : '');
+    CardCloseup.show(card, {
+      label: (card.type === 'jockey' ? '🏇 騎手' : '✨ アイテム') + '発動！',
+      toast: toastHtml,
+      autoHideMs: isFreeplay ? null : 1200
+    });
     var msg = 'アイテム「' + card.name + '」を使った！';
     switch (card.effectType) {
       case 'run_bonus':
