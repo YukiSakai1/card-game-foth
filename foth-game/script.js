@@ -2050,8 +2050,7 @@
     var horseInPlay = selectedHorse;
     var modifierText = runModifiers(selectedHorse).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
 
-    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。');
-    CardCloseup.show(horseInPlay, { label: '走破！', autoHideMs: 1800 });
+    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（画面をタップ／クリックして次へ進む）</span>');
 
     /* STEP 3: 相手が考える → STEP 4: 走破成功/失敗の結果表示 */
     function afterField() {
@@ -2213,15 +2212,26 @@
       });
     }
 
-    if (interactionMode === 'freeplay' && !isCpuTurn && runSupportCards().length > 0) {
-      pendingAfterField = function () {
-        totalRun = effectiveRun(horseInPlay, runBonus);
+    function proceedToRunSequence() {
+      if (interactionMode === 'freeplay' && !isCpuTurn && runSupportCards().length > 0) {
+        pendingAfterField = function () {
+          totalRun = effectiveRun(horseInPlay, runBonus);
+          afterField();
+        };
+        offerRunSupport();
+      } else {
         afterField();
-      };
-      offerRunSupport();
-    } else {
-      afterField();
+      }
     }
+
+    // 馬カードを拡大表示し、ユーザーが画面をタップまたはクリックするまで待機
+    var horseDetailText = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(horseInPlay) : '';
+    CardCloseup.show(horseInPlay, {
+      label: '🏇 走破カード確認',
+      toast: horseDetailText + '<div style="margin-top:10px;text-align:center;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>'
+    }).then(function () {
+      proceedToRunSequence();
+    });
   }
 
   /* ===================== アイテム効果の適用 ===================== */
@@ -4387,6 +4397,8 @@
     var labelEl = $('closeup-label');
     var toastEl = $('closeup-toast');
     var hideTimer = null;
+    var onCloseResolver = null;
+    var onCloseCallback = null;
 
     function formatCardDetail(card) {
       if (!card) return '';
@@ -4412,7 +4424,7 @@
     }
 
     function show(card, opts) {
-      if (!card) return;
+      if (!card) return Promise.resolve();
       opts = opts || {};
       slot.innerHTML = '';
       slot.appendChild(buildCardEl(card));
@@ -4445,6 +4457,11 @@
       if (opts.autoHideMs) {
         hideTimer = setTimeout(hide, opts.autoHideMs);
       }
+
+      onCloseCallback = opts.onClose || null;
+      return new Promise(function (resolve) {
+        onCloseResolver = resolve;
+      });
     }
 
     function hide() {
@@ -4453,6 +4470,16 @@
       if (oldBtn) oldBtn.remove();
       suppressNextHandClick = false;
       if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+      if (onCloseResolver) {
+        var r = onCloseResolver;
+        onCloseResolver = null;
+        r();
+      }
+      if (onCloseCallback) {
+        var cb = onCloseCallback;
+        onCloseCallback = null;
+        cb();
+      }
     }
 
     layer.addEventListener('click', function (e) {
@@ -4465,7 +4492,7 @@
       }
     });
 
-    return { show: show, hide: hide };
+    return { show: show, hide: hide, formatCardDetail: formatCardDetail };
   })();
 
   var sitBgEl = $('field-situation-bg');
