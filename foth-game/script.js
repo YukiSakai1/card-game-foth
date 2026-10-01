@@ -226,14 +226,18 @@
       }
       return [first, second].concat(rest);
     } else {
-      // 自由対戦（マニュアル操作）：40枚を完全にシャッフル
-      for (var k = deck.length - 1; k > 0; k--) {
+      // 自分で操作（マニュアルモード）：最初のドローと次の2枚のドロー（計3枚）をフォースカードに確定
+      var force1 = function () { return forceCard(); };
+      var force2 = function () { return forceCard(); };
+      var force3 = function () { return forceCard(); };
+      var restManual = deck.slice(0, deck.length - 3);
+      for (var k = restManual.length - 1; k > 0; k--) {
         var r = Math.floor(Math.random() * (k + 1));
-        var tmp = deck[k];
-        deck[k] = deck[r];
-        deck[r] = tmp;
+        var tmp = restManual[k];
+        restManual[k] = restManual[r];
+        restManual[r] = tmp;
       }
-      return deck;
+      return [force1, force2, force3].concat(restManual);
     }
   }
 
@@ -3233,7 +3237,7 @@
     $('free-hint').hidden = true;
     showCommandBar(true); // 自分で操作する段階になったらコマンドバーを表示
     renderAll();
-    resetDrawQueue();
+    resetPlayerDeck(false);
     cmdDraw(); // 先攻1ターン目：1枚ドロー
   }
 
