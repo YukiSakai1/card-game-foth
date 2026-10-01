@@ -4201,7 +4201,7 @@
 
   })();
 
-  /* ===================== field theme switch (Cyber / Dark / White / Nature) ===================== */
+  /* ===================== field theme switch (Cyber / Dark / Nature) ===================== */
   (function setupThemeSwitch() {
     var switchWrap = $('theme-switch');
     if (!switchWrap) return;
@@ -4210,20 +4210,21 @@
     function applyTheme(theme) {
       document.body.classList.remove('field-cyber', 'field-white', 'field-nature', 'theme-cyber');
 
-      if (theme === 'white') {
-        document.body.classList.add('field-cyber');
-        document.body.classList.add('field-white');
-        document.body.dataset.theme = 'white';
-      } else if (theme === 'nature' || theme === 'classic') {
+      if (theme === 'nature' || theme === 'classic') {
         document.body.classList.add('field-nature');
         document.body.dataset.theme = 'nature';
       } else if (theme === 'cyber') {
         document.body.classList.add('theme-cyber');
         document.body.dataset.theme = 'cyber';
-      } else {
+      } else if (theme === 'dark') {
         // dark theme (standard)
         document.body.classList.add('field-cyber');
         document.body.dataset.theme = 'dark';
+      } else {
+        // fallback (e.g. legacy 'white' saved in localStorage)
+        theme = 'cyber';
+        document.body.classList.add('theme-cyber');
+        document.body.dataset.theme = 'cyber';
       }
 
       opts.forEach(function (opt) {
@@ -4246,7 +4247,7 @@
     var initialTheme = 'cyber';
     try {
       var saved = localStorage.getItem('foth_theme');
-      if (saved) initialTheme = saved;
+      if (saved && saved !== 'white') initialTheme = saved;
     } catch (e) {}
     applyTheme(initialTheme);
 
