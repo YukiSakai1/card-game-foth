@@ -3822,67 +3822,52 @@
     white-space: nowrap;
   }
 
-  /* ---------- Game Toast Notification ---------- */
+  /* ---------- Game Toast Notification (Screen Center Popup) ---------- */
   .game-toast {
     position: fixed;
-    top: 76px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(-18px) scale(0.92);
+    transform: translate(-50%, -50%) scale(0.92);
     background: rgba(14, 20, 26, 0.94);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 2px solid #e5c07b;
-    border-radius: 8px;
+    border-radius: 14px;
     color: #fff6db;
     font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    font-size: clamp(13px, 3.6vw, 15px);
+    font-size: clamp(14px, 3.8vw, 16px);
     font-weight: 800;
-    letter-spacing: 0.06em;
-    padding: 11px 22px;
+    letter-spacing: 0.04em;
+    padding: 18px 28px;
     box-shadow:
-      0 12px 35px rgba(0, 0, 0, 0.85),
-      0 0 20px rgba(227, 178, 60, 0.4);
+      0 20px 50px rgba(0, 0, 0, 0.85),
+      0 0 28px rgba(2, 132, 199, 0.35);
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
     transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    white-space: nowrap;
-    text-shadow: 0 0 10px rgba(227, 178, 60, 0.6), 0 2px 4px rgba(0, 0, 0, 0.9);
+    white-space: normal;
+    text-align: center;
+    max-width: min(90vw, 420px);
+    box-sizing: border-box;
+    text-shadow: none;
   }
 
   .game-toast.show {
     opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-    animation: toastNoticeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1), toastShake 0.36s ease 0.08s;
+    transform: translate(-50%, -50%) scale(1);
+    animation: toastNoticeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes toastNoticeIn {
     0% {
       opacity: 0;
-      transform: translateX(-50%) translateY(-18px) scale(0.9);
+      transform: translate(-50%, -50%) translateY(12px) scale(0.92);
     }
 
     100% {
       opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1);
-    }
-  }
-
-  @keyframes toastShake {
-
-    0%,
-    100% {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    20%,
-    60% {
-      transform: translateX(calc(-50% - 4px)) translateY(0);
-    }
-
-    40%,
-    80% {
-      transform: translateX(calc(-50% + 4px)) translateY(0);
+      transform: translate(-50%, -50%) translateY(0) scale(1);
     }
   }
 
@@ -7341,18 +7326,20 @@ body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
   margin-bottom: 4px !important;
 }
 
-/* ---- トースト通知 ---- */
+/* ---- トースト通知（画面中央ポップアップ） ---- */
 body .game-toast,
 body.field-white .game-toast {
   background: var(--bubble-bg) !important;
   border: var(--bubble-border) !important;
-  border-radius: 9999px !important;
+  border-radius: 14px !important;
   box-shadow: var(--bubble-shadow) !important;
   color: var(--bubble-text) !important;
   font-family: inherit !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   letter-spacing: 0.02em !important;
   text-shadow: none !important;
+  padding: 18px 28px !important;
+  line-height: 1.55 !important;
 }
 
 /* ---- カード拡大表示（状況カード使用など）の説明・ラベル ---- */
