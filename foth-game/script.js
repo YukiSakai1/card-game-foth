@@ -260,7 +260,16 @@
     if (playerDeck && playerDeck.length > 0) {
       return playerDeck.shift()();
     }
-    var maker = FREEPLAY_POOL[Math.floor(Math.random() * FREEPLAY_POOL.length)];
+    // 状況カードはデッキ全体で1枚限りのため、既に存在（場/手札/ファーム）する場合はフォールバックプールから除外
+    var hasSituationAlready = (situation !== null) || hand.some(function (c) { return c.type === 'situation'; }) || farm.some(function (c) { return c.type === 'situation'; });
+    var pool = FREEPLAY_POOL;
+    if (hasSituationAlready) {
+      pool = FREEPLAY_POOL.filter(function (fn) {
+        var sample = fn();
+        return sample.type !== 'situation';
+      });
+    }
+    var maker = pool[Math.floor(Math.random() * pool.length)];
     return maker();
   }
 
