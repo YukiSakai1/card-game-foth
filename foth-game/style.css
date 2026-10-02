@@ -4561,6 +4561,7 @@
 
   #opponent-thinking-popup,
   #run-support-popup,
+  #run-select-horse-popup,
   #situation-hint-popup,
   #notice-action-popup {
     position: fixed;
@@ -4575,6 +4576,7 @@
 
   #opponent-thinking-popup .popup-box,
   #run-support-popup .popup-box,
+  #run-select-horse-popup .popup-box,
   #situation-hint-popup .popup-box,
   #notice-action-popup .popup-box {
     background: linear-gradient(180deg, #1a2f22, #0c1710);
@@ -4589,6 +4591,7 @@
 
   #opponent-thinking-popup .popup-title,
   #run-support-popup .popup-title,
+  #run-select-horse-popup .popup-title,
   #situation-hint-popup .popup-title,
   #notice-action-popup .popup-title {
     font-size: 18px;
@@ -4599,6 +4602,7 @@
 
   #opponent-thinking-popup .popup-desc,
   #run-support-popup .popup-desc,
+  #run-select-horse-popup .popup-desc,
   #situation-hint-popup .popup-desc,
   #notice-action-popup .popup-desc {
     font-size: 13px;
@@ -4608,6 +4612,7 @@
   }
 
   #run-support-popup .popup-btns,
+  #run-select-horse-popup .popup-btns,
   #situation-hint-popup .popup-btns,
   #notice-action-popup .popup-btns {
     display: flex;
@@ -4617,6 +4622,7 @@
   }
 
   #run-support-popup .popup-btns button,
+  #run-select-horse-popup .popup-btns button,
   #situation-hint-popup .popup-btns button {
     padding: 8px 20px;
     border-radius: 10px;
@@ -4628,17 +4634,20 @@
   }
 
   #run-support-popup .popup-btns button:active,
+  #run-select-horse-popup .popup-btns button:active,
   #situation-hint-popup .popup-btns button:active {
     transform: scale(0.95);
   }
 
   #run-support-popup .btn-guard,
+  #run-select-horse-popup .btn-guard,
   #situation-hint-popup .btn-guard {
     background: var(--guard);
     color: #fff;
   }
 
   #run-support-popup .btn-skip,
+  #run-select-horse-popup .btn-skip,
   #situation-hint-popup .btn-skip {
     background: rgba(244, 240, 230, 0.15);
     color: var(--rail);
@@ -7142,9 +7151,10 @@
   --bubble-accent: #0284c7;
 }
 
-/* ---- 確認ポップアップ（走破サポート／状況カード／ガード／相手思考／案内） ---- */
+/* ---- 確認ポップアップ（走破サポート／状況カード／ガード／相手思考／案内／走破馬選択） ---- */
 body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
+body #run-select-horse-popup .popup-box,
 body #situation-hint-popup .popup-box,
 body #opponent-thinking-popup .popup-box,
 body #notice-action-popup .popup-box,
@@ -7166,6 +7176,7 @@ body #guard-popup .popup-box::before {
 
 body #guard-popup .popup-title,
 body #run-support-popup .popup-title,
+body #run-select-horse-popup .popup-title,
 body #situation-hint-popup .popup-title,
 body #opponent-thinking-popup .popup-title,
 body #notice-action-popup .popup-title,
@@ -7181,6 +7192,7 @@ body.field-white #guard-popup .popup-title {
 
 body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
+body #run-select-horse-popup .popup-desc,
 body #situation-hint-popup .popup-desc,
 body #opponent-thinking-popup .popup-desc,
 body #notice-action-popup .popup-desc,
@@ -7197,6 +7209,7 @@ body.field-white #guard-popup .popup-desc {
 body #guard-popup .popup-desc b,
 body #guard-popup .popup-desc strong,
 body #run-support-popup .popup-desc b,
+body #run-select-horse-popup .popup-desc b,
 body #situation-hint-popup .popup-desc b,
 body #opponent-thinking-popup .popup-desc b,
 body #notice-action-popup .popup-desc b {
@@ -7230,6 +7243,7 @@ body .popup-box div[style*="background: rgba(227,178,60"] {
 /* ボタン：主ボタン＝シアンブルー／副ボタン＝ライトグレー地に濃いスレート枠 */
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
+body #run-select-horse-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
 body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
@@ -7243,6 +7257,7 @@ body .closeup-action-btn.btn-guard {
 
 body #guard-popup .btn-skip,
 body #run-support-popup .btn-skip,
+body #run-select-horse-popup .btn-skip,
 body #situation-hint-popup .btn-skip {
   background: #f1f5f9 !important;
   color: #1e293b !important;
@@ -7254,6 +7269,7 @@ body #situation-hint-popup .btn-skip {
 
 body #guard-popup .btn-guard:hover,
 body #run-support-popup .btn-guard:hover,
+body #run-select-horse-popup .btn-guard:hover,
 body #situation-hint-popup .btn-guard:hover,
 body #notice-action-popup .btn-guard:hover {
   background: linear-gradient(180deg, #0390dc 0%, #0284c7 100%) !important;
@@ -7261,6 +7277,7 @@ body #notice-action-popup .btn-guard:hover {
 
 body #guard-popup .btn-skip:hover,
 body #run-support-popup .btn-skip:hover,
+body #run-select-horse-popup .btn-skip:hover,
 body #situation-hint-popup .btn-skip:hover {
   background: #e2e8f0 !important;
   color: #0f172a !important;
@@ -7269,6 +7286,7 @@ body #situation-hint-popup .btn-skip:hover {
 
 body #guard-popup .popup-btns button,
 body #run-support-popup .popup-btns button,
+body #run-select-horse-popup .popup-btns button,
 body #situation-hint-popup .popup-btns button,
 body #notice-action-popup .popup-btns button {
   white-space: nowrap;

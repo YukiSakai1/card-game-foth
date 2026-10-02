@@ -1416,17 +1416,59 @@
       Haptics.warn();
       return;
     }
-    hasRunThisTurn = true;
-    phase = 'select_horse';
-    selectedHorse = null;
-    selectedForces = [];
-    runBonus = 0;
-    if (field) {
-      setNarrator('場にいる<b>【' + field.name + '】</b>（コスト: ' + (field.cost || 2) + '）で再び走破するか、手札の別の馬を選んで入れ替えてください。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（場の馬をタップ、または手札の馬をタップ）</span>');
-    } else {
-      setNarrator('走破する<b>馬カード</b>を手札から選んでタップしてください。');
+
+    var popup = $('run-select-horse-popup');
+    var descEl = $('run-select-horse-desc');
+    var okBtn = $('run-select-horse-ok');
+    var cancelBtn = $('run-select-horse-cancel');
+
+    if (descEl) {
+      if (field) {
+        descEl.innerHTML = '走破させる馬カードを選んでください。<br><span style="font-size:12px;color:#475569;font-weight:600;">場にいる「<b>' + field.name + '</b>」で再走破するか、手札の馬カードを選んで入れ替えます。</span>';
+      } else {
+        descEl.innerHTML = '走破させる<b>馬カード</b>を手札から選んでください。<br><span style="font-size:12px;color:#475569;font-weight:600;">（選んだ馬のコスト分のフォースカードを支払って走破します）</span>';
+      }
     }
-    renderAll();
+
+    if (popup && okBtn && cancelBtn) {
+      popup.style.display = 'flex';
+
+      var newOk = okBtn.cloneNode(true);
+      var newCancel = cancelBtn.cloneNode(true);
+      okBtn.parentNode.replaceChild(newOk, okBtn);
+      cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+
+      newOk.addEventListener('click', function () {
+        popup.style.display = 'none';
+        hasRunThisTurn = true;
+        phase = 'select_horse';
+        selectedHorse = null;
+        selectedForces = [];
+        runBonus = 0;
+        if (field) {
+          setNarrator('場にいる<b>【' + field.name + '】</b>（コスト: ' + (field.cost || 2) + '）で再び走破するか、手札の別の馬を選んで入れ替えてください。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（場の馬をタップ、または手札の馬をタップ）</span>');
+        } else {
+          setNarrator('走破する<b>馬カード</b>を手札から選んでタップしてください。');
+        }
+        renderAll();
+      });
+
+      newCancel.addEventListener('click', function () {
+        popup.style.display = 'none';
+      });
+    } else {
+      hasRunThisTurn = true;
+      phase = 'select_horse';
+      selectedHorse = null;
+      selectedForces = [];
+      runBonus = 0;
+      if (field) {
+        setNarrator('場にいる<b>【' + field.name + '】</b>（コスト: ' + (field.cost || 2) + '）で再び走破するか、手札の別の馬を選んで入れ替えてください。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（場の馬をタップ、または手札の馬をタップ）</span>');
+      } else {
+        setNarrator('走破する<b>馬カード</b>を手札から選んでタップしてください。');
+      }
+      renderAll();
+    }
   }
 
   var pendingAfterField = null;
