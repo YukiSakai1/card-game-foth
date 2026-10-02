@@ -2190,10 +2190,16 @@
     function afterField() {
       if (interactionMode === 'freeplay' && !isCpuTurn) {
         var thinkingPopup = $('opponent-thinking-popup');
-        thinkingPopup.style.display = 'flex';
-        setNarrator('相手プレイヤーはガードをするか考えています。');
+        if (thinkingPopup) {
+          var titleEl = thinkingPopup.querySelector('.popup-title');
+          var descEl = thinkingPopup.querySelector('.popup-desc');
+          if (titleEl) titleEl.textContent = '🛡️ ガード確認';
+          if (descEl) descEl.innerHTML = '相手プレイヤーがガードをするか考えています…';
+          thinkingPopup.style.display = 'flex';
+        }
+        setNarrator('相手プレイヤーがガードをするか考えています…（2.5秒）');
         return sleep(2500).then(function () {
-          thinkingPopup.style.display = 'none';
+          if (thinkingPopup) thinkingPopup.style.display = 'none';
 
           // 相手の手札に、現在の距離適性に合う馬カードがあるか確認
           var distKey = raceDistanceKey(race.distance);
