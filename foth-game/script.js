@@ -72,7 +72,7 @@
     return c;
   }
   function doDeuce() {
-    var c = horseCard('ドウデュース', 'DO DEUCE', 5, 3, '先行・差し', '中', '東京/中山・良', 2);
+    var c = horseCard('ドウデュース', 'DO DEUCE', 5, 3, '先行・差し', '中', '東京/中山・良', 3);
     c.img = 'images/horse-dodeuce.jpg';
     return c;
   }
