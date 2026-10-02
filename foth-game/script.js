@@ -1921,7 +1921,11 @@
       }
     }
 
-    await sleep(600);
+    // ドロー完了後：手札を見て次の手を考える「思考中…」の吹き出しとナレーター
+    await sleep(400);
+    showOpponentBubble('思考中…');
+    setNarrator('🧠 相手プレイヤーがドローした手札を確認して考え中…');
+    await sleep(900);
 
     // 2. 走破できる馬がいない時だけ、獣医師で回収してから走破を狙う（馬を出す前に必要な唯一のアイテム）
     await cpuPlayItemIfApplicable('recovery');
