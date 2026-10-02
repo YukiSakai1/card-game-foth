@@ -4826,7 +4826,7 @@
   #closeup-layer {
     position: fixed;
     inset: 0;
-    z-index: 300;
+    z-index: 100000;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8086,6 +8086,7 @@ body #guard-popup .popup-box {
 
 /* 3. カード拡大・詳細レイヤー（カードが上、詳細吹き出し・アクションボタンが下） */
 body #closeup-layer {
+  z-index: 100000 !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
