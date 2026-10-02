@@ -62,7 +62,7 @@
   }
 
   function silkMobius() {
-    var c = horseCard('シルクメビウス', 'SILK MOBIUS', 3, 2, '先行・差し', 'マイル・中', '京都・良/不良', 2, ['ダート']);
+    var c = horseCard('シルクメビウス', 'SILK MOBIUS', 3, 2, '先行・差し', 'マイル・中', '京都・良/不良', 3, ['ダート']);
     c.img = 'images/horse-silkmobius.jpg';
     return c;
   }
@@ -306,7 +306,7 @@
     // 相手の手札7枚（馬カード2枚、フォースカード3枚、アイテム2枚：既存カード画像で構成）
     cpuHand = [
       seiunSky(),      // セイウンスカイ (逃げ・先行 / 中・長, cost: 2, run: 3)
-      silkMobius(),    // シルクメビウス (先行・差し / マイル・中, cost: 2, run: 3)
+      silkMobius(),    // シルクメビウス (先行・差し / マイル・中, cost: 3, run: 3)
       forceCard(),     // フォースカード
       forceCard(),     // フォースカード
       forceCard(),     // フォースカード
