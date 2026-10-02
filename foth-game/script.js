@@ -4191,7 +4191,7 @@
 
           var statHtml = '';
           if (card.type === 'horse') {
-            statHtml = '<div class="fv-card-stat"><span class="fv-stat-run">走 ' + (card.run || 0) + '</span><span class="fv-stat-guard">G ' + (card.guard || 0) + '</span><span class="fv-stat-cost">コ ' + (card.cost || 2) + '</span></div>';
+            statHtml = '<div class="fv-card-stat"><span class="fv-stat-cost">コスト ' + (card.cost || 2) + '</span><span class="fv-stat-run">走破数 ' + (card.run || 0) + '</span><span class="fv-stat-guard">ガード ' + (card.guard || 0) + '</span></div>';
           } else if (card.type === 'item' || card.type === 'jockey') {
             statHtml = '<div class="fv-card-stat fv-stat-text">' + (card.stat || '効果あり') + '</div>';
           } else if (card.type === 'force') {
@@ -4887,7 +4887,7 @@
       if (card.type === 'horse') {
         var parts = [];
         parts.push('<b style="color:var(--gold-2);font-size:14.5px;">' + card.name + '</b>' + (card.en ? ' <span style="font-size:11px;color:var(--rail-dim)">(' + card.en + ')</span>' : ''));
-        parts.push('<div style="margin:4px 0;padding:3px 8px;background:rgba(2,132,199,0.18);border:1px solid rgba(0,229,255,0.4);border-radius:6px;display:inline-block;"><span style="color:#38bdf8;font-weight:700;">🛡️ ガード値:</span> <b style="color:#00f0ff;font-size:16px;">' + (card.guard || 0) + '</b> ｜ 走破: <b>' + card.run + '</b> ｜ コスト: <b>' + (card.cost || 2) + '</b></div>');
+        parts.push('<div style="margin:4px 0;padding:3px 8px;background:rgba(2,132,199,0.18);border:1px solid rgba(0,229,255,0.4);border-radius:6px;display:inline-block;">コスト: <b>' + (card.cost || 2) + '</b> ｜ 走破数: <b>' + card.run + '</b> ｜ <span style="color:#38bdf8;font-weight:700;">🛡️ ガード値:</span> <b style="color:#00f0ff;font-size:16px;">' + (card.guard || 0) + '</b></div>');
         if (card.style) parts.push('脚質: <b>' + card.style + '</b> | 距離: <b>' + (card.dist || '') + '</b>');
         if (card.fav) parts.push('得意: <b>' + card.fav + '</b>');
         return parts.join('<br>');
