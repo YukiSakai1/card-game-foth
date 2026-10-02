@@ -1013,7 +1013,7 @@
     }
     var isFreeplay = (interactionMode === 'freeplay');
     var waitClick = isFreeplay || isGuard;
-    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:8px;font-size:12.5px;color:#0284c7;font-weight:800;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>' : '';
+    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:8px;font-size:12.5px;color:#0f172a;background:rgba(2,132,199,0.14);border:1px solid rgba(2,132,199,0.35);padding:4px 14px;border-radius:999px;font-weight:800;letter-spacing:0.03em;display:inline-block;">👆 画面をタップ／クリックして次へ進む</div>' : '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
     box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
     box.classList.add('show');
@@ -1507,7 +1507,7 @@
       Haptics.place();
       var isFreeplay = (interactionMode === 'freeplay');
       var sitDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
-      var toastHtml = sitDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>' : '');
+      var toastHtml = sitDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;">👆 画面をタップ／クリックして次へ進む</span></div>' : '');
       CardCloseup.show(card, {
         label: '☀️ 状況カード発動！',
         toast: toastHtml,
@@ -1943,7 +1943,7 @@
     if (horseCard) {
       breakdownParts.push('基礎 ' + horseCard.run);
       if (cpuRunBonus > 0) {
-        breakdownParts.push('<span style="color:#5eead4;font-weight:700;">アイテム +' + cpuRunBonus + '</span>');
+        breakdownParts.push('<span style="color:#047857;background:rgba(16,185,129,0.18);padding:1px 6px;border-radius:4px;font-weight:800;">アイテム +' + cpuRunBonus + '</span>');
       }
       var mods = runModifiers(horseCard);
       mods.forEach(function (m) {
@@ -1952,8 +1952,8 @@
     }
     var breakdownHtml = '';
     if (breakdownParts.length > 1 || cpuRunBonus > 0) {
-      breakdownHtml = '<div style="margin-top:6px;margin-bottom:6px;font-size:12px;padding:4px 10px;background:rgba(227,178,60,0.12);border-radius:6px;border:1px solid rgba(227,178,60,0.25);color:var(--card-fg);">' +
-        '内訳: ' + breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b>' + runValue + '</b>' +
+      breakdownHtml = '<div style="margin-top:8px;margin-bottom:8px;font-size:12.5px;padding:6px 12px;background:#e2e8f0;border-radius:8px;border:1px solid #cbd5e1;color:#0f172a;font-weight:600;">' +
+        '内訳: ' + breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b style="color:#0284c7;font-size:14.5px;font-weight:900;">' + runValue + '</b>' +
         '</div>';
     }
 
@@ -1965,8 +1965,8 @@
     if (canGuard) {
       descEl.innerHTML =
         '相手の走破を手札の馬カードでガードしますか？<br>' +
-        '<span style="font-size:12px;color:var(--rail-dim);">（相手の走破数以上のガード値で守ると、相手の走破馬をファーム送りにできます）</span><br>' +
-        '相手の実効走破値: <b style="color:var(--gold-2);font-size:15px;">' + runValue + '</b>' +
+        '<span style="font-size:12px;color:#475569;font-weight:600;">（相手の走破数以上のガード値で守ると、相手の走破馬をファーム送りにできます）</span><br>' +
+        '<div style="margin-top:4px;">相手の実効走破値: <b style="color:#0f172a;font-size:16px;font-weight:900;">' + runValue + '</b></div>' +
         breakdownHtml;
       btnsEl.innerHTML =
         '<button class="btn-guard" id="guard-yes">🛡️ ガードする</button>' +
@@ -1975,7 +1975,7 @@
       $('guard-yes').addEventListener('click', function () {
         popup.style.display = 'none';
         phase = 'guard_select';
-        setNarrator('🛡️ <b>ガードする馬カード</b>を選んでタップしてください。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（カードの上に表示されている 🛡️ガード値 が相手のドローを減らす数値です）</span>');
+        setNarrator('🛡️ <b>ガードする馬カード</b>を選んでタップしてください。<br><span style="color:#0284c7;font-size:12px;font-weight:800;">（カードの上に表示されている 🛡️ガード値 が相手のドローを減らす数値です）</span>');
         renderAll();
       });
       $('guard-no').addEventListener('click', function () {
@@ -1986,9 +1986,9 @@
       });
     } else {
       descEl.innerHTML =
-        '相手の実効走破値: <b style="color:var(--gold-2);font-size:15px;">' + runValue + '</b>' +
+        '<div style="margin-top:4px;">相手の実効走破値: <b style="color:#0f172a;font-size:16px;font-weight:900;">' + runValue + '</b></div>' +
         breakdownHtml +
-        '<span style="font-size:12px;color:var(--rail-dim);">（手札にガード可能な馬カードがありません）</span>';
+        '<span style="font-size:12px;color:#475569;font-weight:600;">（手札にガード可能な馬カードがありません）</span>';
       btnsEl.innerHTML =
         '<button class="btn-guard" id="guard-ok">OK（相手がドロー）</button>';
 
@@ -2184,7 +2184,7 @@
     var horseInPlay = selectedHorse;
     var modifierText = runModifiers(selectedHorse).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
 
-    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（画面をタップ／クリックして次へ進む）</span>');
+    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。<br><span style="color:#0284c7;font-size:12px;font-weight:800;">（画面をタップ／クリックして次へ進む）</span>');
 
     /* STEP 3: 相手が考える → STEP 4: 走破成功/失敗の結果表示 */
     function afterField() {
@@ -2408,7 +2408,7 @@
     var horseDetailText = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(horseInPlay) : '';
     CardCloseup.show(horseInPlay, {
       label: '🏇 走破カード確認',
-      toast: horseDetailText + '<div style="margin-top:10px;text-align:center;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>'
+      toast: horseDetailText + '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;">👆 画面をタップ／クリックして次へ進む</span></div>'
     }).then(function () {
       proceedToRunSequence();
     });
@@ -2420,7 +2420,7 @@
   function applyItemEffect(card) {
     var isFreeplay = (interactionMode === 'freeplay');
     var itemDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
-    var toastHtml = itemDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;font-size:12.5px;color:var(--gold-2);font-weight:700;letter-spacing:0.04em;">👆 画面をタップ／クリックして次へ進む</div>' : '');
+    var toastHtml = itemDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;">👆 画面をタップ／クリックして次へ進む</span></div>' : '');
     CardCloseup.show(card, {
       label: (card.type === 'jockey' ? '🏇 騎手' : '✨ アイテム') + '発動！',
       toast: toastHtml,

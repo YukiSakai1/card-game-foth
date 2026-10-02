@@ -7340,7 +7340,15 @@ body #closeup-layer .closeup-toast b {
 }
 
 body #closeup-layer .closeup-toast span {
-  color: #475569 !important;
+  color: #1e293b !important;
+}
+
+body .banner-box .banner-tap-hint,
+body .banner-stage .banner-tap-hint,
+#banner-tap-hint {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.03em !important;
 }
 
 body #closeup-layer .closeup-label,
