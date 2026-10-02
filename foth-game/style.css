@@ -2755,11 +2755,26 @@
     }
   }
 
-  /* ガード選択時にガード適性のある馬カードを浮き上がらせて強調 */
+  /* ガード選択時にガード適性のある全ての馬カードを浮き上がらせて強調 */
   body.guard-selecting .card.selectable {
-    box-shadow: 0 0 22px rgba(0, 240, 255, 0.9), 0 0 0 2.5px #00f0ff !important;
-    transform: translateY(-20px) scale(1.08) !important;
+    box-shadow: 0 0 24px rgba(0, 240, 255, 0.95), 0 0 0 2.5px #00f0ff !important;
+    --fan-lift: -24px !important;
+    --fan-scale: 1.1 !important;
     z-index: 55 !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+  }
+
+  @media (max-width:859px) {
+    body.guard-selecting .card.selectable {
+      --fan-lift: -6px !important;
+      --fan-scale: 1.05 !important;
+    }
+  }
+
+  body.guard-selecting .card.disabled {
+    opacity: 0.35 !important;
+    pointer-events: none !important;
   }
 
   /* ---------- Desktop: use the exact same mobile layout, just centered ----------

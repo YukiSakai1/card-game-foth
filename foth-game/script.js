@@ -1966,7 +1966,10 @@
         '</div>';
     }
 
-    var canGuard = hand.some(function (c) { return c.type === 'horse'; });
+    var distKey = race ? raceDistanceKey(race.distance) : '';
+    var canGuard = hand.some(function (c) {
+      return c.type === 'horse' && (!distKey || (c.dist || '').indexOf(distKey) >= 0);
+    });
     var descEl = $('guard-desc');
     var btnsEl = $('guard-btns');
     popup.style.display = 'flex';
@@ -2508,8 +2511,13 @@
     if (!el || el.style.pointerEvents === 'none') return;
     Haptics.select();
 
-    if (phase === 'guard_select' && card.type === 'horse') {
-      selectGuard(card);
+    if (phase === 'guard_select') {
+      if (card.type === 'horse') {
+        selectGuard(card);
+      } else {
+        shakeCard(id);
+        setNarrator('🛡️ ガードには<b>馬カード</b>を選んでください。（フォースカードやアイテムではガードできません）');
+      }
       return;
     }
 
