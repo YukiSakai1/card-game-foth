@@ -2287,7 +2287,7 @@
                 return sendHorseToFarmAndReset();
               });
             }
-            return showBanner('走破成功！', 3200, horseInPlay, '自分の馬の走破数 ' + totalRun).then(function () {
+            return showBanner('走破成功！', 3200, horseInPlay, '走破に成功しました<br>馬の走破数 ' + totalRun).then(function () {
               setNarrator('相手はガードをしませんでした。走破成功です！');
               return continueRunLogic(totalRun, false, 0);
             });
@@ -3436,7 +3436,7 @@
     setProgress(12);
     var runCount = field ? (field.run || 3) : 3;
     setNarrator('やった、<b>走破成功だ！</b> 走破に成功したら、馬カードの走破数ぶんだけ山札からカードを引くよ。');
-    await showBanner('走破成功！', 3200, field);
+    await showBanner('走破成功！', 3200, field, '走破に成功しました<br>馬の走破数 ' + runCount);
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
