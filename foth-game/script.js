@@ -4010,6 +4010,168 @@
     });
   }
 
+  /* ===================== ファームカード一覧モーダル ===================== */
+  var FarmViewer = (function () {
+    var overlayEl = null;
+
+    function getOrCreateModal() {
+      if (overlayEl) return overlayEl;
+      overlayEl = document.createElement('div');
+      overlayEl.id = 'farm-viewer-modal';
+      overlayEl.className = 'farm-viewer-overlay';
+      overlayEl.setAttribute('role', 'dialog');
+      overlayEl.setAttribute('aria-modal', 'true');
+      overlayEl.setAttribute('aria-hidden', 'true');
+      overlayEl.innerHTML =
+        '<div class="farm-viewer-panel">' +
+        '  <div class="farm-viewer-head">' +
+        '    <div class="farm-viewer-title-wrap">' +
+        '      <span class="farm-viewer-icon" id="farm-viewer-icon">🌱</span>' +
+        '      <div class="farm-viewer-title" id="farm-viewer-title">ファーム一覧</div>' +
+        '    </div>' +
+        '    <button class="farm-viewer-close" id="farm-viewer-close" type="button" aria-label="閉じる">✕</button>' +
+        '  </div>' +
+        '  <div class="farm-viewer-stats" id="farm-viewer-stats"></div>' +
+        '  <div class="farm-viewer-body" id="farm-viewer-cards"></div>' +
+        '  <div class="farm-viewer-foot">' +
+        '    <div class="farm-viewer-hint">※ カードをタップすると詳細を確認できます</div>' +
+        '    <button class="farm-viewer-btn" id="farm-viewer-ok-btn" type="button">閉じる</button>' +
+        '  </div>' +
+        '</div>';
+
+      document.body.appendChild(overlayEl);
+
+      function closeModal() {
+        overlayEl.classList.remove('show');
+        overlayEl.setAttribute('aria-hidden', 'true');
+      }
+
+      overlayEl.addEventListener('click', function (e) {
+        if (e.target === overlayEl) closeModal();
+      });
+
+      var closeBtn = overlayEl.querySelector('#farm-viewer-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+      var okBtn = overlayEl.querySelector('#farm-viewer-ok-btn');
+      if (okBtn) okBtn.addEventListener('click', closeModal);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlayEl.classList.contains('show')) {
+          closeModal();
+        }
+      });
+
+      return overlayEl;
+    }
+
+    function open(type) {
+      var isPlayer = (type !== 'opp');
+      var cardList = isPlayer ? farm.slice() : oppFarm.slice();
+      var modal = getOrCreateModal();
+      var iconEl = modal.querySelector('#farm-viewer-icon');
+      var titleEl = modal.querySelector('#farm-viewer-title');
+      var statsEl = modal.querySelector('#farm-viewer-stats');
+      var cardsEl = modal.querySelector('#farm-viewer-cards');
+
+      if (iconEl) iconEl.textContent = isPlayer ? '🌱' : '🌾';
+      if (titleEl) titleEl.textContent = (isPlayer ? '自分のファーム' : '相手のファーム') + '（全 ' + cardList.length + ' 枚）';
+
+      // 種類別カウントのサマリーバッジ
+      var horseCount = cardList.filter(function (c) { return c.type === 'horse'; }).length;
+      var forceCount = cardList.filter(function (c) { return c.type === 'force'; }).length;
+      var itemCount = cardList.filter(function (c) { return c.type === 'item' || c.type === 'jockey'; }).length;
+      var sitCount = cardList.filter(function (c) { return c.type === 'situation'; }).length;
+
+      var statsHtml =
+        '<span class="fv-stat-chip type-horse">🐎 馬 ' + horseCount + '</span>' +
+        '<span class="fv-stat-chip type-force">🏇 フォース ' + forceCount + '</span>' +
+        '<span class="fv-stat-chip type-item">✨ アイテム ' + itemCount + '</span>' +
+        (sitCount > 0 ? '<span class="fv-stat-chip type-situation">☀️ 状況 ' + sitCount + '</span>' : '');
+      if (statsEl) statsEl.innerHTML = statsHtml;
+
+      // カード一覧の描画
+      if (!cardList.length) {
+        cardsEl.innerHTML = '<div class="farm-viewer-empty">現在ファームにカードはありません</div>';
+      } else {
+        cardsEl.innerHTML = '';
+        // 直近に置かれたカード（配列の末尾）から順に表示（新しい順）
+        var reversed = cardList.slice().reverse();
+        reversed.forEach(function (card, index) {
+          var itemEl = document.createElement('div');
+          itemEl.className = 'farm-viewer-card-item type-' + card.type;
+          itemEl.setAttribute('role', 'button');
+          itemEl.setAttribute('tabindex', '0');
+          itemEl.title = card.name + '（タップして詳細表示）';
+
+          var artHtml = '';
+          if (card.img) {
+            artHtml = '<div class="fv-card-thumb has-img" style="background-image:url(' + card.img + ');"></div>';
+          } else {
+            artHtml = '<div class="fv-card-thumb">' + (card.icon || '🃏') + '</div>';
+          }
+
+          var statHtml = '';
+          if (card.type === 'horse') {
+            statHtml = '<div class="fv-card-stat"><span class="fv-stat-run">走 ' + (card.run || 0) + '</span><span class="fv-stat-guard">G ' + (card.guard || 0) + '</span><span class="fv-stat-cost">コ ' + (card.cost || 2) + '</span></div>';
+          } else if (card.type === 'item' || card.type === 'jockey') {
+            statHtml = '<div class="fv-card-stat fv-stat-text">' + (card.stat || '効果あり') + '</div>';
+          } else if (card.type === 'force') {
+            statHtml = '<div class="fv-card-stat fv-stat-text">走破コスト用</div>';
+          } else if (card.type === 'situation') {
+            statHtml = '<div class="fv-card-stat fv-stat-text">' + (card.stat || '状況効果') + '</div>';
+          }
+
+          var orderNum = cardList.length - index;
+          itemEl.innerHTML =
+            artHtml +
+            '<div class="fv-card-info">' +
+            '  <div class="fv-card-name-row">' +
+            '    <span class="fv-card-order">#' + orderNum + '</span>' +
+            '    <span class="fv-card-name">' + (card.name || 'カード') + '</span>' +
+            '  </div>' +
+            statHtml +
+            '</div>';
+
+          itemEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            try { Haptics.tap(); } catch (err) {}
+            CardCloseup.show(card, { label: (isPlayer ? '自分のファーム' : '相手のファーム') + ' #' + orderNum });
+          });
+
+          cardsEl.appendChild(itemEl);
+        });
+      }
+
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      try { Haptics.tap(); } catch (err) {}
+    }
+
+    return {
+      open: open
+    };
+  })();
+
+  // 自分のファームをクリックしたときの処理
+  var farmZoneEl = $('zone-farm');
+  if (farmZoneEl) {
+    farmZoneEl.addEventListener('click', function (e) {
+      if (suppressNextHandClick) { suppressNextHandClick = false; return; }
+      if (phase === 'select_force' || phase === 'discard_select') return; // 手札から送るフェーズ中は干渉しない
+      FarmViewer.open('player');
+    });
+  }
+
+  // 相手のファームをクリックしたときの処理
+  var oppFarmZoneEl = $('zone-opp-farm');
+  if (oppFarmZoneEl) {
+    oppFarmZoneEl.addEventListener('click', function (e) {
+      if (suppressNextHandClick) { suppressNextHandClick = false; return; }
+      FarmViewer.open('opp');
+    });
+  }
+
   var oppFieldBodyEl = $('field-body-opp');
   if (oppFieldBodyEl) {
     oppFieldBodyEl.addEventListener('click', function () {

@@ -8196,3 +8196,315 @@ body.field-nature .bg-dimmer,
 body[data-theme="nature"] .bg-dimmer {
   background-color: #021207;
 }
+
+/* ==================== ファーム一覧モーダル (FarmViewer) ==================== */
+#zone-farm,
+#zone-opp-farm,
+.farm-pile,
+#farm-pile,
+#opp-farm-pile {
+  cursor: pointer !important;
+}
+
+#zone-farm:hover .farm-stack,
+#zone-opp-farm:hover .farm-stack {
+  transform: scale(1.06);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: brightness(1.15) drop-shadow(0 0 10px rgba(0, 240, 255, 0.65));
+}
+
+.farm-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(4, 10, 24, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+}
+
+.farm-viewer-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.farm-viewer-panel {
+  background: var(--bubble-bg, #ffffff);
+  border: var(--bubble-border, 1.5px solid rgba(227, 178, 60, 0.5));
+  border-radius: 20px;
+  box-shadow: var(--bubble-shadow, 0 20px 50px rgba(0, 0, 0, 0.6)), 0 0 32px rgba(2, 132, 199, 0.3);
+  width: 100%;
+  max-width: 520px;
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.92) translateY(12px);
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.farm-viewer-overlay.show .farm-viewer-panel {
+  transform: scale(1) translateY(0);
+}
+
+.farm-viewer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid rgba(2, 132, 199, 0.18);
+}
+
+.farm-viewer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.farm-viewer-icon {
+  font-size: 20px;
+}
+
+.farm-viewer-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--bubble-text, #0f172a);
+  letter-spacing: 0.02em;
+}
+
+.farm-viewer-close {
+  background: rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  color: var(--bubble-text, #0f172a);
+  font-size: 14px;
+  font-weight: 700;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.farm-viewer-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: scale(1.08);
+}
+
+.farm-viewer-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 18px;
+  background: rgba(2, 132, 199, 0.05);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.1);
+}
+
+.fv-stat-chip {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+}
+
+.fv-stat-chip.type-horse {
+  background: rgba(16, 185, 129, 0.14);
+  color: #047857;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.fv-stat-chip.type-force {
+  background: rgba(234, 179, 8, 0.16);
+  color: #a16207;
+  border-color: rgba(234, 179, 8, 0.4);
+}
+
+.fv-stat-chip.type-item {
+  background: rgba(2, 132, 199, 0.14);
+  color: #0369a1;
+  border-color: rgba(2, 132, 199, 0.35);
+}
+
+.fv-stat-chip.type-situation {
+  background: rgba(168, 85, 247, 0.14);
+  color: #7e22ce;
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+.farm-viewer-body {
+  padding: 12px 16px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 52vh;
+}
+
+.farm-viewer-empty {
+  padding: 36px 12px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.farm-viewer-card-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.farm-viewer-card-item:hover {
+  transform: translateX(4px);
+  background: #f0fdf4;
+  border-color: #86efac;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.farm-viewer-card-item.type-force:hover {
+  background: #fefce8;
+  border-color: #fde047;
+}
+
+.farm-viewer-card-item.type-item:hover {
+  background: #f0f9ff;
+  border-color: #7dd3fc;
+}
+
+.fv-card-thumb {
+  width: 44px;
+  height: 58px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: #e2e8f0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  background-size: cover;
+  background-position: center;
+}
+
+.fv-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fv-card-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fv-card-order {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #64748b;
+  background: #e2e8f0;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.fv-card-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fv-card-stat {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fv-card-stat.fv-stat-text {
+  font-size: 11.5px;
+  color: #475569;
+}
+
+.fv-stat-run {
+  color: #047857;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.fv-stat-guard {
+  color: #0284c7;
+  font-weight: 700;
+  background: rgba(2, 132, 199, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.fv-stat-cost {
+  color: #d97706;
+  font-weight: 700;
+  background: rgba(217, 119, 6, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.farm-viewer-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  border-top: 1px solid rgba(2, 132, 199, 0.15);
+  background: rgba(2, 132, 199, 0.04);
+}
+
+.farm-viewer-hint {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.farm-viewer-btn {
+  padding: 6px 18px;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.farm-viewer-btn:hover {
+  background: #0369a1;
+  transform: scale(1.04);
+}
