@@ -3367,7 +3367,7 @@
     font-size: 13px;
     color: #a4c2db;
     letter-spacing: .08em;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, .85);
+    text-shadow: none !important;
     transition: opacity .3s;
   }
 

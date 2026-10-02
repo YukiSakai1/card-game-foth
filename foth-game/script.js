@@ -1013,7 +1013,7 @@
     }
     var isFreeplay = (interactionMode === 'freeplay');
     var waitClick = isFreeplay || isGuard;
-    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:8px;font-size:12.5px;color:#0f172a;background:rgba(2,132,199,0.14);border:1px solid rgba(2,132,199,0.35);padding:4px 14px;border-radius:999px;font-weight:800;letter-spacing:0.03em;display:inline-block;">画面をタップ／クリックして次へ進む</div>' : '';
+    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:8px;font-size:12.5px;color:#0f172a;background:rgba(2,132,199,0.14);border:1px solid rgba(2,132,199,0.35);padding:4px 14px;border-radius:999px;font-weight:800;letter-spacing:0.03em;display:inline-block;text-shadow:none !important;">画面をタップ／クリックして次へ進む</div>' : '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
     box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
     box.classList.add('show');
@@ -1507,7 +1507,7 @@
       Haptics.place();
       var isFreeplay = (interactionMode === 'freeplay');
       var sitDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
-      var toastHtml = sitDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;">画面をタップ／クリックして次へ進む</span></div>' : '');
+      var toastHtml = sitDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;text-shadow:none !important;">画面をタップ／クリックして次へ進む</span></div>' : '');
       CardCloseup.show(card, {
         label: '☀️ 状況カード発動！',
         toast: toastHtml,
@@ -2414,7 +2414,7 @@
     var horseDetailText = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(horseInPlay) : '';
     CardCloseup.show(horseInPlay, {
       label: '走破カード確認',
-      toast: horseDetailText + '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;">画面をタップ／クリックして次へ進む</span></div>'
+      toast: horseDetailText + '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;text-shadow:none !important;">画面をタップ／クリックして次へ進む</span></div>'
     }).then(function () {
       proceedToRunSequence();
     });
@@ -2426,7 +2426,7 @@
   function applyItemEffect(card) {
     var isFreeplay = (interactionMode === 'freeplay');
     var itemDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
-    var toastHtml = itemDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;">画面をタップ／クリックして次へ進む</span></div>' : '');
+    var toastHtml = itemDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;text-shadow:none !important;">画面をタップ／クリックして次へ進む</span></div>' : '');
     CardCloseup.show(card, {
       label: (card.type === 'jockey' ? '騎手' : 'アイテム') + '発動！',
       toast: toastHtml,
