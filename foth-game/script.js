@@ -556,7 +556,7 @@
         el.classList.add(c.type === 'situation' ? 'selectable' : 'disabled');
       } else if (phase === 'support_choice') {
         el.classList.add('disabled');
-      } else if (interactionMode === 'select-any' || interactionMode === 'freeplay') {
+      } else if (interactionMode === 'select-any' || (interactionMode === 'freeplay' && !isCpuTurn)) {
         el.classList.add('selectable');
       }
       row.appendChild(el);
@@ -616,13 +616,21 @@
 
   function renderField() {
     var body = $('field-body');
+    var isHorseSelect = (phase === 'select_horse' && !isCpuTurn && !!field);
+    if (body) {
+      body.classList.toggle('selectable-horse', isHorseSelect);
+    }
     if (field) {
+      var selCls = isHorseSelect ? ' selectable is-field-selectable' : '';
+      var badgeHtml = isHorseSelect ? '<div class="field-reuse-badge">🔄 タップで再走破</div>' : '';
       if (field.img) {
         body.innerHTML =
-          '<div class="field-mini-wrap"><div class="field-mini field-mini-img" style="background-image:url(' + field.img + ')"></div></div>';
+          '<div class="field-mini-wrap">' + badgeHtml +
+          '<div class="field-mini field-mini-img' + selCls + '" style="background-image:url(' + field.img + ')"></div></div>';
       } else {
         body.innerHTML =
-          '<div class="field-mini-wrap"><div class="field-mini type-horse">' +
+          '<div class="field-mini-wrap">' + badgeHtml +
+          '<div class="field-mini type-horse' + selCls + '">' +
           '<span class="stat-badge stat-badge-run" title="走破">' + field.run + '</span>' +
           '<span class="stat-badge stat-badge-guard" title="ガード">G' + field.guard + '</span>' +
           '<span class="fm-icon">' + field.icon + '</span>' +
@@ -1111,6 +1119,8 @@
       if (!sourceEl) { resolve(); return; }
       var srcRect = sourceEl.getBoundingClientRect();
       var ghost = sourceEl.cloneNode(true);
+      var isCpuCard = sourceEl.classList.contains('ghost-cpu-card') ||
+        !!(sourceEl.closest && sourceEl.closest('#field-body-opp, #zone-opp-farm, #opp-farm-pile, .field-body-opp'));
       ghost.className = sourceEl.className + ' ghost';
       ghost.style.position = 'fixed';
       ghost.style.left = srcRect.left + 'px';
@@ -1119,13 +1129,15 @@
       ghost.style.height = srcRect.height + 'px';
       ghost.style.margin = '0';
       ghost.style.zIndex = '90';
+      if (isCpuCard) ghost.style.transform = 'rotate(180deg)';
       ghost.style.transition = 'transform .48s cubic-bezier(.3,.7,.35,1), opacity .48s';
       document.body.appendChild(ghost);
       requestAnimationFrame(function () {
         var dx = (destRect.left + destRect.width / 2) - (srcRect.left + srcRect.width / 2);
         var dy = (destRect.top + destRect.height / 2) - (srcRect.top + srcRect.height / 2);
         var scale = scaleOverride || Math.max(0.45, Math.min(destRect.width / srcRect.width, 1));
-        ghost.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + scale + ')';
+        var rot = isCpuCard ? ' rotate(180deg)' : '';
+        ghost.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + scale + ')' + rot;
         ghost.style.opacity = '0.7';
       });
       setTimeout(function () { ghost.remove(); resolve(); }, 480);
@@ -1377,18 +1389,21 @@
 
   function cmdRun() {
     if (phase !== 'idle' || isCpuTurn || hasRunThisTurn || canDraw) return;
+    var forces = hand.filter(function (c) { return c.type === 'force'; });
     var horses = hand.filter(function (c) { return c.type === 'horse'; });
-    if (horses.length === 0) {
+    var canRunField = !!(field && forces.length >= (field.cost || 2));
+    var canRunHand = horses.some(function (h) { return forces.length >= (h.cost || 2); });
+
+    if (!field && horses.length === 0) {
       showToast('手札に馬カードがありません');
       setNarrator('手札に馬カードがありません。');
       Haptics.warn();
       return;
     }
-    var forces = hand.filter(function (c) { return c.type === 'force'; });
-    var minCost = Math.min.apply(null, horses.map(function (h) { return h.cost || 2; }));
-    if (forces.length < minCost) {
+    if (!canRunField && !canRunHand) {
       showToast('フォースカードが不足しています');
-      setNarrator('⚠️ コストとなる<b>フォースカードが不足しています</b>。（必要: ' + minCost + '枚 / 手札: ' + forces.length + '枚）');
+      var reqCost = field ? (field.cost || 2) : Math.min.apply(null, horses.map(function (h) { return h.cost || 2; }));
+      setNarrator('⚠️ コストとなる<b>フォースカードが不足しています</b>。（必要: ' + reqCost + '枚 / 手札: ' + forces.length + '枚）');
       Haptics.warn();
       return;
     }
@@ -1397,7 +1412,11 @@
     selectedHorse = null;
     selectedForces = [];
     runBonus = 0;
-    setNarrator('走破する<b>馬カード</b>を選んでタップしてください。');
+    if (field) {
+      setNarrator('場にいる<b>【' + field.name + '】</b>（コスト: ' + (field.cost || 2) + '）で再び走破するか、手札の別の馬を選んで入れ替えてください。<br><span style="color:var(--gold-2);font-size:12px;font-weight:700;">（場の馬をタップ、または手札の馬をタップ）</span>');
+    } else {
+      setNarrator('走破する<b>馬カード</b>を手札から選んでタップしてください。');
+    }
     renderAll();
   }
 
@@ -1556,9 +1575,7 @@
     canDraw = true;
     phase = 'idle';
     hasRunThisTurn = false;
-    cpuHorseCard = null;
     fieldGuard = null;
-    field = null;
     selectedHorse = null;
     selectedForces = [];
     runBonus = 0;
@@ -1594,7 +1611,8 @@
     cpuDrawOneFromDeck();
     lastDrawer = 'cpu';
 
-    renderAll();
+    renderOpponentDeck();
+    updateOpponentHandDisplay();
     showOpponentBubble('ドロー！');
     if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
     return card;
@@ -1729,10 +1747,45 @@
     await sleep(500);
   }
 
-  // CPUが手札からフォースカードを支払って馬カードを走破させるロジック（アニメーション・消費付き）
+  // CPUが手札からフォースカードを支払って馬カードを走破させるロジック（場の馬の再走破・入れ替えに対応）
   async function cpuPlayHorseIfApplicable() {
-    var horseCard = cpuPickRunnableHorse();
-    if (!horseCard) {
+    var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+    var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+    var oppFieldEl = $('field-body-opp') || $('zone-field');
+    var fieldRect = oppFieldEl ? oppFieldEl.getBoundingClientRect() : { left: 240, top: 140, width: 70, height: 100 };
+
+    var cpuForceCount = cpuHandCountOfType('force');
+    var handHorse = cpuPickRunnableHorse();
+    var chosenHorse = null;
+    var isReusingField = false;
+
+    if (cpuHorseCard) {
+      var fieldCost = cpuHorseCard.cost || 2;
+      var canReuseField = (cpuForceCount >= fieldCost);
+      var fieldRun = effectiveRun(cpuHorseCard, cpuRunBonus);
+      var handRun = handHorse ? effectiveRun(handHorse, cpuRunBonus) : -999;
+
+      if (handHorse && handRun > fieldRun) {
+        // 手札により強い馬がいるので入れ替える
+        chosenHorse = handHorse;
+        isReusingField = false;
+      } else if (canReuseField) {
+        // 場の馬でそのまま再走破
+        chosenHorse = cpuHorseCard;
+        isReusingField = true;
+      } else if (handHorse) {
+        // 場の馬は使えないが手札の馬は出せる場合
+        chosenHorse = handHorse;
+        isReusingField = false;
+      }
+    } else {
+      if (handHorse) {
+        chosenHorse = handHorse;
+        isReusingField = false;
+      }
+    }
+
+    if (!chosenHorse) {
       setNarrator('🧠 相手は走破できる馬カードとフォースが揃っていないため、ターンを終了しました。（相手の手札: ' + cpuHand.length + '枚）');
       showOpponentBubble('ターンエンド');
       await sleep(1000);
@@ -1742,50 +1795,77 @@
       return;
     }
 
-    var cost = horseCard.cost || 2;
-    showOpponentBubble('「' + horseCard.name + '」で走破！');
-    setNarrator('🧠 相手が手札からフォースカード ' + cost + '枚 を支払い、「<b>' + horseCard.name + '</b>」で走破を宣言！');
-    showToast('相手が「' + horseCard.name + '」で走破宣言！', 'info', 2400);
+    var cost = chosenHorse.cost || 2;
 
-    // 1. コスト分のフォースカードを手札から消費し、相手ファームへ送る演出
-    var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
-    var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+    if (isReusingField) {
+      showOpponentBubble('「' + chosenHorse.name + '」で再走破！');
+      setNarrator('🧠 相手が手札からフォースカード ' + cost + '枚 を支払い、場にいる「<b>' + chosenHorse.name + '</b>」で再び走破を宣言！');
+      showToast('相手が「' + chosenHorse.name + '」で再走破宣言！', 'info', 2400);
 
-    for (var i = 0; i < cost; i++) {
-      var fIdx = cpuHand.findIndex(function (c) { return c.type === 'force'; });
-      if (fIdx >= 0) {
-        var fc = cpuHand.splice(fIdx, 1)[0];
-        opponentHandCount = cpuHand.length;
-        updateOpponentHandDisplay();
-        if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
-        await flyCpuCard(fc, farmRect, 0.7);
-        oppFarm.push(fc);
-        renderOppFarm();
-        await sleep(200);
+      // コスト分のフォースカードを手札から消費し、相手ファームへ送る演出
+      for (var i = 0; i < cost; i++) {
+        var fIdx = cpuHand.findIndex(function (c) { return c.type === 'force'; });
+        if (fIdx >= 0) {
+          var fc = cpuHand.splice(fIdx, 1)[0];
+          opponentHandCount = cpuHand.length;
+          updateOpponentHandDisplay();
+          if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+          await flyCpuCard(fc, farmRect, 0.7);
+          oppFarm.push(fc);
+          renderOppFarm();
+          await sleep(200);
+        }
       }
+    } else {
+      // 新しい馬を手札から出す（すでに場の馬がいればファームへ送る）
+      var oldHorse = cpuHorseCard;
+      if (oldHorse) {
+        var oldFieldEl = document.querySelector('#field-body-opp .field-mini') || $('field-body-opp');
+        if (oldFieldEl) flyGhost(oldFieldEl, farmRect, 0.8);
+        oppFarm.push(oldHorse);
+      }
+
+      showOpponentBubble('「' + chosenHorse.name + '」で走破！');
+      var oldMsg = oldHorse ? ('場の「<b>' + oldHorse.name + '</b>」をファームに送り、') : '';
+      setNarrator('🧠 相手が手札からフォースカード ' + cost + '枚 を支払い、' + oldMsg + '「<b>' + chosenHorse.name + '</b>」で走破を宣言！');
+      showToast('相手が「' + chosenHorse.name + '」で走破宣言！', 'info', 2400);
+
+      // コスト分のフォースカードを手札から消費
+      for (var j = 0; j < cost; j++) {
+        var fIdx2 = cpuHand.findIndex(function (c) { return c.type === 'force'; });
+        if (fIdx2 >= 0) {
+          var fc2 = cpuHand.splice(fIdx2, 1)[0];
+          opponentHandCount = cpuHand.length;
+          updateOpponentHandDisplay();
+          if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+          await flyCpuCard(fc2, farmRect, 0.7);
+          oppFarm.push(fc2);
+          renderOppFarm();
+          await sleep(200);
+        }
+      }
+
+      // 馬カードを手札から消費し、相手フィールドへ出す演出
+      var hIdx = cpuHand.findIndex(function (c) { return c.id === chosenHorse.id; });
+      if (hIdx >= 0) cpuHand.splice(hIdx, 1);
+      opponentHandCount = cpuHand.length;
+      updateOpponentHandDisplay();
+
+      if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
+      await flyCpuCard(chosenHorse, fieldRect, 0.88);
+
+      cpuHorseCard = chosenHorse;
     }
 
-    // 2. 馬カードを手札から消費し、相手フィールドへ出す演出
-    var hIdx = cpuHand.findIndex(function (c) { return c.id === horseCard.id; });
-    if (hIdx >= 0) cpuHand.splice(hIdx, 1);
-    opponentHandCount = cpuHand.length;
-    updateOpponentHandDisplay();
-
-    var oppFieldEl = $('field-body-opp') || $('zone-field');
-    var fieldRect = oppFieldEl ? oppFieldEl.getBoundingClientRect() : { left: 240, top: 140, width: 70, height: 100 };
-    if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
-    await flyCpuCard(horseCard, fieldRect, 0.88);
-
-    cpuHorseCard = horseCard;
     renderField();
 
     // 馬カードを出した後に、アイテムカード／ジョッキーを使う（走破・ガードの補正はここで加算）
     await sleep(500);
     await cpuPlayItemIfApplicable('support');
 
-    cpuRunValue = effectiveRun(horseCard, cpuRunBonus);
-    var cpuMods = runModifiers(horseCard).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
-    setNarrator('🧠 相手の「<b>' + horseCard.name + '</b>」 基礎 ' + horseCard.run + (cpuRunBonus ? '、アイテム +' + cpuRunBonus : '') + '、' + cpuMods + ' → 実効走破 <b>' + cpuRunValue + '</b>');
+    cpuRunValue = effectiveRun(chosenHorse, cpuRunBonus);
+    var cpuMods = runModifiers(chosenHorse).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
+    setNarrator('🧠 相手の「<b>' + chosenHorse.name + '</b>」 基礎 ' + chosenHorse.run + (cpuRunBonus ? '、アイテム +' + cpuRunBonus : '') + '、' + cpuMods + ' → 実効走破 <b>' + cpuRunValue + '</b>');
     renderAll();
 
     if (cpuRunValue <= 0) {
@@ -1802,8 +1882,8 @@
     }
 
     // バナー表示後、プレイヤーのガード選択ポップアップを表示
-    await showBanner('相手が走破宣言！', 2400, horseCard, '「' + horseCard.name + '」 実効走破: ' + cpuRunValue);
-    showGuardPopup(cpuRunValue, horseCard);
+    await showBanner('相手が走破宣言！', 2400, chosenHorse, '「' + chosenHorse.name + '」 実効走破: ' + cpuRunValue);
+    showGuardPopup(cpuRunValue, chosenHorse);
   }
 
   async function cpuTurn() {
@@ -1874,7 +1954,7 @@
     if (canGuard) {
       descEl.innerHTML =
         '相手の走破を手札の馬カードでガードしますか？<br>' +
-        '<span style="font-size:12px;color:var(--rail-dim);">（ガード値分だけ相手のドローを減らせます）</span><br>' +
+        '<span style="font-size:12px;color:var(--rail-dim);">（相手の走破数以上のガード値で守ると、相手の走破馬をファーム送りにできます）</span><br>' +
         '相手の実効走破値: <b style="color:var(--gold-2);font-size:15px;">' + runValue + '</b>' +
         breakdownHtml;
       btnsEl.innerHTML =
@@ -1943,7 +2023,8 @@
   function executeCpuDraw(drawCount) {
     var actualDraw = Math.max(0, drawCount);
     if (actualDraw <= 0) {
-      setNarrator('🛡️ ガードで相手の走破を完全に防いだ！ 相手は1枚も引けなかった！');
+      var horseName = cpuHorseCard ? cpuHorseCard.name : '馬';
+      setNarrator('🛡️ ガード値 <b>' + guardValue + '</b> で相手の走破（走破値 <b>' + cpuRunValue + '</b>）を完全に防いだ！ 相手の「<b>' + horseName + '</b>」はファームへ送られます。');
       showOpponentBubble('防がれたか…！');
       var pHorse = Promise.resolve();
       if (cpuHorseCard) {
@@ -1976,7 +2057,7 @@
     var cpuReason = (guardValue > 0) ?
       ('走破 <b>' + cpuRunValue + '</b> − ガード <b>' + guardValue + '</b> ＝ 走破数 <b>' + actualDraw + '</b>') :
       ('走破数が <b>' + actualDraw + '</b>（ガードなし）');
-    setNarrator('相手（CPU）は走破に成功しました。' + cpuReason + ' だから山札から <b>' + maxDraw + '枚</b> 引きます。その後、走破数−1枚（<b>' + cpuDiscardCount + '枚</b>）をファームに捨てます。');
+    setNarrator('相手（CPU）は走破に成功しました。' + cpuReason + ' だから山札から <b>' + maxDraw + '枚</b> 引きます。その後、走破数−1枚（<b>' + cpuDiscardCount + '枚</b>）をファームに捨てます。走破した馬はフィールドに残ります。');
     showOpponentBubble('走破成功！');
 
     var horse = cpuHorseCard || goldShip();
@@ -1997,7 +2078,8 @@
               opponentHandCount = cpuHand.length;
               cpuDrawOneFromDeck();
               lastDrawer = 'cpu';
-              renderAll();
+              renderOpponentDeck();
+              updateOpponentHandDisplay();
               if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
               return sleep(140);
             });
@@ -2040,8 +2122,6 @@
           setNarrator('相手（CPU）は走破ルールに従い、手札から <b>' + needDiscard + '枚</b> を相手ファームに送ります…');
           var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
           var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
-          var cardW = Math.round(farmRect.width * 0.72) || 48;
-          var cardH = Math.round(farmRect.height * 0.72) || 68;
 
           for (var d = 0; d < needDiscard; d++) {
             (function (idx) {
@@ -2056,7 +2136,8 @@
                 return p.then(function () {
                   oppFarm.push(discarded);
                   opponentHandCount = cpuHand.length;
-                  renderAll();
+                  renderOppFarm();
+                  updateOpponentHandDisplay();
                   if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
                   return sleep(220);
                 });
@@ -2066,37 +2147,18 @@
         }
 
         return discardChain.then(function () {
-          var pHorse = Promise.resolve();
-          if (cpuHorseCard) {
-            var oppFieldEl = document.querySelector('#field-body-opp .field-mini') || $('field-body-opp');
-            var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
-            var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
-            if (oppFieldEl) {
-              pHorse = flyGhost(oppFieldEl, farmRect, 0.9).then(function () {
-                oppFarm.push(cpuHorseCard);
-                cpuHorseCard = null;
-                renderAll();
-                if (window.SoundFX && typeof SoundFX.cardSlide === 'function') SoundFX.cardSlide();
-                return sleep(200);
-              });
-            } else {
-              oppFarm.push(cpuHorseCard);
-              cpuHorseCard = null;
-              renderAll();
-            }
+          // 走破成功時：走破した馬は相手フィールドに残る（ファームへ送らない）
+          var horseName = cpuHorseCard ? cpuHorseCard.name : '馬';
+          var endMsg = needDiscard > 0
+            ? ('🧠 相手のターン終了！ 手札を ' + needDiscard + '枚 捨てました（相手の残り手札: ' + cpuHand.length + '枚）。走破した「<b>' + horseName + '</b>」はフィールドに残ります。あなたの番です。')
+            : ('🧠 相手のターン終了！ 走破した「<b>' + horseName + '</b>」はフィールドに残ります。あなたの番です。');
+          setNarrator(endMsg);
+          if (needDiscard > 0) {
+            showToast('相手が手札を' + needDiscard + '枚捨てました', 'info', 2200);
           }
-          return pHorse.then(function () {
-            var endMsg = needDiscard > 0
-              ? ('🧠 相手のターン終了！ 手札を ' + needDiscard + '枚 捨てました（相手の残り手札: ' + cpuHand.length + '枚）。あなたの番です。')
-              : '🧠 相手のターン終了！ あなたの番です。';
-            setNarrator(endMsg);
-            if (needDiscard > 0) {
-              showToast('相手が手札を' + needDiscard + '枚捨てました', 'info', 2200);
-            }
-            return sleep(700).then(function () {
-              return showTurnChange('あなたのターン').then(function () {
-                startPlayerTurn();
-              });
+          return sleep(700).then(function () {
+            return showTurnChange('あなたのターン').then(function () {
+              startPlayerTurn();
             });
           });
         });
@@ -2170,11 +2232,11 @@
               var guardText = '相手がガード！ ' + guardHorse.name + ' / ガード ' + guardVal;
               return showBanner(guardText, 3000, guardHorse).then(function () {
                 if (totalRun <= guardVal) {
-                  setNarrator('❌ 走破失敗。実効走破値 ' + totalRun + ' は実効ガード値 ' + guardVal + ' を上回れなかった。');
+                  setNarrator('❌ 走破失敗。相手のガード値 <b>' + guardVal + '</b> により防がれました。実効走破 <b>' + totalRun + '</b> では突破できず、走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
                   return sendHorseToFarmAndReset();
                 } else {
                   var runDistance = totalRun - guardVal;
-                  setNarrator('🛡️ 実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。');
+                  setNarrator('🛡️ 実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。ガードを突破しました！');
                   return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
                 }
               });
@@ -2198,7 +2260,7 @@
         ('実効走破 <b>' + totalRun + '</b> − ガード <b>' + usedGuardVal + '</b> ＝ 走破数 <b>' + finalRun + '</b>') :
         ('<b>' + (horseInPlay ? horseInPlay.name : '馬') + '</b>の走破数が <b>' + finalRun + '</b>（基礎 ' + (horseInPlay ? horseInPlay.run : '') + (modifierText ? '、' + modifierText : '') + (runBonus ? '、アイテム +' + runBonus : '') + '）');
 
-      setNarrator(reason + ' だから山札から <b>' + drawCount + '枚</b> 引きます。その後、走破数−1枚（<b>' + discardCount + '枚</b>）をファームに捨てます。');
+      setNarrator(reason + ' だから山札から <b>' + drawCount + '枚</b> 引きます。その後、走破数−1枚（<b>' + discardCount + '枚</b>）をファームに捨てます。走破した馬はフィールドに残ります。');
       showToast('走破数 ' + finalRun + '枚ドロー → 走破数−1（' + discardCount + '枚）捨て', 'info', 3000);
 
       // 1. 走破したら走破数分カードを引きますのポップアップ
@@ -2251,13 +2313,42 @@
 
     function finishRun(finalRun, usedGuard, usedGuardVal) {
       var discardCount = Math.max(0, finalRun - 1);
-      var msg = '<b>走破成功！</b> ' + finalRun + '枚引いて、走破数−1枚（' + discardCount + '枚）をファームに送りました。';
-      if (usedGuard) msg += ' <span style="font-size:12px;color:var(--rail-dim)">（ガード' + usedGuardVal + '減少）</span>';
+      var horseName = (field && field.name) ? field.name : ((horseInPlay && horseInPlay.name) ? horseInPlay.name : '馬');
+      var msg = '<b>走破成功！</b> ' + finalRun + '枚引いて、走破数−1枚（' + discardCount + '枚）をファームに送りました。走破した<b>【' + horseName + '】</b>はフィールドに残ります。';
+      if (usedGuard) msg += ' <span style="font-size:12px;color:var(--rail-dim)">（相手ガード' + usedGuardVal + 'を突破）</span>';
       setNarrator(msg);
-      sendHorseToFarmAndReset();
+      keepHorseOnFieldAndReset();
     }
 
-    /* STEP 6: 使い終わった馬カードをファームへ送る */
+    /* 走破成功時：走破した馬はフィールドに残し、相手のガード馬のみ相手ファームへ送る */
+    function keepHorseOnFieldAndReset() {
+      var pG = Promise.resolve();
+      if (fieldGuard) {
+        var oppFarmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+        var oppFarmRect = oppFarmZone ? oppFarmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+        var guardEl = document.querySelector('#field-body-opp .field-mini') || document.querySelector('.field-guard-card');
+        pG = (guardEl) ? flyGhost(guardEl, oppFarmRect) : Promise.resolve();
+      }
+      return pG.then(function () {
+        if (fieldGuard) { oppFarm.push(fieldGuard); fieldGuard = null; }
+        phase = 'idle'; selectedHorse = null; selectedForces = []; runBonus = 0; canDraw = false;
+        renderAll();
+        checkVictory();
+        if (!victoryShown) {
+          if (interactionMode === 'freeplay') {
+            return sleep(1200).then(function () {
+              if (!victoryShown && !isCpuTurn) {
+                endTurn();
+              }
+            });
+          } else {
+            checkHintsAvailable();
+          }
+        }
+      });
+    }
+
+    /* ガード等で走破失敗時：走破した馬をファームへ送る */
     function sendHorseToFarmAndReset() {
       var farmRect = $('zone-farm').getBoundingClientRect();
       var fieldEl = document.querySelector('#field-body .field-mini');
@@ -2428,21 +2519,28 @@
           setNarrator('⚠️ コストとなる<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
           Haptics.warn();
           shakeCard(id);
-          phase = 'idle'; selectedHorse = null; hasRunThisTurn = false;
-          renderAll();
           return;
         }
 
         selectedHorse = card;
         selectedForces = [];
 
+        var oldFieldHorse = field;
+        var farmRect = $('zone-farm').getBoundingClientRect();
+        var fieldRect = $('zone-field').getBoundingClientRect();
+
+        // もしすでに場に馬がいた場合、前の馬をファームへ送る演出
+        if (oldFieldHorse) {
+          var oldFieldEl = document.querySelector('#field-body .field-mini');
+          if (oldFieldEl) flyGhost(oldFieldEl, farmRect, 0.8);
+          farm.push(oldFieldHorse);
+        }
+
         // 馬カードを手札からフィールドへ即座に移動・アニメーション
         el.style.pointerEvents = 'none';
         el.classList.add('selected');
-        var fieldRect = $('zone-field').getBoundingClientRect();
         flyGhost(el, fieldRect).then(function () {
           hand = hand.filter(function (c) { return c.id !== card.id; });
-          if (field) farm.push(field);
           field = card;
           fieldGuard = null;
           phase = 'select_force';
@@ -2450,7 +2548,8 @@
           Haptics.place();
           if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
           var horseName = card.name || '馬カード';
-          setNarrator('<b>' + horseName + '</b>をフィールドに出しました！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
+          var swapNote = oldFieldHorse ? ('（場にいた「<b>' + oldFieldHorse.name + '</b>」をファームに送りました）<br>') : '';
+          setNarrator(swapNote + '<b>' + horseName + '</b>をフィールドに出しました！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
           showToast('【' + horseName + '】を出しました！ フォースカードを' + cost + '枚選んでください');
         });
         return;
@@ -3111,8 +3210,11 @@
     farm = [];
     oppFarm = [];
     hand = [];
+    cpuHand = [];
+    opponentHandCount = 0;
     field = null;
     fieldGuard = null;
+    cpuHorseCard = null;
     situation = null;
     gameTurn = 1;
     cpuConsecutiveGuardCount = 0;
@@ -3260,21 +3362,17 @@
     setZoneActive('zone-farm', false);
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 13: 使い終わった馬カードをファームへ
+    // STEP 13: 走破後の馬のルール
     setProgress(14);
-    setNarrator('最後に、走破に使った馬カードをファームに送るよ。');
+    setNarrator('走破に成功した馬カードは、そのまま<b>フィールドに残る</b>よ！ 次のターンもフォースを払えば同じ馬で走破できるし、手札の別の馬と入れ替えて走破することもできるんだ。');
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
-    if (field) {
-      var fieldEl = document.querySelector('#field-body .field-mini');
-      var farmRect = $('zone-farm').getBoundingClientRect();
-      await flyGhost(fieldEl, farmRect);
-      farm.push(field);
-      field = null;
-      fieldGuard = null;
-      renderAll();
-    }
+
+    setNarrator('ただし、相手に<b>走破数と同じかそれ以上のガード値</b>で守られた場合は、走破馬がファームに送られてしまうから覚えておこう！');
+    showNextButton(true);
+    await waitNext();
+    if (myRunId !== tutorialRunId) return;
 
     // STEP 14: 繰り返しメッセージ
     setProgress(15);
@@ -3873,9 +3971,43 @@
     updateFabDisplay();
   });
 
+  // フィールドの馬をタップしたときの処理（再走破選択や詳細表示）
+  var fieldBodyEl = $('field-body');
+  if (fieldBodyEl) {
+    fieldBodyEl.addEventListener('click', function (e) {
+      if (suppressNextHandClick) { suppressNextHandClick = false; return; }
+      if (!field || isCpuTurn) return;
+      if (phase === 'select_horse') {
+        var cost = field.cost || 2;
+        var forces = hand.filter(function (c) { return c.type === 'force'; });
+        if (forces.length < cost) {
+          showToast('フォースカードが不足しています（必要: ' + cost + '枚）');
+          setNarrator('⚠️ 【' + field.name + '】の再走破に必要な<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
+          Haptics.warn();
+          return;
+        }
+        selectedHorse = field;
+        selectedForces = [];
+        phase = 'select_force';
+        renderAll();
+        Haptics.place();
+        setNarrator('場にいる<b>【' + field.name + '】</b>で再び走破します！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
+        showToast('【' + field.name + '】で再走破！ フォースカードを' + cost + '枚選んでください');
+      } else if (phase === 'idle') {
+        CardCloseup.show(field, { label: 'フィールドの馬' });
+      }
+    });
+  }
 
-
-  /* ===================== holographic card shine (pointer-tracked) ===================== */
+  var oppFieldBodyEl = $('field-body-opp');
+  if (oppFieldBodyEl) {
+    oppFieldBodyEl.addEventListener('click', function () {
+      var target = fieldGuard || cpuHorseCard;
+      if (target) {
+        CardCloseup.show(target, { label: fieldGuard ? '相手のガード馬' : '相手フィールドの馬' });
+      }
+    });
+  }
   (function setupHoloShine() {
     var MAX_TILT = 8; // degrees
     function updateFromPoint(el, clientX, clientY) {

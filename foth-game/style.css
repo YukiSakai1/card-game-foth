@@ -1914,6 +1914,11 @@
     font-size: 8px;
   }
 
+  /* 相手の馬カード置き場のカードは対戦相手視点に合わせて上下逆（180度回転）で表示 */
+  .field-body-opp .field-mini {
+    transform: rotate(180deg);
+  }
+
   .field-mini-wrap {
     width: 100%;
     height: 100%;
@@ -1966,6 +1971,69 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* 走破選択時に自分の場の馬が選択可能な場合のハイライト */
+  .field-mini.is-field-selectable,
+  #field-body.selectable-horse .field-mini {
+    cursor: pointer;
+    border: 2px solid #00f0ff !important;
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.45), 0 0 20px rgba(0, 240, 255, 0.8), 0 6px 16px rgba(0, 0, 0, 0.6) !important;
+    animation: fieldHorsePulse 1.3s ease-in-out infinite alternate;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  }
+
+  .field-mini.is-field-selectable:hover,
+  #field-body.selectable-horse .field-mini:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.7), 0 0 26px rgba(0, 240, 255, 0.95), 0 8px 22px rgba(0, 0, 0, 0.7) !important;
+    filter: brightness(1.12);
+  }
+
+  .field-mini.is-field-selectable:active,
+  #field-body.selectable-horse .field-mini:active {
+    transform: scale(0.98);
+    filter: brightness(1.2);
+  }
+
+  /* 「タップで再走破」フローティングバッジ */
+  .field-reuse-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    background: linear-gradient(135deg, #0284c7 0%, #034f75 100%);
+    color: #ffffff;
+    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1.5px solid #00f0ff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 14px rgba(0, 240, 255, 0.75);
+    white-space: nowrap;
+    pointer-events: none;
+    animation: reuseBadgePulse 1.3s ease-in-out infinite alternate;
+  }
+
+  @keyframes fieldHorsePulse {
+    0% {
+      box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.35), 0 0 12px rgba(0, 240, 255, 0.55);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.65), 0 0 22px rgba(0, 240, 255, 0.95);
+    }
+  }
+
+  @keyframes reuseBadgePulse {
+    0% {
+      transform: translateX(-50%) scale(1);
+    }
+    100% {
+      transform: translateX(-50%) scale(1.08);
+    }
   }
 
   .stat-badge {
@@ -2112,6 +2180,31 @@
 
   .farm-back-0 {
     z-index: 2;
+  }
+
+  /* 相手ファームのカードは対戦相手視点に合わせて上下逆（180度回転）で表示 */
+  .farm-pile-opp .farm-mini,
+  #zone-opp-farm .farm-mini {
+    transform: rotate(180deg);
+  }
+
+  .farm-pile-opp .farm-back-1,
+  #zone-opp-farm .farm-back-1 {
+    transform: translate(2px, 2px) rotate(181deg);
+    z-index: 1;
+    opacity: .85;
+  }
+
+  .farm-pile-opp .farm-back-0,
+  #zone-opp-farm .farm-back-0 {
+    transform: rotate(180deg);
+    z-index: 2;
+  }
+
+  /* 相手が手札からプレイ・ファームに送るアニメーションカードの上下逆設定 */
+  .ghost-cpu-card,
+  .card.ghost-cpu-card {
+    transform: rotate(180deg) !important;
   }
 
   .farm-badge {
