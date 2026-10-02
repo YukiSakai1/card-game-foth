@@ -1504,14 +1504,21 @@
   function activateSituationCard(card) {
     if (!card || card.type !== 'situation') return;
     hand = hand.filter(function (c) { return c.id !== card.id; });
+    situation = card;
+    race.trackCondition = '良';
+    phase = 'idle';
+
     var el = cardElById(card.id);
     var dest = $('field-situation-bg') || $('field-image-wrap');
     var destRect = dest ? dest.getBoundingClientRect() : null;
 
+    // 手札からの即座の除外と背景への反映
+    renderSituation();
+    renderHand();
+    renderRaceInfo();
+    renderAll();
+
     function finish() {
-      situation = card;
-      race.trackCondition = '良';
-      phase = 'idle';
       SoundFX.shimmer();
       Haptics.place();
       var isFreeplay = (interactionMode === 'freeplay');
@@ -1522,11 +1529,13 @@
         toast: toastHtml,
         autoHideMs: isFreeplay ? null : 1500
       });
+      setNarrator('状況カード「<b>' + card.name + '</b>」を発動しました！（馬場状態: <b>' + race.trackCondition + '</b>）');
+      showToast('状況カード「' + card.name + '」を発動！', 'info', 2400);
       checkHintsAvailable();
     }
 
     if (el && destRect) {
-      flyGhost(el, destRect).then(finish);
+      flyGhost(el, destRect, 0.85).then(finish);
     } else {
       finish();
     }
