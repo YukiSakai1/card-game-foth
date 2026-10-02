@@ -1953,7 +1953,7 @@
     }
 
     // バナー表示後、プレイヤーのガード選択ポップアップを表示
-    await showBanner('相手が走破宣言！', 2400, chosenHorse, '「' + chosenHorse.name + '」 実効走破: ' + cpuRunValue);
+    await showBanner('相手が走破宣言！', 2400, chosenHorse, '「' + chosenHorse.name + '」 馬の走破数 ' + cpuRunValue);
     showGuardPopup(cpuRunValue, chosenHorse);
   }
 
@@ -2139,7 +2139,7 @@
     showOpponentBubble('走破成功！');
 
     var horse = cpuHorseCard || goldShip();
-    showBanner('走破成功！', 2600, horse, '相手（CPU）は走破に成功しました').then(function () {
+    showBanner('走破成功！', 2600, horse, '相手（CPU）は走破に成功しました<br><b>馬の走破数 ' + actualDraw + '</b>').then(function () {
       var chain = Promise.resolve();
       var handEl = $('opponent-hand-display') || $('zone-opponent');
       var opponentRect = handEl ? handEl.getBoundingClientRect() : { left: 200, top: 20, width: 80, height: 30 };
@@ -2287,7 +2287,7 @@
                 return sendHorseToFarmAndReset();
               });
             }
-            return showBanner('走破成功！', 3200, horseInPlay).then(function () {
+            return showBanner('走破成功！', 3200, horseInPlay, '自分の馬の走破数 ' + totalRun).then(function () {
               setNarrator('相手はガードをしませんでした。走破成功です！');
               return continueRunLogic(totalRun, false, 0);
             });
