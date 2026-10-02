@@ -85,7 +85,7 @@
 
   /* ---- アイテムカード（例。effectType/effectValue を変えるだけで種類を増やせる） ---- */
   function whip() {
-    var c = itemCard('鞭', '走破数を+1する', 'SDF-074', 'run_bonus', 1);
+    var c = itemCard('鞭', '自分の馬の走破数を+1する', 'SDF-074', 'run_bonus', 1);
     c.img = 'images/item-whip.png';
     return c;
   }
@@ -95,7 +95,7 @@
     return c;
   }
   function eliteJockey() {
-    var c = jockeyCard('エリートジョッキー', '走破数を+1する。ガード値を+1する', 'SDF-081', 'elite_jockey', 1);
+    var c = jockeyCard('エリートジョッキー', '自分の馬の走破数を+1する。ガード値を+1する', 'SDF-081', 'elite_jockey', 1);
     c.guardBonus = 1;
     c.img = 'images/elite-jockey.png';
     return c;
@@ -1678,13 +1678,13 @@
     // 効果説明テキストの組み立て
     var effectDesc = cpuItem.stat || '';
     if (cpuItem.effectType === 'run_bonus') {
-      effectDesc = '走破ボーナス +' + cpuItem.effectValue;
+      effectDesc = '走破数 +' + cpuItem.effectValue;
     } else if (cpuItem.effectType === 'elite_jockey') {
-      effectDesc = '走破ボーナス +1 / ガード +1';
+      effectDesc = '走破数 +1 / ガード +1';
     } else if (cpuItem.effectType === 'farm_recovery') {
       effectDesc = 'ファームからフォース／馬を手札に回収';
     } else if (cpuItem.effectType === 'guard_bonus') {
-      effectDesc = 'ガードボーナス +' + cpuItem.effectValue;
+      effectDesc = 'ガード +' + cpuItem.effectValue;
     }
 
     if (window.SoundFX && typeof SoundFX.shimmer === 'function') SoundFX.shimmer();
@@ -1707,13 +1707,13 @@
     // アイテム効果の適用と結果の明示
     if (cpuItem.effectType === 'run_bonus') {
       cpuRunBonus += cpuItem.effectValue;
-      showToast('相手の走破ボーナス +' + cpuItem.effectValue + '（現在ボーナス計: +' + cpuRunBonus + '）', 'info', 2200);
-      setNarrator('相手の走破値が <b>+' + cpuItem.effectValue + '</b> アップ！（累計ボーナス: +' + cpuRunBonus + '）');
+      showToast('相手の走破数 +' + cpuItem.effectValue, 'info', 2200);
+      setNarrator('相手の走破数が <b>+' + cpuItem.effectValue + '</b> アップ！（実効走破に加算）');
     } else if (cpuItem.effectType === 'elite_jockey') {
       cpuRunBonus += 1;
       cpuItemGuardBonus += 1;
-      showToast('相手の走破+1、ガード+1！（走破ボーナス計: +' + cpuRunBonus + '）', 'info', 2200);
-      setNarrator('相手の走破値とガード値がそれぞれ <b>+1</b> アップ！（走破ボーナス計: +' + cpuRunBonus + '）');
+      showToast('相手の走破数+1、ガード+1！', 'info', 2200);
+      setNarrator('相手の走破数とガード値がそれぞれ <b>+1</b> アップ！');
     } else if (cpuItem.effectType === 'farm_recovery') {
       var recovered = null;
       var fIdx = oppFarm.findIndex(function (c) { return c.type === 'force' && c.id !== cpuItem.id; });
@@ -2436,16 +2436,16 @@
     switch (card.effectType) {
       case 'run_bonus':
         runBonus += card.effectValue;
-        msg += ' 走破ボーナス +' + card.effectValue;
+        msg += ' 自分の馬の走破数 +' + card.effectValue;
         break;
       case 'guard_bonus':
         itemGuardBonus += card.effectValue;
-        msg += ' ガードボーナス +' + card.effectValue + '（次にガードする時に加算されます）';
+        msg += ' ガード +' + card.effectValue + '（次にガードする時に加算されます）';
         break;
       case 'elite_jockey':
         runBonus += 1;
         itemGuardBonus += 1;
-        msg += ' 走破ボーナス +1、ガードボーナス +1！';
+        msg += ' 自分の馬の走破数 +1、ガード +1！';
         break;
       case 'farm_recovery':
         var recoveredForce = null;
