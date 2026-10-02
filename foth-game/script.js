@@ -2281,15 +2281,44 @@
           if (!shouldGuard) {
             cpuConsecutiveGuardCount = 0; // ガードしなかった場合は連続カウントをリセット
             showOpponentBubble('ガードしません');
-            if (totalRun <= 0) {
-              return showBanner('走破失敗').then(function () {
-                setNarrator('❌ 実効走破値 ' + totalRun + ' はガード値 0 を上回れず、走破失敗。');
-                return sendHorseToFarmAndReset();
+            setNarrator('相手プレイヤーはガードを選択しませんでした。');
+
+            var noticePromise = Promise.resolve();
+            if (thinkingPopup) {
+              var titleEl = thinkingPopup.querySelector('.popup-title');
+              var descEl = thinkingPopup.querySelector('.popup-desc');
+              if (titleEl) titleEl.textContent = '🛡️ ガード確認';
+              if (descEl) {
+                descEl.innerHTML = '<b style="color:#0f172a;font-size:15px;display:block;margin-bottom:6px;">相手プレイヤーはガードを選択しませんでした</b><span style="font-size:12px;color:#0284c7;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.3);padding:3px 14px;border-radius:999px;font-weight:700;display:inline-block;">画面をタップ／クリックして次へ進む</span>';
+              }
+              thinkingPopup.style.display = 'flex';
+              noticePromise = new Promise(function (resolve) {
+                var done = false;
+                var timer = null;
+                function finish() {
+                  if (done) return;
+                  done = true;
+                  if (timer) clearTimeout(timer);
+                  thinkingPopup.removeEventListener('click', finish);
+                  thinkingPopup.style.display = 'none';
+                  resolve();
+                }
+                thinkingPopup.addEventListener('click', finish);
+                timer = setTimeout(finish, 2200);
               });
             }
-            return showBanner('走破成功！', 3200, horseInPlay, '走破に成功しました<br>馬の走破数 ' + totalRun).then(function () {
-              setNarrator('相手はガードをしませんでした。走破成功です！');
-              return continueRunLogic(totalRun, false, 0);
+
+            return noticePromise.then(function () {
+              if (totalRun <= 0) {
+                return showBanner('走破失敗').then(function () {
+                  setNarrator('❌ 実効走破値 ' + totalRun + ' はガード値 0 を上回れず、走破失敗。');
+                  return sendHorseToFarmAndReset();
+                });
+              }
+              return showBanner('走破成功！', 3200, horseInPlay, '走破に成功しました<br>馬の走破数 ' + totalRun).then(function () {
+                setNarrator('相手はガードをしませんでした。走破成功です！');
+                return continueRunLogic(totalRun, false, 0);
+              });
             });
           } else {
             cpuConsecutiveGuardCount++; // ガード成立で連続カウントを加算
