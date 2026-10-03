@@ -1,6 +1,11 @@
 (function () {
   "use strict";
 
+  /* ===================== icon image helper ===================== */
+  function iconImg(name, extraClass) {
+    return '<img src="images/icon-' + name + '.svg" class="img-icon' + (extraClass ? ' ' + extraClass : '') + '" alt="">';
+  }
+
   /* ===================== card data ===================== */
   var TYPE_LABEL = { force: 'フォース', horse: '馬', item: 'アイテム', jockey: '騎手', situation: '状況' };
   var uidCounter = 0;
@@ -12,7 +17,7 @@
   }
   var FORCE_IMG = 'images/force-icon.png';
   function forceCard(name) {
-    var c = makeCard('force', name || 'フォース', '🏇', '');
+    var c = makeCard('force', name || 'フォース', iconImg('horse'), '');
     c.img = FORCE_IMG;
     return c;
   }
@@ -20,17 +25,17 @@
   // 新しいアイテムを追加するときは、effectType/effectValue を指定するだけでよい
   // （分岐を増やす必要があるのは新しい effectType を作るときだけ。applyItemEffect を参照）。
   function itemCard(name, effect, code, effectType, effectValue) {
-    return makeCard('item', name, '🏏', effect, {
+    return makeCard('item', name, iconImg('trophy'), effect, {
       code: code,
       effectType: effectType,
       effectValue: effectValue
     });
   }
   function jockeyCard(name, effect, code, effectType, effectValue) {
-    return makeCard('jockey', name, '🏇', effect, { code: code, effectType: effectType, effectValue: effectValue });
+    return makeCard('jockey', name, iconImg('horse'), effect, { code: code, effectType: effectType, effectValue: effectValue });
   }
   function horseCard(name, en, run, guard, style, dist, fav, cost, surface) {
-    return makeCard('horse', name, '🐎', '', {
+    return makeCard('horse', name, iconImg('horse'), '', {
       en: en, run: run, guard: guard, style: style, dist: dist, fav: fav, cost: cost || 2,
       surface: surface || ['芝']
     });
@@ -39,7 +44,7 @@
   var KANKAN_ART = 'images/kankan-art.png';
 
   function situationCard(name, stat, img, artImg) {
-    var c = makeCard('situation', name, '☀️', stat || '全馬 走破+1（仮）');
+    var c = makeCard('situation', name, iconImg('sun'), stat || '全馬 走破+1（仮）');
     if (img) c.img = img;
     c.artImg = artImg || (img && img.indexOf('kankan') >= 0 ? KANKAN_ART : (img || null));
     return c;
@@ -76,11 +81,17 @@
     c.img = 'images/horse-dodeuce.jpg';
     return c;
   }
-  // CPU側が走破時にランダムで使用する馬カードのプール（添付カード3種）
+  function sonnig() {
+    var c = horseCard('ゾンニッヒ', 'SONNIG', 2, 1, '先行・差し', '短・マイル', '札幌/函館・良/稍重', 1);
+    c.img = 'images/horse-sonnig.png';
+    return c;
+  }
+  // CPU側が走破時にランダムで使用する馬カードのプール
   var CPU_HORSE_POOL = [
     silkMobius,
     seiunSky,
-    doDeuce
+    doDeuce,
+    sonnig
   ];
 
   /* ---- アイテムカード（例。effectType/effectValue を変えるだけで種類を増やせる） ---- */
@@ -109,8 +120,8 @@
   /* ===================== プレイヤー山札（40枚）構成 =====================
      - 状況カード: 1枚（かんかん照り）
      - アイテムカード: 3枚（エリートジョッキー, 鞭, 獣医師）
-     - 馬カード: 15枚（ゴールドシップ×3, ローシャムパーク×3, セファーラジエル×3, シルクメビウス×2, セイウンスカイ×2, ドウデュース×2）
-     - フォースカード: 21枚
+     - 馬カード: 17枚（ゴールドシップ×3, ローシャムパーク×3, セファーラジエル×3, シルクメビウス×2, セイウンスカイ×2, ドウデュース×2, ゾンニッヒ×2）
+     - フォースカード: 19枚
      合計: 40枚
   ====================================================================== */
   var FREEPLAY_POOL = [
@@ -120,7 +131,7 @@
     function () { return eliteJockey(); },
     function () { return whip(); },
     function () { return veterinarian(); },
-    // 馬カード（15枚 / 37.5%）
+    // 馬カード（17枚 / 42.5%）
     function () { return goldShip(); },
     function () { return goldShip(); },
     function () { return goldShip(); },
@@ -136,9 +147,9 @@
     function () { return seiunSky(); },
     function () { return doDeuce(); },
     function () { return doDeuce(); },
-    // フォースカード（21枚 / 52.5%）
-    function () { return forceCard(); },
-    function () { return forceCard(); },
+    function () { return sonnig(); },
+    function () { return sonnig(); },
+    // フォースカード（19枚 / 47.5%）
     function () { return forceCard(); },
     function () { return forceCard(); },
     function () { return forceCard(); },
@@ -170,7 +181,7 @@
       function () { return whip(); },
       function () { return veterinarian(); },
 
-      // 3. 馬カード（15枚）
+      // 3. 馬カード（17枚）
       function () { return goldShip(); },
       function () { return goldShip(); },
       function () { return goldShip(); },
@@ -186,10 +197,10 @@
       function () { return seiunSky(); },
       function () { return doDeuce(); },
       function () { return doDeuce(); },
+      function () { return sonnig(); },
+      function () { return sonnig(); },
 
-      // 4. フォースカード（21枚）
-      function () { return forceCard(); },
-      function () { return forceCard(); },
+      // 4. フォースカード（19枚）
       function () { return forceCard(); },
       function () { return forceCard(); },
       function () { return forceCard(); },
@@ -278,13 +289,13 @@
   function resetCpuDrawQueue() {
     cpuDrawQueue = [
       function () { return forceCard(); },       // 1手番目: フォース（走破コスト補充）
-      function () { return doDeuce(); },         // 2手番目: ドウデュース（走破5の強力馬）
+      function () { return sonnig(); },          // 2手番目: ゾンニッヒ（コスト1馬）
       function () { return whip(); },            // 3手番目: 鞭（走破ボーナス+1）
       function () { return forceCard(); },       // 4手番目: フォース
       function () { return veterinarian(); },    // 5手番目: 獣医師（ファーム回収）
-      function () { return forceCard(); },       // 6手番目: フォース
+      function () { return doDeuce(); },         // 6手番目: ドウデュース（走破5の強力馬）
       function () { return goldShip(); },        // 7手番目: ゴールドシップ
-      function () { return kutsuwa(); },         // 8手番目: 口輪
+      function () { return sonnig(); },          // 8手番目: ゾンニッヒ（コスト1馬）
       function () { return forceCard(); },       // 9手番目: フォース
       function () { return rousham(); },         // 10手番目: ローシャムパーク
       function () { return forceCard(); },       // 11手番目: フォース
@@ -334,6 +345,7 @@
     for (var i = 0; i < LANES.length; i++) { if (LANES[i].count > 0) return LANES[i]; }
     return null;
   }
+  var gameReady = false;
   function totalDeck() {
     return LANES.reduce(function (sum, l) { return sum + l.count; }, 0);
   }
@@ -341,6 +353,7 @@
     var lane = currentLane();
     if (!lane) return null;
     lane.count--;
+    if (gameReady) checkVictory();
     return lane;
   }
   // 相手（CPU）自身の山札（自分の山札とは別に、4つの距離エリアを持つ）
@@ -361,6 +374,7 @@
     var lane = cpuCurrentLane();
     if (!lane) return null;
     lane.count--;
+    if (gameReady) checkVictory();
     return lane;
   }
   var situation = null;
@@ -389,7 +403,7 @@
   }
   function renderRaceInfo() {
     var el = $('race-info');
-    if (el) el.textContent = '🏁 ' + race.racecourse + '・' + race.surface + '・' + race.distance + '・' + race.trackCondition;
+    if (el) el.innerHTML = iconImg('flag', 'img-icon-inline') + ' ' + race.racecourse + '・' + race.surface + '・' + race.distance + '・' + race.trackCondition;
   }
 
   var interactionMode = null;   // 'draw' | 'select-force' | 'select-horse' | 'select-any' | 'freeplay' | null
@@ -483,22 +497,24 @@
     var row = $('hand-row');
     var cards = row.querySelectorAll('.card');
     var n = cards.length;
+    var zone = $('zone-hand');
+    var isManyCards = n >= 8;
+    if (zone) {
+      zone.classList.toggle('has-many-cards', isManyCards);
+    }
     if (!n) return;
     var rowW = row.clientWidth || row.offsetWidth || 340;
     var cardW = cards[0].offsetWidth || 98;
     var isMobile = typeof window !== 'undefined' && window.innerWidth < 860;
-    var maxSpread = Math.min(28, 5 * (n - 1)); // total fan spread in degrees, capped
+    var maxSpread = isManyCards ? Math.min(22, 3.0 * (n - 1)) : Math.min(28, 5 * (n - 1));
     var angleStep = n > 1 ? maxSpread / (n - 1) : 0;
-    // モバイルはオーバーラップを減らして各カードが見やすくなるよう調整
-    var idealGapRatio = isMobile ? 0.38 : 0.62;
-    var minGapRatio = isMobile ? 0.20 : 0.20;
+    // 8枚以上のときやモバイル時はカードを潰さず十分な間隔を確保してスクロール可能に
+    var idealGapRatio = isMobile ? 0.38 : (isManyCards ? 0.46 : 0.62);
+    var minGapRatio = isMobile ? 0.20 : (isManyCards ? 0.42 : 0.20);
     var idealGap = cardW * idealGapRatio;
     var totalWidthIdeal = idealGap * (n - 1) + cardW;
     var gap = idealGap;
-    // モバイルは横スクロールで隠れたカードを見られるので、詰めて潰さずに
-    // 理想の間隔のまま並べる（画面外にはみ出た分はスワイプで見る）。
-    // デスクトップは従来通り、収まらない場合だけ間隔を詰める。
-    if (!isMobile && totalWidthIdeal > rowW * 0.97 && n > 1) {
+    if (!isMobile && !isManyCards && totalWidthIdeal > rowW * 0.97 && n > 1) {
       gap = Math.max(cardW * minGapRatio, (rowW * 0.97 - cardW) / (n - 1));
     }
     var center = (n - 1) / 2;
@@ -506,19 +522,32 @@
       var offset = i - center;
       var rot = offset * angleStep;
       var x = offset * gap;
-      var y = Math.abs(offset) * Math.abs(offset) * (isMobile ? 0.7 : 1.15);
+      var y = Math.abs(offset) * Math.abs(offset) * (isMobile ? 0.7 : (isManyCards ? 0.65 : 1.15));
       el.style.setProperty('--fan-x', x.toFixed(1) + 'px');
       el.style.setProperty('--fan-rot', rot.toFixed(2) + 'deg');
       el.style.setProperty('--fan-y', y.toFixed(1) + 'px');
       el.style.zIndex = String(Math.round(100 - Math.abs(offset) * 2));
     });
-    if (isMobile) {
-      // 初期表示では手札の中央（山の真ん中）が見えるようスクロール位置を揃える。
-      // 全カードが収まっている場合は scrollWidth <= clientWidth なので 0 のまま。
+    if (isMobile || isManyCards) {
       requestAnimationFrame(function () {
-        row.scrollLeft = Math.max(0, (row.scrollWidth - row.clientWidth) / 2);
+        if (row.scrollWidth > row.clientWidth && row.scrollLeft === 0) {
+          row.scrollLeft = Math.max(0, (row.scrollWidth - row.clientWidth) / 2);
+        }
+        updateHandNavState();
       });
     }
+  }
+
+  function updateHandNavState() {
+    var row = $('hand-row');
+    var prevBtn = $('hand-prev');
+    var nextBtn = $('hand-next');
+    if (!row || !prevBtn || !nextBtn) return;
+    var canScroll = row.scrollWidth > row.clientWidth + 4;
+    var atStart = row.scrollLeft <= 4;
+    var atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - 4;
+    prevBtn.classList.toggle('nav-disabled', !canScroll || atStart);
+    nextBtn.classList.toggle('nav-disabled', !canScroll || atEnd);
   }
 
   function renderHand() {
@@ -539,7 +568,7 @@
           var gBadge = document.createElement('div');
           gBadge.className = 'card-guard-floating-badge' + (isDistMatch ? ' is-valid' : ' is-invalid');
           gBadge.innerHTML =
-            '<span class="guard-icon">🛡️</span>' +
+            '<span class="guard-icon">' + iconImg('shield') + '</span>' +
             '<span class="guard-lbl">ガード</span>' +
             '<span class="guard-val">' + (c.guard || 0) + '</span>' +
             (!isDistMatch ? '<span class="guard-dist-warn">距離外</span>' : '<span class="guard-dist-ok">適性○</span>');
@@ -574,6 +603,7 @@
     var zone = $('zone-hand');
     if (zone) {
       zone.classList.toggle('has-cards', hand.length > 0);
+      zone.classList.toggle('has-many-cards', hand.length >= 8);
     }
     document.body.classList.toggle('has-hand-cards', hand.length > 0);
   }
@@ -631,7 +661,7 @@
     }
     if (field) {
       var selCls = isHorseSelect ? ' selectable is-field-selectable' : '';
-      var badgeHtml = isHorseSelect ? '<div class="field-reuse-badge">🔄 タップで再走破</div>' : '';
+      var badgeHtml = isHorseSelect ? '<div class="field-reuse-badge">' + iconImg('reload', 'img-icon-inline') + 'タップで再走破</div>' : '';
       if (field.img) {
         body.innerHTML =
           '<div class="field-mini-wrap">' + badgeHtml +
@@ -659,7 +689,7 @@
     if (!body) return;
     var card = fieldGuard || cpuHorseCard;
     if (card) {
-      var tagHtml = fieldGuard ? '<div class="field-opp-tag">🛡️ ガード G' + (fieldGuard.guard || 0) + '</div>' : '';
+      var tagHtml = fieldGuard ? '<div class="field-opp-tag">' + iconImg('shield', 'img-icon-inline') + 'ガード G' + (fieldGuard.guard || 0) + '</div>' : '';
       if (card.img) {
         body.innerHTML = tagHtml +
           '<div class="field-mini-wrap"><div class="field-mini field-mini-img" style="background-image:url(' + card.img + ')"></div></div>';
@@ -677,7 +707,7 @@
     }
   }
 
-  /* 状況カード：field-image-wrapの背景に、イラスト部分のみを表示 */
+  /* 状況カード：field-image-wrapの背景に、イラスト部分のみを表示（確認はボタンからのみ可能） */
   function renderSituation() {
     var bg = $('field-situation-bg');
     if (!bg) return;
@@ -687,25 +717,25 @@
       return;
     }
     bg.classList.add('active');
-    var badgeHtml = '<div class="field-situation-badge">🔍 クリック / 長押しで確認</div>';
+    var btnHtml = '<button type="button" class="field-situation-check-btn" title="状況カードの詳細を確認する"><span class="check-btn-icon">' + iconImg('search') + '</span><span class="check-btn-label">状況カードを確認する</span></button>';
     var artSrc = situation.artImg || situation.img;
     if (artSrc) {
       bg.innerHTML =
-        '<div class="field-situation-card" style="background-image:url(' + artSrc + ');" role="button" tabindex="0" title="クリックまたは長押しして状況カードを確認">' +
+        '<div class="field-situation-card" style="background-image:url(' + artSrc + ');">' +
         '<div class="card-shine"></div>' +
-        badgeHtml +
-        '</div>';
+        '</div>' +
+        btnHtml;
     } else {
       bg.innerHTML =
-        '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);" role="button" tabindex="0" title="クリックまたは長押しして状況カードを確認">' +
+        '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);">' +
         '<div class="card-art" style="font-size:72px; text-align:center;">' + situation.icon + '</div>' +
         '<div class="card-shine"></div>' +
-        badgeHtml +
-        '</div>';
+        '</div>' +
+        btnHtml;
     }
-    var cardEl = bg.querySelector('.field-situation-card');
-    if (cardEl) {
-      cardEl.addEventListener('click', function (e) {
+    var checkBtn = bg.querySelector('.field-situation-check-btn');
+    if (checkBtn) {
+      checkBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         Haptics.tap();
         CardCloseup.show(situation, { label: '状況カード' });
@@ -716,7 +746,7 @@
   function renderDeckLanes() {
     var wrap = $('lanes');
     var active = currentLane();
-    var maxLaneCount = (interactionMode === 'freeplay') ? 8 : 10;
+    var maxLaneCount = 8;
     wrap.innerHTML = LANES.map(function (lane) {
       var isActive = active && lane.key === active.key;
       var isEmpty = lane.count <= 0;
@@ -754,7 +784,7 @@
     var wrap = $('opp-lanes');
     if (!wrap) return;
     var active = cpuCurrentLane();
-    var maxLaneCount = (interactionMode === 'freeplay') ? 8 : 10;
+    var maxLaneCount = 8;
     wrap.innerHTML = CPU_LANES.map(function (lane) {
       var isActive = active && lane.key === active.key;
       var isEmpty = lane.count <= 0;
@@ -1022,7 +1052,7 @@
     }
     var isFreeplay = (interactionMode === 'freeplay');
     var waitClick = isFreeplay || isGuard;
-    var tapHintHtml = waitClick ? '<div class="banner-tap-hint" style="margin-top:8px;font-size:12.5px;color:#0f172a;background:rgba(2,132,199,0.14);border:1px solid rgba(2,132,199,0.35);padding:4px 14px;border-radius:999px;font-weight:800;letter-spacing:0.03em;display:inline-block;text-shadow:none !important;">画面をタップ／クリックして次へ進む</div>' : '';
+    var tapHintHtml = '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
     box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
     box.classList.add('show');
@@ -1303,16 +1333,46 @@
   }
 
   var toastTimer = null;
+  function hideToast() {
+    var toast = $('game-toast');
+    if (toast) {
+      toast.classList.remove('show');
+      toast.style.display = 'none';
+    }
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+      toastTimer = null;
+    }
+  }
+
+  function formatJapaneseToastText(msg) {
+    if (!msg || typeof msg !== 'string') return '';
+    // すでにspanタグ等を含む場合はそのまま
+    if (/<[a-z][\s\S]*>/i.test(msg)) return msg;
+
+    // 「あと X 枚」「フォースカード」「を選んでください」などの語句を文節単位でインラインブロック保護
+    return msg
+      .replace(/(あと\s*\d+\s*枚)/g, '<span class="u-nowrap">$1</span>')
+      .replace(/(フォースカード|馬カード|アイテムカード|状況カード|フォース)/g, '<span class="u-nowrap">$1</span>')
+      .replace(/(を選んでください|を選ぼう|をタップしてね|をファームに送ろう)/g, '<span class="u-nowrap">$1</span>');
+  }
+
   function showToast(msg, duration) {
     var toast = $('game-toast');
     if (!toast) return;
-    toast.textContent = msg;
+    toast.innerHTML = formatJapaneseToastText(msg);
+    toast.style.display = '';
     toast.classList.remove('show');
     void toast.offsetWidth;
     toast.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
-      toast.classList.remove('show');
+      if (toast) {
+        toast.classList.remove('show');
+        setTimeout(function () {
+          if (toast && !toast.classList.contains('show')) toast.style.display = 'none';
+        }, 260);
+      }
     }, duration || 2400);
   }
 
@@ -1365,6 +1425,9 @@
         });
         if (!hasUsableItem) btn.disabled = true;
       }
+      if (cmd === 'hand') {
+        if (isCpuTurn) btn.disabled = true;
+      }
       if (cmd === 'end') {
         if (canDraw) btn.disabled = true;
         if (phase === 'select_horse' || phase === 'select_force' || phase === 'discard_select') btn.disabled = true;
@@ -1412,7 +1475,7 @@
     if (!canRunField && !canRunHand) {
       showToast('フォースカードが不足しています');
       var reqCost = field ? (field.cost || 2) : Math.min.apply(null, horses.map(function (h) { return h.cost || 2; }));
-      setNarrator('⚠️ コストとなる<b>フォースカードが不足しています</b>。（必要: ' + reqCost + '枚 / 手札: ' + forces.length + '枚）');
+      setNarrator(iconImg('warning', 'img-icon-inline') + 'コストとなる<b>フォースカードが不足しています</b>。（必要: ' + reqCost + '枚 / 手札: ' + forces.length + '枚）');
       Haptics.warn();
       return;
     }
@@ -1424,9 +1487,9 @@
 
     if (descEl) {
       if (field) {
-        descEl.innerHTML = '走破させる馬カードを選んでください。<br><span style="font-size:12px;color:#475569;font-weight:600;">場にいる「<b>' + field.name + '</b>」で再走破するか、手札の馬カードを選んで入れ替えます。</span>';
+        descEl.innerHTML = '<div class="popup-lead">走破させる馬カードを選んでください。</div><div class="popup-subtext">場にいる「<b>' + field.name + '</b>」で再走破するか、手札の馬カードを選んで入れ替えます。</div>';
       } else {
-        descEl.innerHTML = '走破させる<b>馬カード</b>を手札から選んでください。<br><span style="font-size:12px;color:#475569;font-weight:600;">（選んだ馬のコスト分のフォースカードを支払って走破します）</span>';
+        descEl.innerHTML = '<div class="popup-lead">走破させる<b>馬カード</b>を手札から選んでください。</div><div class="popup-subtext">（選んだ馬のコスト分のフォースカードを支払って走破します）</div>';
       }
     }
 
@@ -1484,8 +1547,9 @@
     phase = 'select_force';
     prevPhase = null;
     selectedForces = [];
-    var cost = selectedHorse ? (selectedHorse.cost || 2) : 2;
-    var horseName = (selectedHorse && selectedHorse.name) ? selectedHorse.name : '馬カード';
+    var currentRunHorse = selectedHorse || field;
+    var cost = currentRunHorse ? (currentRunHorse.cost || 2) : 2;
+    var horseName = (currentRunHorse && currentRunHorse.name) ? currentRunHorse.name : '馬カード';
     setNarrator('<b>' + horseName + '</b>のコスト分のフォースカードを捨ててください。（残り ' + cost + ' 枚）');
     showToast('馬カードのコスト分のフォースカードを捨ててください');
     renderAll();
@@ -1508,6 +1572,7 @@
     var hName = (field && field.name) ? field.name : (selectedHorse ? selectedHorse.name : 'この馬');
     $('run-support-desc').innerHTML =
       '<b>' + hName + '</b> の走破値を増減できるカードが ' + supports.length + ' 枚あります。使いますか？';
+    hideToast();
     $('run-support-popup').style.display = 'flex';
   }
 
@@ -1565,9 +1630,9 @@
       Haptics.place();
       var isFreeplay = (interactionMode === 'freeplay');
       var sitDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
-      var toastHtml = sitDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;text-shadow:none !important;">画面をタップ／クリックして次へ進む</span></div>' : '');
+      var toastHtml = sitDetail + (isFreeplay ? '<div class="closeup-tap-wrap"><span class="banner-tap-hint">画面をタップ／クリックして次へ進む</span></div>' : '');
       CardCloseup.show(card, {
-        label: '☀️ 状況カード発動！',
+        label: iconImg('sun', 'img-icon-inline') + '状況カード発動！',
         toast: toastHtml,
         autoHideMs: isFreeplay ? null : 1500
       });
@@ -1602,6 +1667,11 @@
     }
   }
 
+  function cmdHand() {
+    if (isCpuTurn) return;
+    HandViewer.open();
+  }
+
   function cmdEndTurn() {
     if (phase === 'select_horse' || phase === 'select_force' || isCpuTurn || canDraw) return;
     endTurn();
@@ -1616,10 +1686,10 @@
     canDraw = true;
     isCpuTurn = true;
     showCommandBar(false);
-    setNarrator('🧠 <b>CPUのターンです。</b>');
+    setNarrator(iconImg('brain', 'img-icon-inline') + '<b>CPUのターンです。</b>');
     renderAll();
     showTurnChange('相手のターン').then(function () {
-      setNarrator('🧠 CPU思考中…');
+      setNarrator(iconImg('brain', 'img-icon-inline') + 'CPU思考中…');
       showOpponentBubble('思考中…');
       sleep(900).then(function () {
         cpuTurn();
@@ -1749,7 +1819,7 @@
 
     if (window.SoundFX && typeof SoundFX.shimmer === 'function') SoundFX.shimmer();
     showOpponentBubble('アイテム「' + cpuItem.name + '」発動！');
-    setNarrator('⚡ 相手が手札からアイテム「<b>' + cpuItem.name + '</b>」を使用！（効果: <b>' + effectDesc + '</b>）');
+    setNarrator(iconImg('bolt', 'img-icon-inline') + '相手が手札からアイテム「<b>' + cpuItem.name + '</b>」を使用！（効果: <b>' + effectDesc + '</b>）');
     showToast('相手が「' + cpuItem.name + '」を発動！ (' + effectDesc + ')', 'info', 2400);
 
     // アイテムカードの強調バナー表示（何を使ったか全体に大きく表示）
@@ -1846,7 +1916,7 @@
     }
 
     if (!chosenHorse) {
-      setNarrator('🧠 相手は走破できる馬カードとコスト分のフォースカード（手札フォース: ' + cpuForceCount + '枚）が揃っていないため、ターンを終了しました。（相手の手札: ' + cpuHand.length + '枚）');
+      setNarrator(iconImg('brain', 'img-icon-inline') + '相手は走破できる馬カードとコスト分のフォースカード（手札フォース: ' + cpuForceCount + '枚）が揃っていないため、ターンを終了しました。（相手の手札: ' + cpuHand.length + '枚）');
       showOpponentBubble('ターンエンド');
       await sleep(1000);
       showTurnChange('あなたのターン').then(function () {
@@ -1859,7 +1929,7 @@
 
     if (isReusingField) {
       showOpponentBubble('「' + chosenHorse.name + '」で再走破！');
-      setNarrator('🧠 相手が手札から<b>フォースカード ' + cost + '枚</b> を支払い、場にいる「<b>' + chosenHorse.name + '</b>」で再び走破を宣言！');
+      setNarrator(iconImg('brain', 'img-icon-inline') + '相手が手札から<b>フォースカード ' + cost + '枚</b> を支払い、場にいる「<b>' + chosenHorse.name + '</b>」で再び走破を宣言！');
       showToast('相手がフォース ' + cost + '枚を支払い【' + chosenHorse.name + '】で再走破！', 'info', 2600);
 
       // コスト分のフォースカードを手札から消費し、1枚ずつ相手ファームへ送る演出
@@ -1893,7 +1963,7 @@
 
       showOpponentBubble('「' + chosenHorse.name + '」で走破！');
       var oldMsg = oldHorse ? ('場の「<b>' + oldHorse.name + '</b>」をファームに送り、') : '';
-      setNarrator('🧠 相手が手札から<b>フォースカード ' + cost + '枚</b> を支払い、' + oldMsg + '「<b>' + chosenHorse.name + '</b>」で走破を宣言！');
+      setNarrator(iconImg('brain', 'img-icon-inline') + '相手が手札から<b>フォースカード ' + cost + '枚</b> を支払い、' + oldMsg + '「<b>' + chosenHorse.name + '</b>」で走破を宣言！');
       showToast('相手がフォース ' + cost + '枚を支払い【' + chosenHorse.name + '】で走破！', 'info', 2600);
 
       // コスト分のフォースカードを手札から消費
@@ -1936,11 +2006,11 @@
 
     cpuRunValue = effectiveRun(chosenHorse, cpuRunBonus);
     var cpuMods = runModifiers(chosenHorse).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
-    setNarrator('🧠 相手の「<b>' + chosenHorse.name + '</b>」 基礎 ' + chosenHorse.run + (cpuRunBonus ? '、アイテム +' + cpuRunBonus : '') + '、' + cpuMods + ' → 実効走破 <b>' + cpuRunValue + '</b>');
+    setNarrator(iconImg('brain', 'img-icon-inline') + '相手の「<b>' + chosenHorse.name + '</b>」 基礎 ' + chosenHorse.run + (cpuRunBonus ? '、アイテム +' + cpuRunBonus : '') + '、' + cpuMods + ' → 実効走破 <b>' + cpuRunValue + '</b>');
     renderAll();
 
     if (cpuRunValue <= 0) {
-      setNarrator('🧠 相手の実効走破値が0以下のため走破失敗。あなたの番です。');
+      setNarrator(iconImg('brain', 'img-icon-inline') + '相手の実効走破値が0以下のため走破失敗。あなたの番です。');
       showOpponentBubble('走破失敗…');
       oppFarm.push(cpuHorseCard);
       cpuHorseCard = null;
@@ -1975,7 +2045,7 @@
     // ドロー完了後：手札を見て次の手を考える「思考中…」の吹き出しとナレーター
     await sleep(400);
     showOpponentBubble('思考中…');
-    setNarrator('🧠 相手プレイヤーがドローした手札を確認して考え中…');
+    setNarrator(iconImg('brain', 'img-icon-inline') + '相手プレイヤーがドローした手札を確認して考え中…');
     await sleep(900);
 
     // 2. 走破できる馬がいない時だけ、獣医師で回収してから走破を狙う（馬を出す前に必要な唯一のアイテム）
@@ -1988,6 +2058,7 @@
   }
 
   function showGuardPopup(runValue, horseCard) {
+    hideToast();
     var popup = $('guard-popup');
     var slot = $('guard-horse-slot');
     if (slot) {
@@ -2016,8 +2087,8 @@
     }
     var breakdownHtml = '';
     if (breakdownParts.length > 1 || cpuRunBonus > 0) {
-      breakdownHtml = '<div style="margin-top:8px;margin-bottom:8px;font-size:12.5px;padding:6px 12px;background:#e2e8f0;border-radius:8px;border:1px solid #cbd5e1;color:#0f172a;font-weight:600;">' +
-        '内訳: ' + breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b style="color:#0284c7;font-size:14.5px;font-weight:900;">' + runValue + '</b>' +
+      breakdownHtml = '<div class="popup-breakdown">' +
+        '内訳: ' + breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b class="popup-highlight-value">' + runValue + '</b>' +
         '</div>';
     }
 
@@ -2031,9 +2102,9 @@
 
     if (canGuard) {
       descEl.innerHTML =
-        '相手の走破を手札の馬カードでガードしますか？<br>' +
-        '<span style="font-size:12px;color:#475569;font-weight:600;">（相手の走破数以上のガード値で守ると、相手の走破馬をファーム送りにできます）</span><br>' +
-        '<div style="margin-top:4px;">相手の実効走破値: <b style="color:#0f172a;font-size:16px;font-weight:900;">' + runValue + '</b></div>' +
+        '<div class="popup-lead">相手の走破を手札の馬カードでガードしますか？</div>' +
+        '<div class="popup-subtext">（相手の走破数以上のガード値で守ると、相手の走破馬をファーム送りにできます）</div>' +
+        '<div class="popup-stat-row">相手の実効走破値: <b class="popup-highlight-value">' + runValue + '</b></div>' +
         breakdownHtml;
       btnsEl.innerHTML =
         '<button class="btn-guard" id="guard-yes">ガードする</button>' +
@@ -2042,7 +2113,7 @@
       $('guard-yes').addEventListener('click', function () {
         popup.style.display = 'none';
         phase = 'guard_select';
-        setNarrator('🛡️ <b>ガードする馬カード</b>を選んでタップしてください。<br><span style="color:#0284c7;font-size:12px;font-weight:800;">（カードの上に表示されている 🛡️ガード値 が相手のドローを減らす数値です）</span>');
+        setNarrator(iconImg('shield', 'img-icon-inline') + '<b>ガードする馬カード</b>を選んでタップしてください。<br><span class="banner-tap-hint narrator-tap-hint">（カードの上に表示されている ' + iconImg('shield', 'img-icon-inline') + 'ガード値 が相手のドローを減らす数値です）</span>');
         renderAll();
       });
       $('guard-no').addEventListener('click', function () {
@@ -2053,9 +2124,9 @@
       });
     } else {
       descEl.innerHTML =
-        '<div style="margin-top:4px;">相手の実効走破値: <b style="color:#0f172a;font-size:16px;font-weight:900;">' + runValue + '</b></div>' +
+        '<div class="popup-stat-row">相手の実効走破値: <b class="popup-highlight-value">' + runValue + '</b></div>' +
         breakdownHtml +
-        '<span style="font-size:12px;color:#475569;font-weight:600;">（手札にガード可能な馬カードがありません）</span>';
+        '<div class="popup-subtext">（手札にガード可能な馬カードがありません）</div>';
       btnsEl.innerHTML =
         '<button class="btn-guard" id="guard-ok">OK（相手がドロー）</button>';
 
@@ -2090,7 +2161,7 @@
         phase = 'idle';
         renderAll();
         var guardText = '自分がガード！ ' + card.name + ' / ガード ' + guardVal;
-        setNarrator('🛡️ ガード値 <b>' + guardVal + '</b> でガード！ 相手のドローが ' + guardVal + ' 減少します。');
+        setNarrator(iconImg('shield', 'img-icon-inline') + 'ガード値 <b>' + guardVal + '</b> でガード！ 相手のドローが ' + guardVal + ' 減少します。');
         showBanner(guardText, 2800, card).then(function () {
           executeCpuDraw(cpuRunValue - guardVal);
         });
@@ -2102,7 +2173,7 @@
     var actualDraw = Math.max(0, drawCount);
     if (actualDraw <= 0) {
       var horseName = cpuHorseCard ? cpuHorseCard.name : '馬';
-      setNarrator('🛡️ ガード値 <b>' + guardValue + '</b> で相手の走破（走破値 <b>' + cpuRunValue + '</b>）を完全に防いだ！ 相手の「<b>' + horseName + '</b>」はファームへ送られます。');
+      setNarrator(iconImg('shield', 'img-icon-inline') + 'ガード値 <b>' + guardValue + '</b> で相手の走破（走破値 <b>' + cpuRunValue + '</b>）を完全に防いだ！ 相手の「<b>' + horseName + '</b>」はファームへ送られます。');
       showOpponentBubble('防がれたか…！');
       var pHorse = Promise.resolve();
       if (cpuHorseCard) {
@@ -2228,8 +2299,8 @@
           // 走破成功時：走破した馬は相手フィールドに残る（ファームへ送らない）
           var horseName = cpuHorseCard ? cpuHorseCard.name : '馬';
           var endMsg = needDiscard > 0
-            ? ('🧠 相手のターン終了！ 手札を ' + needDiscard + '枚 捨てました（相手の残り手札: ' + cpuHand.length + '枚）。走破した「<b>' + horseName + '</b>」はフィールドに残ります。あなたの番です。')
-            : ('🧠 相手のターン終了！ 走破した「<b>' + horseName + '</b>」はフィールドに残ります。あなたの番です。');
+            ? (iconImg('brain', 'img-icon-inline') + '相手のターン終了！ 手札を ' + needDiscard + '枚 捨てました（相手の残り手札: ' + cpuHand.length + '枚）。走破した「<b>' + horseName + '</b>」はフィールドに残ります。あなたの番です。')
+            : (iconImg('brain', 'img-icon-inline') + '相手のターン終了！ 走破した「<b>' + horseName + '</b>」はフィールドに残ります。あなたの番です。');
           setNarrator(endMsg);
           if (needDiscard > 0) {
             showToast('相手が手札を' + needDiscard + '枚捨てました', 'info', 2200);
@@ -2246,21 +2317,23 @@
 
   /* ===================== 走破実行（相手ガード付き） ===================== */
   function executeRun() {
+    if (!selectedHorse && field) selectedHorse = field;
     if (!selectedHorse || isCpuTurn) return;
     var totalRun = effectiveRun(selectedHorse, runBonus);
     var horseInPlay = selectedHorse;
     var modifierText = runModifiers(selectedHorse).map(function (mod) { return mod.label; }).join(' / ') || '適性補正なし';
 
-    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。<br><span style="color:#0284c7;font-size:12px;font-weight:800;">（画面をタップ／クリックして次へ進む）</span>');
+    setNarrator('<b>' + horseInPlay.name + '</b> で走破！ 基礎走破 ' + horseInPlay.run + '、' + modifierText + (runBonus ? '、アイテム +' + runBonus : '') + ' → 実効走破 <b>' + totalRun + '</b>。<br><span class="banner-tap-hint narrator-tap-hint">画面をタップ／クリックして次へ進む</span>');
 
     /* STEP 3: 相手が考える → STEP 4: 走破成功/失敗の結果表示 */
     function afterField() {
-      if (interactionMode === 'freeplay' && !isCpuTurn) {
+      if (!isCpuTurn) {
+        hideToast();
         var thinkingPopup = $('opponent-thinking-popup');
         if (thinkingPopup) {
           var titleEl = thinkingPopup.querySelector('.popup-title');
           var descEl = thinkingPopup.querySelector('.popup-desc');
-          if (titleEl) titleEl.textContent = '🛡️ ガード確認';
+          if (titleEl) titleEl.innerHTML = iconImg('shield', 'img-icon-inline') + 'ガード確認';
           if (descEl) descEl.innerHTML = '相手プレイヤーがガードをするか考えています…';
           thinkingPopup.style.display = 'flex';
         }
@@ -2287,9 +2360,9 @@
             if (thinkingPopup) {
               var titleEl = thinkingPopup.querySelector('.popup-title');
               var descEl = thinkingPopup.querySelector('.popup-desc');
-              if (titleEl) titleEl.textContent = '🛡️ ガード確認';
+              if (titleEl) titleEl.innerHTML = iconImg('shield', 'img-icon-inline') + 'ガード確認';
               if (descEl) {
-                descEl.innerHTML = '<b style="color:#0f172a;font-size:15px;display:block;margin-bottom:6px;">相手プレイヤーはガードを選択しませんでした</b><span style="font-size:12px;color:#0284c7;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.3);padding:3px 14px;border-radius:999px;font-weight:700;display:inline-block;">画面をタップ／クリックして次へ進む</span>';
+                descEl.innerHTML = '<b class="popup-highlight-title">相手プレイヤーはガードを選択しませんでした</b><span class="banner-tap-hint">画面をタップ／クリックして次へ進む</span>';
               }
               thinkingPopup.style.display = 'flex';
               noticePromise = new Promise(function (resolve) {
@@ -2311,7 +2384,7 @@
             return noticePromise.then(function () {
               if (totalRun <= 0) {
                 return showBanner('走破失敗').then(function () {
-                  setNarrator('❌ 実効走破値 ' + totalRun + ' はガード値 0 を上回れず、走破失敗。');
+                  setNarrator(iconImg('cross', 'img-icon-inline') + '実効走破値 ' + totalRun + ' はガード値 0 を上回れず、走破失敗。');
                   return sendHorseToFarmAndReset();
                 });
               }
@@ -2345,11 +2418,11 @@
               var guardText = '相手がガード！ ' + guardHorse.name + ' / ガード ' + guardVal;
               return showBanner(guardText, 3000, guardHorse).then(function () {
                 if (totalRun <= guardVal) {
-                  setNarrator('❌ 走破失敗。相手のガード値 <b>' + guardVal + '</b> により防がれました。実効走破 <b>' + totalRun + '</b> では突破できず、走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
+                  setNarrator(iconImg('cross', 'img-icon-inline') + '走破失敗。相手のガード値 <b>' + guardVal + '</b> により防がれました。実効走破 <b>' + totalRun + '</b> では突破できず、走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
                   return sendHorseToFarmAndReset();
                 } else {
                   var runDistance = totalRun - guardVal;
-                  setNarrator('🛡️ 実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。ガードを突破しました！');
+                  setNarrator(iconImg('shield', 'img-icon-inline') + '実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。ガードを突破しました！');
                   return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
                 }
               });
@@ -2406,7 +2479,7 @@
           if (need > 0) {
             // 2. 走破後には、走破数ー１枚のカードを捨ててくださいのポップアップ
             return showNoticePopup(
-              '🗑️ 手札を捨てる',
+              iconImg('trash', 'img-icon-inline') + '手札を捨てる',
               '走破数−1枚（<b>' + need + '枚</b>）のカードを捨ててください。',
               'カードを選ぶ'
             ).then(function () {
@@ -2495,7 +2568,7 @@
     }
 
     function proceedToRunSequence() {
-      if (interactionMode === 'freeplay' && !isCpuTurn && runSupportCards().length > 0) {
+      if (!isCpuTurn && runSupportCards().length > 0) {
         pendingAfterField = function () {
           totalRun = effectiveRun(horseInPlay, runBonus);
           afterField();
@@ -2510,7 +2583,7 @@
     var horseDetailText = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(horseInPlay) : '';
     CardCloseup.show(horseInPlay, {
       label: '走破カード確認',
-      toast: horseDetailText + '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;text-shadow:none !important;">画面をタップ／クリックして次へ進む</span></div>'
+      toast: horseDetailText + '<div class="closeup-tap-wrap"><span class="banner-tap-hint">画面をタップ／クリックして次へ進む</span></div>'
     }).then(function () {
       proceedToRunSequence();
     });
@@ -2522,7 +2595,7 @@
   function applyItemEffect(card) {
     var isFreeplay = (interactionMode === 'freeplay');
     var itemDetail = CardCloseup.formatCardDetail ? CardCloseup.formatCardDetail(card) : (card.name || '');
-    var toastHtml = itemDetail + (isFreeplay ? '<div style="margin-top:10px;text-align:center;"><span style="display:inline-block;padding:4px 14px;background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.35);border-radius:999px;font-size:12.5px;color:#0f172a;font-weight:800;letter-spacing:0.03em;text-shadow:none !important;">画面をタップ／クリックして次へ進む</span></div>' : '');
+    var toastHtml = itemDetail + (isFreeplay ? '<div class="closeup-tap-wrap"><span class="banner-tap-hint">画面をタップ／クリックして次へ進む</span></div>' : '');
     CardCloseup.show(card, {
       label: (card.type === 'jockey' ? '騎手' : 'アイテム') + '発動！',
       toast: toastHtml,
@@ -2592,195 +2665,18 @@
     var card = hand.filter(function (c) { return c.id === id; })[0];
     if (!card) return;
     var el = cardElById(id);
-    if (!el || el.style.pointerEvents === 'none') return;
     Haptics.select();
 
-    if (phase === 'guard_select') {
-      if (card.type === 'horse') {
-        selectGuard(card);
-      } else {
-        shakeCard(id);
-        setNarrator('🛡️ ガードには<b>馬カード</b>を選んでください。（フォースカードやアイテムではガードできません）');
-      }
-      return;
-    }
+    // チュートリアル中等の waitSelect モード処理（interactionModeが明示的に 'select-force' / 'select-horse' / 'select-any' の場合）
+    if (interactionMode && interactionMode !== 'freeplay' && interactionMode !== 'draw') {
+      if (interactionMode === 'select-force' && card.type !== 'force') { shakeCard(id); return; }
+      if (interactionMode === 'select-horse' && card.type !== 'horse') { shakeCard(id); return; }
 
-    if (interactionMode === 'freeplay' && !isCpuTurn) {
-      if (phase === 'discard_select') {
-        el.style.pointerEvents = 'none';
-        el.classList.add('selected');
-        var farmRectD = $('zone-farm').getBoundingClientRect();
-        flyGhost(el, farmRectD).then(function () {
-          hand = hand.filter(function (c) { return c.id !== id; });
-          farm.push(card);
-          renderAll();
-          selectionCount++;
-          var remaining = selectionNeeded - selectionCount;
-          if (remaining > 0) {
-            setNarrator('走破数−1枚（計 <b>' + selectionNeeded + '枚</b>）を捨てます。ファームに送るカードを選んでください。（残り <b>' + remaining + '枚</b>）');
-          } else {
-            phase = 'idle';
-            var fn = pendingFinishRun;
-            pendingFinishRun = null;
-            if (fn) fn();
-          }
-        });
-        return;
-      }
+      var toField2 = (interactionMode === 'select-horse');
+      var destId2 = toField2 ? 'zone-field' : 'zone-farm';
+      var destEl2 = $(destId2);
+      var destRect2 = destEl2 ? destEl2.getBoundingClientRect() : null;
 
-      if (phase === 'select_horse') {
-        if (card.type !== 'horse') { shakeCard(id); return; }
-        var cost = card.cost || 2;
-        var forces = hand.filter(function (c) { return c.type === 'force'; });
-        if (forces.length < cost) {
-          showToast('フォースカードが不足しています（必要: ' + cost + '枚）');
-          setNarrator('⚠️ コストとなる<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
-          Haptics.warn();
-          shakeCard(id);
-          return;
-        }
-
-        selectedHorse = card;
-        selectedForces = [];
-
-        var oldFieldHorse = field;
-        var farmRect = $('zone-farm').getBoundingClientRect();
-        var fieldRect = $('zone-field').getBoundingClientRect();
-
-        // もしすでに場に馬がいた場合、前の馬をファームへ送る演出
-        if (oldFieldHorse) {
-          var oldFieldEl = document.querySelector('#field-body .field-mini');
-          if (oldFieldEl) flyGhost(oldFieldEl, farmRect, 0.8);
-          farm.push(oldFieldHorse);
-        }
-
-        // 馬カードを手札からフィールドへ即座に移動・アニメーション
-        el.style.pointerEvents = 'none';
-        el.classList.add('selected');
-        flyGhost(el, fieldRect).then(function () {
-          hand = hand.filter(function (c) { return c.id !== card.id; });
-          field = card;
-          fieldGuard = null;
-          phase = 'select_force';
-          renderAll();
-          Haptics.place();
-          if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
-          var horseName = card.name || '馬カード';
-          var swapNote = oldFieldHorse ? ('（場にいた「<b>' + oldFieldHorse.name + '</b>」をファームに送りました）<br>') : '';
-          setNarrator(swapNote + '<b>' + horseName + '</b>をフィールドに出しました！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
-          showToast('【' + horseName + '】を出しました！ フォースカードを' + cost + '枚選んでください');
-        });
-        return;
-      }
-
-      if (phase === 'select_force') {
-        if (card.type !== 'force') { shakeCard(id); return; }
-        if (selectedForces.some(function (c) { return c.id === card.id; })) return;
-        selectedForces.push(card);
-        el.style.pointerEvents = 'none';
-        el.classList.add('selected');
-        var cost = selectedHorse ? (selectedHorse.cost || 2) : 2;
-
-        var farmRect = $('zone-farm').getBoundingClientRect();
-        flyGhost(el, farmRect).then(function () {
-          hand = hand.filter(function (c) { return c.id !== card.id; });
-          farm.push(card);
-          renderAll();
-          Haptics.place();
-          if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
-
-          if (selectedForces.length >= cost) {
-            // コスト支払い完了！
-            showToast('コスト支払い完了！ 走破を開始します');
-            executeRun();
-          } else {
-            var remaining = cost - selectedForces.length;
-            var horseName = (selectedHorse && selectedHorse.name) ? selectedHorse.name : '馬カード';
-            setNarrator('<b>' + horseName + '</b>のコスト分のフォースカードを捨ててください。（残り ' + remaining + ' 枚）');
-            showToast('あと ' + remaining + ' 枚フォースカードを選んでください');
-            updateCommandButtons();
-          }
-        });
-        return;
-      }
-
-      if (phase === 'select_item') {
-        if (card.type !== 'item' && card.type !== 'jockey') { shakeCard(id); return; }
-        if ((prevPhase === 'support_choice' || prevPhase === 'field_support') &&
-          card.effectType !== 'run_bonus' && card.effectType !== 'run_penalty' && card.effectType !== 'elite_jockey') {
-          shakeCard(id); return;
-        }
-        hand = hand.filter(function (c) { return c.id !== card.id; });
-        farm.push(card);
-        applyItemEffect(card);
-        phase = prevPhase;
-        selectedHorse = prevSelectedHorse;
-        selectedForces = prevSelectedForces.slice();
-        renderAll();
-        if (phase === 'support_choice' || phase === 'field_support') {
-          if (runSupportCards().length > 0) {
-            offerRunSupport();
-          } else if (pendingAfterField) {
-            var fnPost = pendingAfterField;
-            pendingAfterField = null;
-            fnPost();
-          }
-        } else if (phase === 'select_force') {
-          var need = (selectedHorse ? selectedHorse.cost || 2 : 2) - selectedForces.length;
-          if (need > 0) setNarrator('あと ' + need + ' 枚のフォースを選んでください。');
-          else executeRun();
-        } else if (phase === 'idle') {
-          setNarrator($('narrator-text').innerHTML + '<br>続けてどうぞ。');
-        }
-        return;
-      }
-
-      if (phase === 'select_item_idle') {
-        var isEligibleIdle = card.type === 'item' &&
-          card.effectType !== 'run_bonus' && card.effectType !== 'run_penalty';
-        if (!isEligibleIdle) { shakeCard(id); return; }
-        hand = hand.filter(function (c) { return c.id !== card.id; });
-        farm.push(card);
-        applyItemEffect(card);
-        phase = 'idle';
-        renderAll();
-        return;
-      }
-
-      if (phase === 'select_situation') {
-        if (card.type !== 'situation') { shakeCard(id); return; }
-        activateSituationCard(card);
-        return;
-      }
-
-      if (phase === 'idle') {
-        if (card.type === 'situation') {
-          activateSituationCard(card);
-          return;
-        }
-        CardCloseup.show(card, { label: 'カード詳細' });
-        return;
-      }
-      return;
-    }
-
-    if (card.type === 'situation' && (!interactionMode || interactionMode === 'freeplay')) {
-      activateSituationCard(card);
-      return;
-    }
-
-    if (!interactionMode || interactionMode === 'draw') return;
-    if (interactionMode === 'select-force' && card.type !== 'force') { shakeCard(id); return; }
-    if (interactionMode === 'select-horse' && card.type !== 'horse') { shakeCard(id); return; }
-
-    el.style.pointerEvents = 'none';
-    el.classList.add('selected');
-
-    var toField2 = (interactionMode === 'select-horse');
-    var destId2 = toField2 ? 'zone-field' : 'zone-farm';
-    var destRect2 = $(destId2).getBoundingClientRect();
-
-    flyGhost(el, destRect2).then(function () {
       hand = hand.filter(function (c) { return c.id !== id; });
       if (toField2) {
         if (field) farm.push(field);
@@ -2788,18 +2684,219 @@
       } else {
         farm.push(card);
       }
-      renderAll();
+      selectionCount++;
 
+      if (el && destRect2) {
+        el.style.pointerEvents = 'none';
+        el.classList.add('selected');
+        flyGhost(el, destRect2);
+      }
+
+      renderAll();
       Haptics.place();
 
-      selectionCount++;
       if (selectionCount >= selectionNeeded) {
         var resolve = actionResolve;
         interactionMode = null;
         actionResolve = null;
         setTimeout(function () { if (resolve) resolve(); }, 150);
       }
-    });
+      return;
+    }
+
+    if (interactionMode === 'draw') return;
+
+    if (phase === 'guard_select') {
+      if (card.type === 'horse') {
+        selectGuard(card);
+      } else {
+        shakeCard(id);
+        setNarrator(iconImg('shield', 'img-icon-inline') + 'ガードには<b>馬カード</b>を選んでください。（フォースカードやアイテムではガードできません）');
+      }
+      return;
+    }
+
+    if (isCpuTurn) return;
+
+    // --- プレイヤー通常操作フェーズ（phase基準で確実に判定） ---
+    if (phase === 'discard_select') {
+      var farmElD = $('zone-farm');
+      var farmRectD = farmElD ? farmElD.getBoundingClientRect() : null;
+      if (el && farmRectD) {
+        el.style.pointerEvents = 'none';
+        el.classList.add('selected');
+        flyGhost(el, farmRectD);
+      }
+      hand = hand.filter(function (c) { return c.id !== id; });
+      farm.push(card);
+      renderAll();
+      selectionCount++;
+      var remaining = selectionNeeded - selectionCount;
+      if (remaining > 0) {
+        setNarrator('走破数−1枚（計 <b>' + selectionNeeded + '枚</b>）を捨てます。ファームに送るカードを選んでください。（残り <b>' + remaining + '枚</b>）');
+      } else {
+        phase = 'idle';
+        var fn = pendingFinishRun;
+        pendingFinishRun = null;
+        if (fn) fn();
+      }
+      return;
+    }
+
+    if (phase === 'select_horse') {
+      if (card.type !== 'horse') { shakeCard(id); return; }
+      var cost = card.cost || 2;
+      var forces = hand.filter(function (c) { return c.type === 'force'; });
+      if (forces.length < cost) {
+        showToast('フォースカードが不足しています（必要: ' + cost + '枚）');
+        setNarrator(iconImg('warning', 'img-icon-inline') + 'コストとなる<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
+        Haptics.warn();
+        shakeCard(id);
+        return;
+      }
+
+      selectedHorse = card;
+      selectedForces = [];
+
+      var oldFieldHorse = field;
+      var farmElH = $('zone-farm');
+      var fieldElH = $('zone-field');
+      var farmRect = farmElH ? farmElH.getBoundingClientRect() : null;
+      var fieldRect = fieldElH ? fieldElH.getBoundingClientRect() : null;
+
+      // もしすでに場に馬がいた場合、前の馬をファームへ送る
+      if (oldFieldHorse) {
+        var oldFieldEl = document.querySelector('#field-body .field-mini');
+        if (oldFieldEl && farmRect) flyGhost(oldFieldEl, farmRect, 0.8);
+        farm.push(oldFieldHorse);
+      }
+
+      // 馬カードを手札からフィールドへ即座に移動
+      hand = hand.filter(function (c) { return c.id !== card.id; });
+      field = card;
+      fieldGuard = null;
+      phase = 'select_force';
+
+      if (el && fieldRect) {
+        el.style.pointerEvents = 'none';
+        el.classList.add('selected');
+        flyGhost(el, fieldRect);
+      }
+
+      renderAll();
+      Haptics.place();
+      if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+      var horseName = card.name || '馬カード';
+      var swapNote = oldFieldHorse ? ('（場にいた「<b>' + oldFieldHorse.name + '</b>」をファームに送りました）<br>') : '';
+      setNarrator(swapNote + '<b>' + horseName + '</b>をフィールドに出しました！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
+      showToast('【' + horseName + '】を出しました！ フォースカードを' + cost + '枚選んでください');
+      return;
+    }
+
+    if (phase === 'select_force') {
+      if (card.type !== 'force') {
+        shakeCard(id);
+        showToast('フォースカードを選んでください');
+        return;
+      }
+      if (selectedForces.some(function (c) { return c.id === card.id; })) return;
+
+      var currentRunHorse = selectedHorse || field;
+      var cost = currentRunHorse ? (currentRunHorse.cost || 2) : 2;
+
+      selectedForces.push(card);
+      // 手札から同期的に即座に除外して、素早い連続タップによる競合や2重処理を完全に防ぐ
+      hand = hand.filter(function (c) { return c.id !== card.id; });
+      farm.push(card);
+
+      var farmElF = $('zone-farm');
+      var farmRectF = farmElF ? farmElF.getBoundingClientRect() : null;
+      if (el && farmRectF) {
+        el.style.pointerEvents = 'none';
+        el.classList.add('selected');
+        flyGhost(el, farmRectF);
+      }
+
+      renderAll();
+      Haptics.place();
+      if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+
+      if (selectedForces.length >= cost) {
+        // コスト支払い完了：まずトーストをしっかり表示し、消去完了後に走破ポップアップ（サポート確認等）へ進む
+        phase = 'cost_paid';
+        updateCommandButtons();
+        showToast('コスト支払い完了！ 走破を開始します', 1400);
+        sleep(1400).then(function () {
+          hideToast();
+          executeRun();
+        });
+      } else {
+        var remaining = cost - selectedForces.length;
+        var horseName = (currentRunHorse && currentRunHorse.name) ? currentRunHorse.name : '馬カード';
+        setNarrator('<b>' + horseName + '</b>のコスト分のフォースカードを捨ててください。（残り <b>' + remaining + '</b> 枚）');
+        showToast('あと ' + remaining + ' 枚フォースカードを選んでください');
+        updateCommandButtons();
+      }
+      return;
+    }
+
+    if (phase === 'select_item') {
+      if (card.type !== 'item' && card.type !== 'jockey') { shakeCard(id); return; }
+      if ((prevPhase === 'support_choice' || prevPhase === 'field_support') &&
+        card.effectType !== 'run_bonus' && card.effectType !== 'run_penalty' && card.effectType !== 'elite_jockey') {
+        shakeCard(id); return;
+      }
+      hand = hand.filter(function (c) { return c.id !== card.id; });
+      farm.push(card);
+      applyItemEffect(card);
+      phase = prevPhase;
+      selectedHorse = prevSelectedHorse;
+      selectedForces = prevSelectedForces.slice();
+      renderAll();
+      if (phase === 'support_choice' || phase === 'field_support') {
+        if (runSupportCards().length > 0) {
+          offerRunSupport();
+        } else if (pendingAfterField) {
+          var fnPost = pendingAfterField;
+          pendingAfterField = null;
+          fnPost();
+        }
+      } else if (phase === 'select_force') {
+        var need = (selectedHorse ? selectedHorse.cost || 2 : 2) - selectedForces.length;
+        if (need > 0) setNarrator('あと ' + need + ' 枚のフォースを選んでください。');
+        else executeRun();
+      } else if (phase === 'idle') {
+        setNarrator($('narrator-text').innerHTML + '<br>続けてどうぞ。');
+      }
+      return;
+    }
+
+    if (phase === 'select_item_idle') {
+      var isEligibleIdle = card.type === 'item' &&
+        card.effectType !== 'run_bonus' && card.effectType !== 'run_penalty';
+      if (!isEligibleIdle) { shakeCard(id); return; }
+      hand = hand.filter(function (c) { return c.id !== card.id; });
+      farm.push(card);
+      applyItemEffect(card);
+      phase = 'idle';
+      renderAll();
+      return;
+    }
+
+    if (phase === 'select_situation') {
+      if (card.type !== 'situation') { shakeCard(id); return; }
+      activateSituationCard(card);
+      return;
+    }
+
+    if (phase === 'idle') {
+      if (card.type === 'situation') {
+        activateSituationCard(card);
+        return;
+      }
+      CardCloseup.show(card, { label: 'カード詳細' });
+      return;
+    }
   }
 
   function onDeckClick() {
@@ -2866,12 +2963,12 @@
     var overlay = $('victory-overlay');
     if (!overlay) return;
     overlay.classList.toggle('lose', !youWin);
-    $('victory-icon').textContent = youWin ? '🏆' : '💔';
+    $('victory-icon').innerHTML = youWin ? iconImg('crown', 'img-icon-lg') : iconImg('defeat', 'img-icon-lg');
     $('victory-title').textContent = youWin ? 'VICTORY' : 'DEFEAT';
     $('victory-subtitle').textContent = youWin ? 'あなたの勝ち' : '相手の勝ち';
     $('victory-message').textContent = youWin ?
-      '4つの距離エリアを先に引ききった！ レースを制したのはあなただ！' :
-      '相手が先に4つの距離エリアを引ききった…また挑戦しよう。';
+      '山札が0枚になった！ 先に山札を引ききったあなたの勝利！' :
+      '相手の山札が先に0枚になった…また挑戦しよう。';
     // 紙吹雪（勝利時のみ）
     var confettiWrap = $('victory-confetti');
     confettiWrap.innerHTML = '';
@@ -2893,18 +2990,24 @@
   $('victory-restart').addEventListener('click', function () { location.reload(); });
 
   function checkVictory() {
-    if (victoryShown) return;
-    var playerDone = totalDeck() <= 0;
-    var cpuDone = cpuTotalDeck() <= 0;
-    if (playerDone || cpuDone) {
+    if (victoryShown || !gameReady) return;
+    var playerDeckCount = totalDeck();
+    var cpuDeckCount = cpuTotalDeck();
+    if (playerDeckCount <= 0) {
       victoryShown = true;
-      showVictoryScreen(playerDone); // 自分の山札を先に引ききったら自分の勝ち
+      showVictoryScreen(true);
+      return;
+    }
+    if (cpuDeckCount <= 0) {
+      victoryShown = true;
+      showVictoryScreen(false);
+      return;
     }
   }
 
   /* ===================== 状況カードの使用可能ヒント ===================== */
   // アイテムカードは「使いますか？」の自動ポップアップを廃止し、プレイヤーが
-  // 自分の意志でコマンドメニューの🧪アイテムから使うかどうかを判断する形にした
+  // 自分の意志でコマンドメニューのアイテムから使うかどうかを判断する形にした
   function checkHintsAvailable() {
     return checkSituationAvailableHint();
   }
@@ -2920,6 +3023,7 @@
   }
 
   function showSituationHintPopup() {
+    hideToast();
     var popup = $('situation-hint-popup');
     if (!popup) return;
     popup.style.display = 'flex';
@@ -2940,7 +3044,7 @@
     });
   }
 
-  // プレイヤーが自分の意志でアイテムカードを使う（コマンドメニューの🧪アイテムから呼ばれる）
+  // プレイヤーが自分の意志でアイテムカードを使う（コマンドメニューのアイテムから呼ばれる）
   function cmdItemIdle() {
     if (isCpuTurn || phase !== 'idle' || canDraw) return;
     var hasItem = hand.some(function (c) {
@@ -3104,8 +3208,8 @@
 
   /* ===================== 初期カード配布演出 ===================== */
   async function dealInitialCards(isManual, runId) {
-    var laneCountPerZone = isManual ? 8 : 10;
-    var totalCards = (laneCountPerZone * 4) + 3 + 7; // manual: 32+3+7 = 42枚, tutorial: 40+3+7 = 50枚
+    var laneCountPerZone = 8;
+    var totalCards = 40; // 40枚デッキ（山札各8枚:32枚 + ファーム1枚 + 手札7枚）
     // 画面中央にデッキスタックを生成
     var centerEl = document.createElement('div');
     centerEl.className = 'deal-center-deck';
@@ -3170,9 +3274,9 @@
     await sleep(300);
     if (runId && runId !== tutorialRunId) { centerEl.remove(); return; }
 
-    // ① 4つの距離エリア（各7枚/各10枚）へ配る
+    // ① 4つの距離エリア（各8枚）へ配る
     if (!isManual) {
-      setNarrator('50枚のデッキから、まずは<b>各10枚（計40枚）</b>を4つの距離エリア（山札）に配るよ。');
+      setNarrator('40枚のデッキから、まずは<b>各8枚（計32枚）</b>を4つの距離エリア（山札）に配るよ。');
     }
     var laneKeys = ['nige', 'senko', 'sashi', 'oikomi'];
     for (var li = 0; li < laneKeys.length; li++) {
@@ -3183,7 +3287,7 @@
       var laneRect = laneEl ? laneEl.getBoundingClientRect() : $('lanes').getBoundingClientRect();
 
       // 各レーンへテンポよくカードが飛ぶ
-      for (var step = 0; step < (isManual ? 2 : 3); step++) {
+      for (var step = 0; step < 2; step++) {
         flyDealGhost(laneRect, isManual ? 140 : 180);
         await sleep(isManual ? 40 : 80);
       }
@@ -3201,13 +3305,13 @@
     await sleep(isManual ? 180 : 350);
     if (runId && runId !== tutorialRunId) { centerEl.remove(); return; }
 
-    // ② 残り10枚のうち3枚をファームへ配る
+    // ② 残り8枚のうち1枚をファームへ配る
     if (!isManual) {
-      setNarrator('残り10枚のうち、<b>3枚はファーム</b>に置かれるよ。');
+      setNarrator('残り8枚のうち、<b>1枚はファーム</b>に置かれるよ。');
     }
     var farmZone = $('zone-farm');
     var farmRect = farmZone.getBoundingClientRect();
-    var starterFarm = [kutsuwa(), kutsuwa(), kutsuwa()];
+    var starterFarm = [kutsuwa()];
     for (var fi = 0; fi < starterFarm.length; fi++) {
       if (runId && runId !== tutorialRunId) { centerEl.remove(); return; }
       await flyDealGhost(farmRect, 220);
@@ -3323,8 +3427,10 @@
     $('narrator').style.display = '';
 
     // 初期状態をクリア
+    gameReady = false;
+    victoryShown = false;
     LANES.forEach(function (l) { l.count = 0; });
-    CPU_LANES.forEach(function (l) { l.count = 10; }); // 相手は最初から自分の山札を持っている
+    CPU_LANES.forEach(function (l) { l.count = 8; }); // 相手は最初から自分の山札（各8枚）を持っている
     farm = [];
     oppFarm = [];
     hand = [];
@@ -3345,17 +3451,18 @@
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
-    setNarrator('今回はチュートリアルなので本番よりも10枚少ないカードでプレイするよ。まずは対戦の準備をしよう。');
+    setNarrator('40枚のカードデッキを使って対戦するよ。まずは対戦の準備をしよう！');
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 0: 50枚デッキからの初期カード配布
+    // STEP 0: 40枚デッキからの初期カード配布
     setProgress(1);
     showNextButton(false);
     await dealInitialCards(false, myRunId);
     if (myRunId !== tutorialRunId) return;
-    setNarrator('手札（7枚）・ファーム（3枚）・山札（各10枚）が揃ったね！ それぞれのカードの役割を見ていこう。');
+    gameReady = true;
+    setNarrator('手札（7枚）・ファーム（1枚）・山札（各8枚）が揃ったね！ それぞれのカードの役割を見ていこう。');
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
@@ -3401,7 +3508,7 @@
 
     // STEP 4: ファーム
     setProgress(5);
-    await explainStep($('zone-farm'), 'zone-farm', 'ここが<b>ファーム</b>だ。開始時に置かれた3枚や、使い終わったカードを置く場所だよ。');
+    await explainStep($('zone-farm'), 'zone-farm', 'ここが<b>ファーム</b>だ。使い終わったカードを置く場所だよ。');
     if (myRunId !== tutorialRunId) return;
 
     // STEP 5: 相手のファーム
@@ -3411,7 +3518,7 @@
 
     // STEP 6: 距離エリア(山札) / 勝利条件（メッセージを2つに分割）
     setProgress(7);
-    await explainStep($('zone-deck'), 'zone-deck', 'ここが<b>距離エリア（山札）</b>だ。山札は「逃げ」「先行」「差し」「追込」の4つのエリアに各10枚ずつ配られているよ。');
+    await explainStep($('zone-deck'), 'zone-deck', 'ここが<b>距離エリア（山札）</b>だ。山札は「逃げ」「先行」「差し」「追込」の4つのエリアに各8枚ずつ配られているよ。');
     if (myRunId !== tutorialRunId) return;
 
     setNarrator('<b>逃げから順番に</b>引いていき、先行、差し、追込と4つの山札を<b>先にすべて引ききったプレイヤーの勝ち</b>だよ！');
@@ -3567,6 +3674,8 @@
     showCommandBar(false); // 配布中はコマンドバーを一旦隠す
 
     // 盤面を一旦初期化（カードを空にしてから配り始める）
+    gameReady = false;
+    victoryShown = false;
     LANES.forEach(function (l) { l.count = 0; });
     CPU_LANES.forEach(function (l) { l.count = 8; });
     farm = [];
@@ -3595,9 +3704,10 @@
     renderRaceInfo();
     renderAll();
 
-    // 50枚デッキ配布演出を実行（テンポよく山札・ファーム・手札へ配布）
+    // 40枚デッキ配布演出を実行（テンポよく山札・ファーム・手札へ配布）
     await dealInitialCards(true, myRunId);
     if (myRunId !== tutorialRunId) return;
+    gameReady = true;
 
     // 配布完了後に手動プレイ開始
     $('zone-deck').classList.add('tappable');
@@ -3625,15 +3735,20 @@
 
   /* ===================== BGM（音源ファイル再生 / シームレスループ / トラック選択） ===================== */
   var BGM_TRACKS = {
+    'system_overdrive': { name: 'System Overdrive 2', src: 'System_Overdrive-2.mp3?v=1' },
     'banners_opt': { name: 'Banners in the Gale (Opt 2分オーケストラArr.)', src: 'audio/bgm_banners_gale_opt.wav?v=4' },
     'banners': { name: 'Banners in the Gale (疾風の旗手 / Arranged Loop)', src: 'audio/bgm_banners_gale.wav?v=3' },
     'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' }
   };
 
-  var currentBgmTrackKey = 'banners_opt';
+  var currentBgmTrackKey = 'system_overdrive';
   try {
     var savedTrack = localStorage.getItem('foth_bgm_track');
-    if (savedTrack && BGM_TRACKS[savedTrack]) currentBgmTrackKey = savedTrack;
+    if (savedTrack && BGM_TRACKS[savedTrack]) {
+      currentBgmTrackKey = savedTrack;
+    } else {
+      currentBgmTrackKey = 'system_overdrive';
+    }
   } catch (e) { }
 
   var BGM = (function () {
@@ -3664,7 +3779,7 @@
     function loadBuffer(trackKey) {
       trackKey = trackKey || currentBgmTrackKey;
       if (buffers[trackKey]) return Promise.resolve(buffers[trackKey]);
-      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['banners_opt'];
+      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['system_overdrive'];
       var ctx = getAudioContext();
       if (!ctx) return Promise.resolve(null);
       return fetch(trackInfo.src)
@@ -3715,7 +3830,7 @@
     }
 
     function startFallback(trackKey) {
-      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['banners_opt'];
+      var trackInfo = BGM_TRACKS[trackKey] || BGM_TRACKS['system_overdrive'];
       if (fallbackAudio) {
         fallbackAudio.pause();
         fallbackAudio = null;
@@ -3774,7 +3889,9 @@
   function updateBgmButton() {
     var btn = $('bgm-toggle');
     if (!btn) return;
-    btn.textContent = bgmEnabled ? '🔊 BGM (ON)' : '🔇 BGM (OFF)';
+    btn.innerHTML = bgmEnabled
+      ? (iconImg('sound-on', 'img-icon-inline') + 'BGM (ON)')
+      : (iconImg('sound-off', 'img-icon-inline') + 'BGM (OFF)');
     btn.classList.toggle('is-off', !bgmEnabled);
   }
   updateBgmButton();
@@ -3855,8 +3972,8 @@
       var targetId = handTouchTapId;
       handTouchTapId = null;
 
-      // 350ms以内の指離し＆指の移動が14px以内なら確実なシングルタップとして即座に実行
-      if (dx < 14 && dy < 14 && dt < 350 && !suppressNextHandClick) {
+      // 短時間の指離し（300ms以内）かつ指の移動が14px以内で、長押し拡大が発動していない場合のみシングルタップとして実行
+      if (dx < 14 && dy < 14 && dt < 320 && !suppressNextHandClick) {
         lastHandCardTapTime = Date.now();
         onHandCardClick(targetId);
       }
@@ -3884,24 +4001,26 @@
     var pressTimer = null;
     var pressedTarget = null;
     var touchStartX = 0, touchStartY = 0;
-    var LONG_PRESS_MS = 480;
+    var LONG_PRESS_MS = 320; // スマホでの快適な長押し判定時間（約0.32秒）
 
     function getCardFromEvent(target) {
       if (!target || !target.closest) return null;
       // 1. 手札カード
-      var handCardEl = target.closest('#hand-row .card');
+      var handCardEl = target.closest('#hand-row .card, .hand-fan-container .card, #zone-hand .card');
       if (handCardEl) {
-        // 走破（馬・フォース選択時）や手札選択中は、長押し詳細よりも1タップでのカード選択操作を最優先する
-        if (interactionMode || phase === 'select_horse' || phase === 'select_force' || phase === 'discard_select') {
-          return null;
-        }
         var hCard = hand.find(function (c) { return c.id === handCardEl.dataset.id; });
         return hCard ? { card: hCard, label: '手札カード詳細' } : null;
       }
       // 2. 対戦フィールドの馬カード
-      var fieldEl = target.closest('#zone-field');
+      var fieldEl = target.closest('#zone-field, #field-body');
       if (fieldEl && field) {
         return { card: field, label: '対戦フィールド' };
+      }
+      // 2-2. 相手フィールドの馬／ガード馬カード
+      var oppFieldEl = target.closest('#field-body-opp, #zone-opponent .field-body-opp, #zone-opponent');
+      if (oppFieldEl) {
+        var oppCard = fieldGuard || cpuHorseCard;
+        if (oppCard) return { card: oppCard, label: fieldGuard ? '相手ガード馬' : '相手フィールドの馬' };
       }
       // 3. 自分のファームのカード
       var farmEl = target.closest('#zone-farm');
@@ -3913,10 +4032,32 @@
       if (oppFarmEl && oppFarm.length > 0) {
         return { card: oppFarm[oppFarm.length - 1], label: '相手のファーム（最新カード）' };
       }
-      // 4. 状況カード（フィールド背景）
-      var sitEl = target.closest('#field-situation-bg, #zone-situation');
+      // 4. 状況カード（確認ボタンまたは枠全体）
+      var sitEl = target.closest('#zone-situation, .field-situation-box, .field-situation-check-btn');
       if (sitEl && situation) {
         return { card: situation, label: '状況カード' };
+      }
+      // 5. モーダル内カード（ファーム確認、手札確認）
+      var modalItemEl = target.closest('.farm-card-item');
+      if (modalItemEl && modalItemEl.dataset.id) {
+        var cardId = modalItemEl.dataset.id;
+        var foundM = hand.find(function (c) { return c.id === cardId; }) ||
+                     farm.find(function (c) { return c.id === cardId; }) ||
+                     oppFarm.find(function (c) { return c.id === cardId; });
+        if (foundM) return { card: foundM, label: 'カード詳細' };
+      }
+      // 6. 一般の .card 要素（データ属性 data-id を持つもの）
+      var genCardEl = target.closest('.card');
+      if (genCardEl && genCardEl.dataset.id) {
+        var gId = genCardEl.dataset.id;
+        var foundG = hand.find(function (c) { return c.id === gId; }) ||
+                     (field && field.id === gId ? field : null) ||
+                     (fieldGuard && fieldGuard.id === gId ? fieldGuard : null) ||
+                     (cpuHorseCard && cpuHorseCard.id === gId ? cpuHorseCard : null) ||
+                     (situation && situation.id === gId ? situation : null) ||
+                     farm.find(function (c) { return c.id === gId; }) ||
+                     oppFarm.find(function (c) { return c.id === gId; });
+        if (foundG) return { card: foundG, label: 'カード詳細' };
       }
       return null;
     }
@@ -3940,6 +4081,7 @@
 
     // --- スマホ用：長押し（touchstart / touchend / touchmove） ---
     function onTouchStart(e) {
+      if (e.touches && e.touches.length !== 1) return;
       var touch = e.touches ? e.touches[0] : null;
       if (!touch) return;
       var info = getCardFromEvent(e.target);
@@ -3952,9 +4094,9 @@
       if (pressTimer) clearTimeout(pressTimer);
       pressTimer = setTimeout(function () {
         if (pressedTarget && pressedTarget.card) {
-          Haptics.tap();
-          CardCloseup.show(pressedTarget.card, { label: pressedTarget.label });
           suppressNextHandClick = true;
+          try { Haptics.tap(); } catch (err) {}
+          CardCloseup.show(pressedTarget.card, { label: pressedTarget.label });
         }
         pressTimer = null;
       }, LONG_PRESS_MS);
@@ -3966,7 +4108,7 @@
       if (!touch) return;
       var dx = Math.abs(touch.clientX - touchStartX);
       var dy = Math.abs(touch.clientY - touchStartY);
-      if (dx > 10 || dy > 10) {
+      if (dx > 12 || dy > 12) {
         clearTimeout(pressTimer);
         pressTimer = null;
         pressedTarget = null;
@@ -4043,21 +4185,41 @@
 
   var handPrevBtn = $('hand-prev');
   var handNextBtn = $('hand-next');
+  var handRowEl = $('hand-row');
   if (handPrevBtn) {
     handPrevBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       Haptics.tap();
-      var row = $('hand-row');
-      if (row) row.scrollBy({ left: -140, behavior: 'smooth' });
+      if (handRowEl) {
+        handRowEl.scrollBy({ left: -180, behavior: 'smooth' });
+        setTimeout(updateHandNavState, 220);
+      }
     });
   }
   if (handNextBtn) {
     handNextBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       Haptics.tap();
-      var row = $('hand-row');
-      if (row) row.scrollBy({ left: 140, behavior: 'smooth' });
+      if (handRowEl) {
+        handRowEl.scrollBy({ left: 180, behavior: 'smooth' });
+        setTimeout(updateHandNavState, 220);
+      }
     });
+  }
+  if (handRowEl) {
+    handRowEl.addEventListener('scroll', function () {
+      updateHandNavState();
+    }, { passive: true });
+    handRowEl.addEventListener('wheel', function (e) {
+      if (hand.length >= 8 || window.innerWidth < 860) {
+        var delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+        if (delta !== 0) {
+          e.preventDefault();
+          handRowEl.scrollLeft += delta;
+          updateHandNavState();
+        }
+      }
+    }, { passive: false });
   }
 
   $('cmd-fab').addEventListener('click', function (e) {
@@ -4076,6 +4238,7 @@
     if (cmd === 'run') cmdRun();
     else if (cmd === 'situation') cmdSituation();
     else if (cmd === 'item') cmdItemIdle();
+    else if (cmd === 'hand') cmdHand();
     else if (cmd === 'end') cmdEndTurn();
     $('cmd-menu').classList.remove('open');
     updateFabDisplay();
@@ -4100,7 +4263,7 @@
         var forces = hand.filter(function (c) { return c.type === 'force'; });
         if (forces.length < cost) {
           showToast('フォースカードが不足しています（必要: ' + cost + '枚）');
-          setNarrator('⚠️ 【' + field.name + '】の再走破に必要な<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
+          setNarrator(iconImg('warning', 'img-icon-inline') + '【' + field.name + '】の再走破に必要な<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
           Haptics.warn();
           return;
         }
@@ -4133,10 +4296,10 @@
         '<div class="farm-viewer-panel">' +
         '  <div class="farm-viewer-head">' +
         '    <div class="farm-viewer-title-wrap">' +
-        '      <span class="farm-viewer-icon" id="farm-viewer-icon">🌱</span>' +
+        '      <span class="farm-viewer-icon" id="farm-viewer-icon">' + iconImg('sprout') + '</span>' +
         '      <div class="farm-viewer-title" id="farm-viewer-title">ファーム一覧</div>' +
         '    </div>' +
-        '    <button class="farm-viewer-close" id="farm-viewer-close" type="button" aria-label="閉じる">✕</button>' +
+        '    <button class="farm-viewer-close" id="farm-viewer-close" type="button" aria-label="閉じる">' + iconImg('close') + '</button>' +
         '  </div>' +
         '  <div class="farm-viewer-stats" id="farm-viewer-stats"></div>' +
         '  <div class="farm-viewer-body" id="farm-viewer-cards"></div>' +
@@ -4181,7 +4344,7 @@
       var statsEl = modal.querySelector('#farm-viewer-stats');
       var cardsEl = modal.querySelector('#farm-viewer-cards');
 
-      if (iconEl) iconEl.textContent = isPlayer ? '🌱' : '🌾';
+      if (iconEl) iconEl.innerHTML = isPlayer ? iconImg('sprout') : iconImg('farm');
       if (titleEl) titleEl.textContent = (isPlayer ? '自分のファーム' : '相手のファーム') + '（全 ' + cardList.length + ' 枚）';
 
       // 種類別カウントのサマリーバッジ
@@ -4215,7 +4378,7 @@
           if (card.img) {
             artHtml = '<div class="fv-card-thumb has-img" style="background-image:url(' + card.img + ');"></div>';
           } else {
-            artHtml = '<div class="fv-card-thumb">' + (card.icon || '🃏') + '</div>';
+            artHtml = '<div class="fv-card-thumb">' + (card.icon || iconImg('card')) + '</div>';
           }
 
           var statHtml = '';
@@ -4244,6 +4407,146 @@
             e.stopPropagation();
             try { Haptics.tap(); } catch (err) {}
             CardCloseup.show(card, { label: (isPlayer ? '自分のファーム' : '相手のファーム') + ' #' + orderNum });
+          });
+
+          cardsEl.appendChild(itemEl);
+        });
+      }
+
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      try { Haptics.tap(); } catch (err) {}
+    }
+
+    return {
+      open: open
+    };
+  })();
+
+  /* ===================== 手札カード一覧モーダル ===================== */
+  var HandViewer = (function () {
+    var overlayEl = null;
+
+    function getOrCreateModal() {
+      if (overlayEl) return overlayEl;
+      overlayEl = document.createElement('div');
+      overlayEl.id = 'hand-viewer-modal';
+      overlayEl.className = 'farm-viewer-overlay';
+      overlayEl.setAttribute('role', 'dialog');
+      overlayEl.setAttribute('aria-modal', 'true');
+      overlayEl.setAttribute('aria-hidden', 'true');
+      overlayEl.innerHTML =
+        '<div class="farm-viewer-panel">' +
+        '  <div class="farm-viewer-head">' +
+        '    <div class="farm-viewer-title-wrap">' +
+        '      <span class="farm-viewer-icon" id="hand-viewer-icon">' + iconImg('card') + '</span>' +
+        '      <div class="farm-viewer-title" id="hand-viewer-title">自分の手札</div>' +
+        '    </div>' +
+        '    <button class="farm-viewer-close" id="hand-viewer-close" type="button" aria-label="閉じる">' + iconImg('close') + '</button>' +
+        '  </div>' +
+        '  <div class="farm-viewer-stats" id="hand-viewer-stats"></div>' +
+        '  <div class="farm-viewer-body" id="hand-viewer-cards"></div>' +
+        '  <div class="farm-viewer-foot">' +
+        '    <div class="farm-viewer-hint">※ カードをタップすると詳細を確認できます</div>' +
+        '    <button class="farm-viewer-btn" id="hand-viewer-ok-btn" type="button">閉じる</button>' +
+        '  </div>' +
+        '</div>';
+
+      document.body.appendChild(overlayEl);
+
+      function closeModal() {
+        overlayEl.classList.remove('show');
+        overlayEl.setAttribute('aria-hidden', 'true');
+      }
+
+      overlayEl.addEventListener('click', function (e) {
+        if (e.target === overlayEl) closeModal();
+      });
+
+      var closeBtn = overlayEl.querySelector('#hand-viewer-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+      var okBtn = overlayEl.querySelector('#hand-viewer-ok-btn');
+      if (okBtn) okBtn.addEventListener('click', closeModal);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlayEl.classList.contains('show')) {
+          closeModal();
+        }
+      });
+
+      return overlayEl;
+    }
+
+    function open() {
+      var cardList = hand.slice();
+      var modal = getOrCreateModal();
+      var iconEl = modal.querySelector('#hand-viewer-icon');
+      var titleEl = modal.querySelector('#hand-viewer-title');
+      var statsEl = modal.querySelector('#hand-viewer-stats');
+      var cardsEl = modal.querySelector('#hand-viewer-cards');
+
+      if (iconEl) iconEl.innerHTML = iconImg('card');
+      if (titleEl) titleEl.textContent = '自分の手札（全 ' + cardList.length + ' 枚）';
+
+      // 種類別カウントのサマリーバッジ
+      var horseCount = cardList.filter(function (c) { return c.type === 'horse'; }).length;
+      var forceCount = cardList.filter(function (c) { return c.type === 'force'; }).length;
+      var itemCount = cardList.filter(function (c) { return c.type === 'item' || c.type === 'jockey'; }).length;
+      var sitCount = cardList.filter(function (c) { return c.type === 'situation'; }).length;
+
+      var statsHtml =
+        '<span class="fv-stat-chip type-horse">馬 ' + horseCount + '</span>' +
+        '<span class="fv-stat-chip type-force">フォース ' + forceCount + '</span>' +
+        '<span class="fv-stat-chip type-item">アイテム ' + itemCount + '</span>' +
+        (sitCount > 0 ? '<span class="fv-stat-chip type-situation">状況 ' + sitCount + '</span>' : '');
+      if (statsEl) statsEl.innerHTML = statsHtml;
+
+      // カード一覧の描画
+      if (!cardList.length) {
+        cardsEl.innerHTML = '<div class="farm-viewer-empty">現在手札にカードはありません</div>';
+      } else {
+        cardsEl.innerHTML = '';
+        cardList.forEach(function (card, index) {
+          var itemEl = document.createElement('div');
+          itemEl.className = 'farm-viewer-card-item type-' + card.type;
+          itemEl.setAttribute('role', 'button');
+          itemEl.setAttribute('tabindex', '0');
+          itemEl.title = card.name + '（タップして詳細表示）';
+
+          var artHtml = '';
+          if (card.img) {
+            artHtml = '<div class="fv-card-thumb has-img" style="background-image:url(' + card.img + ');"></div>';
+          } else {
+            artHtml = '<div class="fv-card-thumb">' + (card.icon || iconImg('card')) + '</div>';
+          }
+
+          var statHtml = '';
+          if (card.type === 'horse') {
+            statHtml = '<div class="fv-card-stat"><span class="fv-stat-cost">コスト ' + (card.cost || 2) + '</span><span class="fv-stat-run">走破数 ' + (card.run || 0) + '</span><span class="fv-stat-guard">ガード ' + (card.guard || 0) + '</span></div>';
+          } else if (card.type === 'item' || card.type === 'jockey') {
+            statHtml = '<div class="fv-card-stat fv-stat-text">' + (card.stat || '効果あり') + '</div>';
+          } else if (card.type === 'force') {
+            statHtml = '<div class="fv-card-stat fv-stat-text">走破コスト用</div>';
+          } else if (card.type === 'situation') {
+            statHtml = '<div class="fv-card-stat fv-stat-text">' + (card.stat || '状況効果') + '</div>';
+          }
+
+          var orderNum = index + 1;
+          itemEl.innerHTML =
+            artHtml +
+            '<div class="fv-card-info">' +
+            '  <div class="fv-card-name-row">' +
+            '    <span class="fv-card-order">#' + orderNum + '</span>' +
+            '    <span class="fv-card-name">' + (card.name || 'カード') + '</span>' +
+            '  </div>' +
+            statHtml +
+            '</div>';
+
+          itemEl.addEventListener('click', function (e) {
+            e.stopPropagation();
+            try { Haptics.tap(); } catch (err) {}
+            CardCloseup.show(card, { label: '手札カード詳細 #' + orderNum });
           });
 
           cardsEl.appendChild(itemEl);
@@ -4372,7 +4675,7 @@
     var legacyChips = document.querySelectorAll('#tilt-select .tilt-opt[data-angle]');
 
     function computeDefaultZoom() {
-      return 114;
+      return (typeof window !== 'undefined' && window.innerWidth < 860) ? 100 : 114;
     }
     var userAdjustedZoom = false;
     var userAdjustedDepth = false;
@@ -4650,9 +4953,12 @@
     var opts = switchWrap.querySelectorAll('.theme-opt');
 
     function applyTheme(theme) {
-      document.body.classList.remove('field-cyber', 'field-white', 'field-nature', 'theme-cyber');
+      document.body.classList.remove('field-cyber', 'field-white', 'field-nature', 'theme-cyber', 'field-racetrack');
 
-      if (theme === 'nature' || theme === 'classic') {
+      if (theme === 'racetrack') {
+        document.body.classList.add('field-racetrack');
+        document.body.dataset.theme = 'racetrack';
+      } else if (theme === 'nature' || theme === 'classic') {
         document.body.classList.add('field-nature');
         document.body.dataset.theme = 'nature';
       } else if (theme === 'cyber') {
@@ -4749,16 +5055,14 @@
     var el = $('field-image-wrap');
     if (!el) return { pulseTo: function () { }, focusRect: function () { }, reset: function () { }, setBaseScale: function () { }, isBusy: function () { return false; } };
     var isMobile = function () { return typeof window !== 'undefined' && window.innerWidth < 860; };
-    var baseScale = 1.14;
+    var baseScale = isMobile() ? 1.0 : 1.14;
     function getMinScale() {
       // 最小倍率を1.0（100%）に固定
       return 1.0;
     }
     var MAX_SCALE = 2.6;
     var state = { scale: baseScale, tx: 0, ty: 0 };
-    var gesture = null; // {startDist, startMid, startScale, startTx, startTy}
-    var lastTapTime = 0;
-    var busy = false; // true while a scripted camera animation (pulse/focus) is running
+    var busy = false; // true while a scripted camera animation is running
 
     function apply(withTransition) {
       el.style.transition = withTransition ? 'transform .22s ease' : 'none';
@@ -4777,107 +5081,19 @@
       state.tx = Math.max(-maxPanX, Math.min(maxPanX, state.tx));
       state.ty = Math.max(-maxPanY, Math.min(maxPanY, state.ty));
     }
-    function dist(t0, t1) {
-      var dx = t0.clientX - t1.clientX, dy = t0.clientY - t1.clientY;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-    function mid(t0, t1) {
-      return { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
-    }
     function reset(withTransition) {
       state.scale = baseScale; state.tx = 0; state.ty = 0;
       apply(withTransition !== false);
     }
-    // compute tx/ty so that a given viewport rect's center becomes the
-    // center of the field-image-wrap's own box, then scale around that point
-    function rectToCenterOffset(rect, scale) {
-      var wrapRect = el.getBoundingClientRect();
-      var wrapCenterX = wrapRect.left + wrapRect.width / 2;
-      var wrapCenterY = wrapRect.top + wrapRect.height / 2;
-      var rectCenterX = rect.left + rect.width / 2;
-      var rectCenterY = rect.top + rect.height / 2;
-      // undo current transform to work in untransformed coordinate space
-      var localX = (rectCenterX - wrapCenterX) / state.scale;
-      var localY = (rectCenterY - wrapCenterY) / state.scale;
-      return { tx: -localX * scale, ty: -localY * scale };
-    }
-    // pulseTo: 無効化（カード着地時のズームイン演出を削除）
+    // pulseTo / focusRect: カード着地時やカード連打・ダブルタップ時の自動ズームインは
+    // スマホでの画面巨大化・見切れバグを引き起こすため完全に無効化
     function pulseTo(rect, opts) { /* no-op */ }
-    // zoom in on a rect and stay there (used for double-tap focus); tap again to reset
-    function focusRect(rect, scale) {
-      if (!rect) return;
-      var off = rectToCenterOffset(rect, scale || 1.8);
-      state.scale = scale || 1.8; state.tx = off.tx; state.ty = off.ty;
-      clamp();
-      apply(true);
-    }
+    function focusRect(rect, scale) { /* no-op */ }
 
     el.style.transformOrigin = '50% 100%';
-    el.style.touchAction = 'pan-y';
+    el.style.touchAction = 'manipulation';
 
-    el.addEventListener('touchstart', function (e) {
-      if (busy) return;
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        gesture = {
-          startDist: dist(e.touches[0], e.touches[1]),
-          startMid: mid(e.touches[0], e.touches[1]),
-          startScale: state.scale,
-          startTx: state.tx,
-          startTy: state.ty
-        };
-      }
-    }, { passive: false });
-
-    el.addEventListener('touchmove', function (e) {
-      if (busy) return;
-      if (e.touches.length === 2 && gesture) {
-        e.preventDefault();
-        var d = dist(e.touches[0], e.touches[1]);
-        var m = mid(e.touches[0], e.touches[1]);
-        var ratio = d / gesture.startDist;
-        var minScale = getMinScale();
-        // スマホでは縮小(1.0未満)を完全に禁止
-        state.scale = Math.max(minScale, Math.min(MAX_SCALE, gesture.startScale * ratio));
-        state.tx = gesture.startTx + (m.x - gesture.startMid.x);
-        state.ty = gesture.startTy + (m.y - gesture.startMid.y);
-        clamp();
-        apply(false);
-      }
-    }, { passive: false });
-
-    function endGesture(e) {
-      if (e.touches.length < 2) {
-        gesture = null;
-        var minScale = getMinScale();
-        if (!busy && state.scale <= minScale + 0.05) { reset(); }
-      }
-    }
-    el.addEventListener('touchend', function (e) {
-      if (busy) return;
-      endGesture(e);
-      if (e.touches.length === 0) {
-        var now = Date.now();
-        if (now - lastTapTime < 320) {
-          // double-tap: if tapped on a card-like element, focus on it;
-          // otherwise reset to the default overview.
-          var target = e.changedTouches && e.changedTouches[0]
-            ? document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
-            : null;
-          var cardish = target && target.closest('.lane-stack, .field-mini, .farm-mini, .mini-card, .deck-card');
-          if (cardish && Math.abs(state.scale - baseScale) < 0.05) {
-            focusRect(cardish.getBoundingClientRect(), 1.8);
-          } else {
-            reset();
-          }
-        }
-        lastTapTime = now;
-      }
-    }, { passive: true });
-    el.addEventListener('touchcancel', endGesture, { passive: true });
-
-    // externally-driven base zoom (e.g. the settings panel slider); replaces
-    // the current scale/pan outright, same as a pinch gesture landing there
+    // 設定画面のスライダー（CAMERA ZOOM）からのみ倍率変更を許可
     function setBaseScale(scale) {
       var minScale = getMinScale();
       scale = Math.max(minScale, Math.min(MAX_SCALE, scale));
@@ -4914,22 +5130,37 @@
     function formatCardDetail(card) {
       if (!card) return '';
       if (card.type === 'horse') {
-        var parts = [];
-        parts.push('<b style="color:var(--gold-2);font-size:14.5px;">' + card.name + '</b>' + (card.en ? ' <span style="font-size:11px;color:var(--rail-dim)">(' + card.en + ')</span>' : ''));
-        parts.push('<div style="margin:4px 0;padding:3px 8px;background:rgba(2,132,199,0.18);border:1px solid rgba(0,229,255,0.4);border-radius:6px;display:inline-block;">コスト: <b>' + (card.cost || 2) + '</b> ｜ 走破数: <b>' + card.run + '</b> ｜ <span style="color:#38bdf8;font-weight:700;">🛡️ ガード値:</span> <b style="color:#00f0ff;font-size:16px;">' + (card.guard || 0) + '</b></div>');
-        if (card.style) parts.push('脚質: <b>' + card.style + '</b> | 距離: <b>' + (card.dist || '') + '</b>');
-        if (card.fav) parts.push('得意: <b>' + card.fav + '</b>');
-        return parts.join('<br>');
+        var html = '<div class="closeup-name-row"><span class="closeup-card-name">' + card.name + '</span>' +
+          (card.en ? ' <span class="closeup-card-en">' + card.en + '</span>' : '') + '</div>';
+        html += '<div class="closeup-stats-box">' +
+          '<span class="closeup-stat-chip"><span class="chip-k">コスト</span> <b class="chip-v cost-v">' + (card.cost || 2) + '</b></span>' +
+          '<span class="closeup-stat-chip"><span class="chip-k">走破数</span> <b class="chip-v run-v">' + card.run + '</b></span>' +
+          '<span class="closeup-stat-chip"><span class="chip-k">' + iconImg('shield', 'img-icon-inline') + 'ガード値</span> <b class="chip-v guard-v">' + (card.guard || 0) + '</b></span>' +
+          '</div>';
+        var traits = [];
+        if (card.style) traits.push('脚質: <b>' + card.style + '</b>');
+        if (card.dist) traits.push('適正距離: <b>' + card.dist + '</b>');
+        if (card.fav) traits.push('得意: <b>' + card.fav + '</b>');
+        if (traits.length) {
+          html += '<div class="closeup-trait-row">' + traits.join(' ｜ ') + '</div>';
+        }
+        return html;
       }
       if (card.type === 'force') {
-        return '<b style="color:var(--gold-2);font-size:14px;">フォースカード</b><br>馬カードを走破させるときのコストとして使用する基本カード。';
+        return '<div class="closeup-name-row"><span class="closeup-card-name">フォースカード</span></div>' +
+          '<div class="closeup-effect-text">馬カードを走破させるときのコストとして使用する基本カード。</div>';
       }
       if (card.type === 'item' || card.type === 'jockey') {
         var supportLabel = card.type === 'jockey' ? '騎手' : 'アイテム';
-        return '<b style="color:var(--gold-2);font-size:14px;">' + card.name + '</b>（' + supportLabel + '）<br>効果: <b>' + (card.stat || '') + '</b><br><span style="font-size:11px;color:var(--rail-dim)">走破のタイミングで使用可能</span>';
+        return '<div class="closeup-name-row"><span class="closeup-card-name">' + card.name + '</span>' +
+          '<span class="closeup-type-badge">' + supportLabel + '</span></div>' +
+          '<div class="closeup-effect-text">' + (card.stat || '') + '</div>' +
+          '<div class="closeup-timing-hint">走破宣言のタイミングで使用可能</div>';
       }
       if (card.type === 'situation') {
-        return '<b style="color:var(--gold-2);font-size:14px;">' + card.name + '</b>（状況カード）<br>効果: <b>' + (card.stat || '') + '</b>';
+        return '<div class="closeup-name-row"><span class="closeup-card-name">' + card.name + '</span>' +
+          '<span class="closeup-type-badge type-situation">状況カード</span></div>' +
+          '<div class="closeup-effect-text">' + (card.stat || '') + '</div>';
       }
       return card.name || '';
     }
@@ -4954,7 +5185,7 @@
         var actBtn = document.createElement('button');
         actBtn.className = 'closeup-action-btn btn-guard';
         actBtn.style.cssText = 'margin-top:14px;padding:9px 24px;font-size:13.5px;font-weight:700;border-radius:8px;cursor:pointer;pointer-events:auto;box-shadow:0 4px 12px rgba(227,178,60,0.4);border:1.5px solid var(--gold);';
-        actBtn.innerHTML = '☀️ この状況カードを発動する';
+        actBtn.innerHTML = iconImg('sun', 'img-icon-inline') + 'この状況カードを発動する';
         actBtn.addEventListener('click', function (e) {
           e.stopPropagation();
           hide();
@@ -5006,16 +5237,7 @@
     return { show: show, hide: hide, formatCardDetail: formatCardDetail };
   })();
 
-  var sitBgEl = $('field-situation-bg');
-  if (sitBgEl) {
-    sitBgEl.addEventListener('click', function (e) {
-      if (situation) {
-        e.stopPropagation();
-        Haptics.tap();
-        CardCloseup.show(situation, { label: '状況カード' });
-      }
-    });
-  }
+
 
   /* ===================== フィールド背景の放射状サイバー飛沫・スピードストリーム ===================== */
   var FieldSplash = (function () {
@@ -5247,10 +5469,14 @@
   window._showBanner = showBanner;
   window._goldShip = goldShip;
   window._showToast = showToast;
+  window._hideToast = hideToast;
   window._showGuardPopup = showGuardPopup;
   window._doDeuce = doDeuce;
   window._silkMobius = silkMobius;
   window._seiunSky = seiunSky;
+  window._sonnig = sonnig;
+  window._HandViewer = HandViewer;
+  window._FarmViewer = FarmViewer;
   window._getHand = function () { return hand; };
   window._setHand = function (h) { hand = h; };
   window._situationCard = situationCard;

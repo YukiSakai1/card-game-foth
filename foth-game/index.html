@@ -981,7 +981,7 @@
                 <div class="top-actions">
                     <!-- BGM Toggle Button -->
                     <button class="sound-toggle-btn" id="btnSoundToggle" title="BGM 切替">
-                        <span id="soundIcon">🔊</span>
+                        <span id="soundIcon"><img src="images/icon-sound-on.svg" alt="" class="img-icon" style="width:18px;height:18px;"></span>
                     </button>
 
                     <!-- Rule Confirmation Button -->
@@ -1014,7 +1014,7 @@
                 <p class="catchphrase">実名馬レースバトルカードゲーム</p>
                 <div class="footer-official-row">
                     <a href="https://force-of-the-horse.com/" target="_blank" rel="noopener noreferrer" class="official-site-link" title="公式サイトへ (新しいタブで開く)">
-                        <span class="link-icon">🌐</span>
+                        <span class="link-icon"><img src="images/icon-search.svg" alt="" class="img-icon" style="width:16px;height:16px;"></span>
                         <span>公式サイト：force-of-the-horse.com</span>
                         <svg class="external-icon" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zm-9 4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-5h-2v5H5V9h5V7H5z"/></svg>
                     </a>
@@ -1059,7 +1059,7 @@
 
     <!-- Audio Player for Game BGM -->
     <audio id="bgmAudio" loop preload="auto">
-        <source src="audio/bgm_banners_gale_opt.wav?v=4" type="audio/wav">
+        <source src="System_Overdrive-2.mp3?v=1" type="audio/mpeg">
     </audio>
 
     <script>
@@ -1070,8 +1070,10 @@
             const bgm = document.getElementById('bgmAudio');
             const btnSoundToggle = document.getElementById('btnSoundToggle');
             const soundIcon = document.getElementById('soundIcon');
+            const ICON_ON = '<img src="images/icon-sound-on.svg" alt="" class="img-icon" style="width:18px;height:18px;">';
+            const ICON_OFF = '<img src="images/icon-sound-off.svg" alt="" class="img-icon" style="width:18px;height:18px;">';
             let isMuted = false;
-            soundIcon.textContent = '🔊';
+            soundIcon.innerHTML = ICON_ON;
 
             // BGM toggle
             btnSoundToggle.addEventListener('click', () => {
@@ -1079,14 +1081,14 @@
                     bgm.volume = 0.5;
                     bgm.play().then(() => {
                         isMuted = false;
-                        soundIcon.textContent = '🔊';
+                        soundIcon.innerHTML = ICON_ON;
                     }).catch(err => {
                         console.log('Audio autoplay prevented:', err);
                     });
                 } else {
                     bgm.pause();
                     isMuted = true;
-                    soundIcon.textContent = '🔇';
+                    soundIcon.innerHTML = ICON_OFF;
                 }
             });
 
@@ -1124,7 +1126,7 @@
                     bgm.volume = 0.5;
                     bgm.play().then(() => {
                         isMuted = false;
-                        soundIcon.textContent = '🔊';
+                        soundIcon.innerHTML = ICON_ON;
                     }).catch(err => {
                         console.log('Audio autoplay prevented:', err);
                     });

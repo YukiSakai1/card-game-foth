@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+  <defs>
+    <linearGradient id="farmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+  </defs>
+  <path d="M12 22V8" stroke="#ca8a04" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="9.5" cy="7.5" rx="2.5" ry="3.5" transform="rotate(-30 9.5 7.5)" fill="url(#farmGrad)"/>
+  <ellipse cx="14.5" cy="7.5" rx="2.5" ry="3.5" transform="rotate(30 14.5 7.5)" fill="url(#farmGrad)"/>
+  <ellipse cx="8.5" cy="13" rx="2.5" ry="3.5" transform="rotate(-40 8.5 13)" fill="url(#farmGrad)"/>
+  <ellipse cx="15.5" cy="13" rx="2.5" ry="3.5" transform="rotate(40 15.5 13)" fill="url(#farmGrad)"/>
+  <ellipse cx="12" cy="4" rx="2" ry="3" fill="url(#farmGrad)"/>
+</svg>

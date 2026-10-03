@@ -27,6 +27,30 @@
     touch-action: manipulation;
   }
 
+  .img-icon {
+    display: inline-block;
+    vertical-align: -0.18em;
+    width: 1.15em;
+    height: 1.15em;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  .img-icon-lg {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: -0.22em;
+  }
+
+  .img-icon-inline {
+    margin-right: 5px;
+  }
+
+  .img-icon-standalone {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
   html,
   body {
     height: 100%;
@@ -1230,11 +1254,12 @@
   }
 
   /* ---------- 状況カード背景（field-image-wrapの背景として設置） ---------- */
+  /* ---------- 状況カード背景（field-image-wrapの背景として設置） ---------- */
   .field-situation-bg {
     position: absolute;
     inset: 0;
     z-index: 1;
-    pointer-events: auto;
+    pointer-events: none; /* 背景全体は操作をブロックしない */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1262,20 +1287,9 @@
     border: 2px solid rgba(125, 211, 252, 0.85);
     filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.72));
     overflow: hidden;
-    cursor: pointer;
-    pointer-events: auto; /* クリックや長押しで詳細確認可能 */
-    touch-action: manipulation;
+    pointer-events: none; /* 背景カード本体はタップ無効化 */
+    user-select: none;
     transition: opacity .25s ease, transform .25s ease, filter .25s ease;
-  }
-
-  .field-situation-card:hover {
-    opacity: 1.0;
-    transform: scale(1.02);
-    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.85)) brightness(1.15);
-  }
-
-  .field-situation-card:active {
-    transform: scale(0.98);
   }
 
   .field-situation-card .card-shine {
@@ -1285,22 +1299,48 @@
     pointer-events: none;
   }
 
-  .field-situation-badge {
+  /* 状況カード確認ボタン（このボタンでのみ確認可能） */
+  .field-situation-check-btn {
     position: absolute;
-    bottom: 8px;
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(10, 16, 26, 0.84);
-    border: 1px solid rgba(246, 210, 122, 0.65);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, rgba(16, 28, 48, 0.94) 0%, rgba(30, 58, 95, 0.94) 100%);
+    border: 1.5px solid rgba(251, 226, 136, 0.85);
     color: var(--gold-light, #fbe288);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    padding: 3px 10px;
+    padding: 6px 14px;
     border-radius: 999px;
     letter-spacing: .04em;
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 12px rgba(251, 191, 36, 0.3);
+    cursor: pointer;
+    pointer-events: auto; /* ボタンのみタップ有効 */
+    touch-action: manipulation;
+    font-family: inherit;
+    transition: transform .15s ease, background .2s ease, box-shadow .2s ease, border-color .2s ease, color .2s ease;
+  }
+
+  .field-situation-check-btn:hover {
+    background: linear-gradient(135deg, rgba(24, 42, 72, 0.98) 0%, rgba(45, 85, 140, 0.98) 100%);
+    border-color: #ffd859;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7), 0 0 18px rgba(251, 191, 36, 0.55);
+    transform: translateX(-50%) scale(1.04);
+  }
+
+  .field-situation-check-btn:active {
+    transform: translateX(-50%) scale(0.96);
+  }
+
+  .field-situation-check-btn .check-btn-icon {
+    font-size: 12px;
+    line-height: 1;
   }
 
   body.field-3d .field-image-wrap {
@@ -1996,26 +2036,39 @@
     filter: brightness(1.2);
   }
 
-  /* 「タップで再走破」フローティングバッジ */
+  /* 「タップで再走破」フローティングバッジ（カード中央に美しく収まり枠外見切れを防止） */
   .field-reuse-badge {
     position: absolute;
-    top: -14px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    z-index: 30;
-    background: linear-gradient(135deg, #0284c7 0%, #034f75 100%);
+    transform: translate(-50%, -50%);
+    z-index: 35;
+    background: linear-gradient(180deg, rgba(14, 23, 42, 0.96) 0%, rgba(6, 11, 22, 0.98) 100%);
     color: #ffffff;
-    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    padding: 3px 9px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    padding: 5px 12px;
     border-radius: 999px;
-    border: 1.5px solid #00f0ff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 14px rgba(0, 240, 255, 0.75);
+    border: 1.5px solid #ffd859;
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.85),
+      0 0 16px rgba(251, 191, 36, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
     white-space: nowrap;
     pointer-events: none;
-    animation: reuseBadgePulse 1.3s ease-in-out infinite alternate;
+    animation: reuseBadgePulse 1.4s ease-in-out infinite alternate;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  }
+
+  .field-reuse-badge .img-icon-inline {
+    width: 13px;
+    height: 13px;
+    filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7));
   }
 
   @keyframes fieldHorsePulse {
@@ -2029,10 +2082,12 @@
 
   @keyframes reuseBadgePulse {
     0% {
-      transform: translateX(-50%) scale(1);
+      transform: translate(-50%, -50%) scale(0.96);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), 0 0 12px rgba(251, 191, 36, 0.45);
     }
     100% {
-      transform: translateX(-50%) scale(1.08);
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.9), 0 0 20px rgba(251, 191, 36, 0.85);
     }
   }
 
@@ -2246,32 +2301,49 @@
 
   .hand-nav-btn {
     display: none;
-    /* デスクトップでは手札の矢印を非表示 */
     position: absolute;
-    top: calc(50% + 8px);
+    top: calc(50% + 4px);
     transform: translateY(-50%);
-    z-index: 300;
-    width: 32px;
-    height: 32px;
+    z-index: 500;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     align-items: center;
     justify-content: center;
-    background: rgba(14, 25, 42, 0.90);
-    border: 1.5px solid rgba(227, 178, 60, 0.75);
+    background: rgba(14, 25, 42, 0.92);
+    border: 1.5px solid rgba(227, 178, 60, 0.85);
     color: var(--gold-2);
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65), 0 0 8px rgba(227, 178, 60, 0.25);
-    transition: transform 0.15s, opacity 0.2s, background-color 0.2s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7), 0 0 10px rgba(227, 178, 60, 0.35);
+    transition: transform 0.15s, opacity 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
     padding: 0;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  /* デスクトップで手札が8枚以上のときに矢印を表示 */
+  .hand-zone.has-many-cards .hand-nav-btn,
+  .hand-zone:has(.card:nth-child(8)) .hand-nav-btn {
+    display: flex;
+  }
+
+  .hand-nav-btn.nav-disabled {
+    opacity: 0.30;
+    cursor: default;
+    pointer-events: none;
+    box-shadow: none;
+    border-color: rgba(227, 178, 60, 0.3);
   }
 
   .hand-nav-btn:hover {
-    background: rgba(24, 40, 68, 0.96);
+    background: rgba(24, 42, 72, 0.98);
     border-color: #ffd875;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), 0 0 12px rgba(227, 178, 60, 0.5);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 16px rgba(227, 178, 60, 0.6);
+    transform: translateY(-50%) scale(1.08);
   }
 
   .hand-nav-btn:active {
@@ -2279,11 +2351,11 @@
   }
 
   .hand-nav-btn.hand-prev {
-    left: 2px;
+    left: 4px;
   }
 
   .hand-nav-btn.hand-next {
-    right: 2px;
+    right: 4px;
   }
 
   .hand-row {
@@ -2296,6 +2368,15 @@
     overflow-y: visible;
     padding: 0 4px 6px;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* 手札が8枚以上のときは横スクロール可能にし、左右端のカード操作スペースを確保 */
+  .hand-zone.has-many-cards .hand-row,
+  .hand-zone:has(.card:nth-child(8)) .hand-row {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 40px 6px;
+    scrollbar-width: thin;
   }
 
   .hand-row::-webkit-scrollbar {
@@ -3170,13 +3251,27 @@
   }
 
   .card-effect {
-    background: #161616;
-    color: #f0f0f0;
-    font-size: 7px;
-    line-height: 1.35;
-    border-radius: 5px;
-    padding: 4px 5px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(6, 11, 22, 0.98) 100%);
+    border: 1px solid rgba(245, 208, 100, 0.55);
+    border-radius: 6px;
+    padding: 4px 6px;
     margin-top: 2px;
+    color: #f8fafc;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 7.2px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.025em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 5px rgba(0, 0, 0, 0.65);
+    position: relative;
+    box-sizing: border-box;
+  }
+  .card-effect b,
+  .card-effect strong {
+    color: #ffd859;
+    font-weight: 800;
+    text-shadow: 0 0 6px rgba(251, 191, 36, 0.45);
   }
 
   .card-flavor {
@@ -3378,16 +3473,7 @@
   }
 
   .banner-tap-hint {
-    opacity: 0;
-    font-size: 13px;
-    color: #a4c2db;
-    letter-spacing: .08em;
-    text-shadow: none !important;
-    transition: opacity .3s;
-  }
-
-  .banner-overlay.active .banner-tap-hint {
-    opacity: .9;
+    display: none !important;
   }
 
   /* ---- 通常バナーボックス（カードなし） ---- */
@@ -3822,12 +3908,12 @@
     white-space: nowrap;
   }
 
-  /* ---------- Game Toast Notification (Screen Center Popup) ---------- */
+  /* ---------- Game Toast Notification (Screen Top Notification) ---------- */
   .game-toast {
     position: fixed;
-    top: 50%;
+    top: clamp(64px, 11vh, 96px);
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.92);
+    transform: translate(-50%, -10px) scale(0.96);
     background: rgba(14, 20, 26, 0.94);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -3838,10 +3924,10 @@
     font-size: clamp(14px, 3.8vw, 16px);
     font-weight: 800;
     letter-spacing: 0.04em;
-    padding: 18px 28px;
+    padding: 14px 24px;
     box-shadow:
-      0 20px 50px rgba(0, 0, 0, 0.85),
-      0 0 28px rgba(2, 132, 199, 0.35);
+      0 12px 36px rgba(0, 0, 0, 0.75),
+      0 0 24px rgba(2, 132, 199, 0.35);
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
@@ -3855,19 +3941,19 @@
 
   .game-toast.show {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, 0) scale(1);
     animation: toastNoticeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes toastNoticeIn {
     0% {
       opacity: 0;
-      transform: translate(-50%, -50%) translateY(12px) scale(0.92);
+      transform: translate(-50%, -12px) scale(0.95);
     }
 
     100% {
       opacity: 1;
-      transform: translate(-50%, -50%) translateY(0) scale(1);
+      transform: translate(-50%, 0) scale(1);
     }
   }
 
@@ -4938,14 +5024,20 @@
     border-color: rgba(62, 224, 255, .5);
   }
 
-  /* カード要素の長押しでのブラウザデフォルトメニュー抑止 */
+  /* カード要素の長押しでのブラウザデフォルトメニュー抑止＆長押し操作最適化 */
   .card,
+  .card *,
   .farm-mini,
   .field-mini,
-  .mini-card {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
+  .mini-card,
+  .farm-card-item,
+  .hand-fan-container,
+  #hand-row,
+  .slot-frame {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* ==================== CYBER FIELD SKIN (枠: サイバー) ==================== */
@@ -6031,20 +6123,7 @@
     box-shadow: 0 8px 24px rgba(0, 40, 90, 0.15) !important;
   }
 
-  body.field-white #guard-popup .popup-box {
-    background: #ffffff !important;
-    color: #0f2942 !important;
-    border: 1.5px solid rgba(0, 160, 235, 0.6) !important;
-    box-shadow: 0 10px 30px rgba(0, 40, 90, 0.2) !important;
-  }
-
-  body.field-white #guard-popup .popup-title {
-    color: #0f2942 !important;
-  }
-
-  body.field-white #guard-popup .popup-desc {
-    color: #334e68 !important;
-  }
+  /* ポップアップ・ダイアログは全テーマ共通で最高峰のダーク＆ゴールドゲームUIに統一 */
 
   /* 閉じている間は透明のまま（常時指定すると画面全体が白い膜で覆われる不具合になる） */
   body.field-white #closeup-layer.show {
@@ -6059,7 +6138,7 @@
     color: #475569 !important;
   }
 
-  /* ===================== 初期50枚カード配布（ディール演出）スタイル ===================== */
+  /* ===================== 初期カード配布（ディール演出）スタイル ===================== */
   .deal-center-deck {
     position: fixed;
     left: 50%;
@@ -7062,6 +7141,220 @@
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.8) !important;
   }
 
+  /* ==================== RACETRACK THEME (競馬場・本馬場コーステーマ) ==================== */
+  body.field-racetrack,
+  body[data-theme="racetrack"] {
+    --rail: #ffffff;
+    --rail-dim: rgba(255, 255, 255, 0.85);
+    background-color: #06140b;
+    background: #06140b !important;
+  }
+
+  body.field-racetrack #three-bg,
+  body[data-theme="racetrack"] #three-bg {
+    display: block !important;
+    opacity: 1 !important;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* フィールドマット：競馬場本馬場のターフとダートを融合した美しいコースデザイン */
+  body.field-racetrack .field-splash-bg,
+  body[data-theme="racetrack"] .field-splash-bg {
+    display: block !important;
+    background:
+      linear-gradient(90deg,
+        rgba(50, 32, 16, 0.35) 0%,
+        rgba(10, 42, 22, 0.50) 14%,
+        rgba(14, 52, 28, 0.55) 50%,
+        rgba(10, 42, 22, 0.50) 86%,
+        rgba(50, 32, 16, 0.35) 100%
+      ),
+      radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.22) 0%, rgba(5, 20, 11, 0.6) 100%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.75) !important;
+    box-shadow:
+      0 0 24px rgba(16, 185, 129, 0.35),
+      0 12px 36px rgba(0, 0, 0, 0.75),
+      inset 0 0 28px rgba(245, 158, 11, 0.15) !important;
+    border-radius: 18px !important;
+  }
+
+  body.field-racetrack .field-splash-canvas,
+  body[data-theme="racetrack"] .field-splash-canvas {
+    display: block !important;
+    opacity: 0.65;
+  }
+
+  /* プレイヤー側スロット：ホワイトレール（ラチ）とエメラルドターフの立体枠 */
+  body.field-racetrack #zone-farm .farm-pile,
+  body.field-racetrack #zone-field .field-body,
+  body.field-racetrack .lane,
+  body[data-theme="racetrack"] #zone-farm .farm-pile,
+  body[data-theme="racetrack"] #zone-field .field-body,
+  body[data-theme="racetrack"] .lane {
+    border: 1.5px solid #ffffff !important;
+    background: rgba(8, 36, 19, 0.42) !important;
+    box-shadow:
+      0 0 14px rgba(255, 255, 255, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.5),
+      inset 0 0 12px rgba(16, 185, 129, 0.25) !important;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  body.field-racetrack .lane-card-back,
+  body[data-theme="racetrack"] .lane-card-back {
+    border: 1.5px solid #ffffff !important;
+    background-image: var(--card-back-image) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.45) !important;
+  }
+
+  /* 山札ラベル：競馬場の発走枠番・ゲート標識スタイル */
+  body.field-racetrack .lane-label,
+  body[data-theme="racetrack"] .lane-label {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    color: #f8fafc !important;
+    border: 1.5px solid #ffffff !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  body.field-racetrack .lane.active .lane-label,
+  body[data-theme="racetrack"] .lane.active .lane-label {
+    background: linear-gradient(180deg, #059669 0%, #047857 100%) !important;
+    color: #ffffff !important;
+    border-color: #fde047 !important;
+    box-shadow: 0 0 16px rgba(253, 224, 71, 0.75), 0 2px 6px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  body.field-racetrack .lane-badge,
+  body.field-racetrack #farm-count,
+  body[data-theme="racetrack"] .lane-badge,
+  body[data-theme="racetrack"] #farm-count {
+    background: linear-gradient(135deg, #fef08a, #eab308) !important;
+    color: #1e1b4b !important;
+    border: 1.5px solid #ffffff !important;
+    font-weight: 900 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 8px rgba(234, 179, 8, 0.6) !important;
+  }
+
+  /* 相手側スロット */
+  body.field-racetrack #zone-opp-farm .farm-pile,
+  body.field-racetrack #zone-field .field-body-opp,
+  body.field-racetrack .opp-lane,
+  body[data-theme="racetrack"] #zone-opp-farm .farm-pile,
+  body[data-theme="racetrack"] #zone-field .field-body-opp,
+  body[data-theme="racetrack"] .opp-lane {
+    border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+    background: rgba(30, 20, 10, 0.38) !important;
+    box-shadow:
+      0 0 10px rgba(255, 255, 255, 0.25),
+      inset 0 0 10px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  body.field-racetrack .opp-lane .lane-label,
+  body[data-theme="racetrack"] .opp-lane .lane-label {
+    background: rgba(15, 23, 42, 0.90) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  }
+
+  body.field-racetrack .opp-lane.active .lane-label,
+  body[data-theme="racetrack"] .opp-lane.active .lane-label {
+    background: linear-gradient(180deg, #b45309 0%, #78350f 100%) !important;
+    color: #fef3c7 !important;
+    border-color: #fde047 !important;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.6) !important;
+  }
+
+  body.field-racetrack .opp-lane .lane-badge,
+  body.field-racetrack #opp-farm-count,
+  body[data-theme="racetrack"] .opp-lane .lane-badge,
+  body[data-theme="racetrack"] #opp-farm-count {
+    background: linear-gradient(135deg, #fed7aa, #f97316) !important;
+    color: #431407 !important;
+    border: 1px solid #ffffff !important;
+    font-weight: 900 !important;
+  }
+
+  /* 相手アバター帯 */
+  body.field-racetrack .opponent-strip,
+  body[data-theme="racetrack"] .opponent-strip {
+    background: linear-gradient(180deg, rgba(8, 28, 15, 0.92) 0%, rgba(3, 15, 8, 0.96) 100%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65), 0 0 12px rgba(16, 185, 129, 0.25) !important;
+  }
+
+  body.field-racetrack .opponent-name,
+  body[data-theme="racetrack"] .opponent-name {
+    color: #f8fafc !important;
+    font-weight: 800 !important;
+  }
+
+  body.field-racetrack .opponent-sub,
+  body[data-theme="racetrack"] .opponent-sub {
+    color: #a7f3d0 !important;
+  }
+
+  /* トップバー・操作UI */
+  body.field-racetrack .topbar,
+  body[data-theme="racetrack"] .topbar {
+    background: linear-gradient(180deg, rgba(5, 18, 10, 0.94) 0%, rgba(2, 10, 5, 0.88) 100%) !important;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+  }
+
+  body.field-racetrack .track,
+  body[data-theme="racetrack"] .track {
+    background: rgba(10, 36, 18, 0.85) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.5) !important;
+  }
+
+  body.field-racetrack .track-fill,
+  body[data-theme="racetrack"] .track-fill {
+    background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #fde047 100%) !important;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.8) !important;
+  }
+
+  body.field-racetrack .track-badge,
+  body[data-theme="racetrack"] .track-badge {
+    background: rgba(4, 20, 10, 0.95) !important;
+    color: #fde047 !important;
+    border: 1px solid rgba(253, 224, 71, 0.7) !important;
+  }
+
+  body.field-racetrack .theme-opt[data-theme="racetrack"].active,
+  body[data-theme="racetrack"] .theme-opt[data-theme="racetrack"].active {
+    background: linear-gradient(180deg, #059669 0%, #047857 100%) !important;
+    color: #ffffff !important;
+    border-color: #fde047 !important;
+    box-shadow: 0 0 12px rgba(253, 224, 71, 0.6) !important;
+  }
+
+  body.field-racetrack .cmd-menu-btn,
+  body[data-theme="racetrack"] .cmd-menu-btn {
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    background: linear-gradient(180deg, #0e351d 0%, #061c0e 100%) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  body.field-racetrack .cmd-fab,
+  body[data-theme="racetrack"] .cmd-fab {
+    background: radial-gradient(circle at 45% 28%, rgba(52, 211, 153, 0.35) 0%, transparent 60%), radial-gradient(circle at 50% 50%, #114422 0%, #092613 60%, #031007 100%) !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  body.field-racetrack .cmd-fab-badge,
+  body[data-theme="racetrack"] .cmd-fab-badge {
+    background: linear-gradient(180deg, #10b981, #047857) !important;
+    color: #ffffff !important;
+    border: 1px solid #ffffff !important;
+  }
+
   /* ==================== CYBER 3D THEME (元々の3D電脳空間パース・フロア＆天井グリッド) ==================== */
   body.theme-cyber,
   body[data-theme="cyber"] {
@@ -7124,16 +7417,20 @@
   }
 
 /* =====================================================================
-   ポップアップ類：まぶしさを抑えた落ち着いたくすみ白（Muted Slate White）
-   ソフトなグレアフリー背景 / シアン・ブルーの細枠 / 濃色テキストで視認性を最適化
-   全テーマ（Cyber / Dark / Nature）共通
+   PRO JAPANESE GAME UI: ポップアップ＆バナー＆カードテキスト枠
+   日本の本格派TCG/ソシャゲ基準：重厚な黒漆/ダークアビス基調、ゴールド＆シアン二重枠、
+   立体メタリックゴールド見出し、ルミナスシルバー本文、立体ゴールドボタン
    ===================================================================== */
 :root {
-  --bubble-bg: linear-gradient(175deg, rgba(232, 238, 244, 0.98) 0%, rgba(218, 226, 235, 0.98) 100%);
-  --bubble-border: 1.5px solid rgba(2, 132, 199, 0.55);
-  --bubble-shadow: 0 16px 44px rgba(0, 0, 0, 0.75), 0 0 20px rgba(2, 132, 199, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  --bubble-text: #0f172a;
-  --bubble-accent: #0284c7;
+  --bubble-bg: linear-gradient(180deg, rgba(14, 23, 40, 0.97) 0%, rgba(6, 11, 20, 0.98) 100%);
+  --bubble-border: 1.5px solid rgba(245, 208, 100, 0.8);
+  --bubble-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.95),
+    0 0 28px rgba(227, 178, 60, 0.3),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --bubble-text: #f1f5f9;
+  --bubble-accent: #ffd859;
 }
 
 /* ---- 確認ポップアップ（走破サポート／状況カード／ガード／相手思考／案内／走破馬選択） ---- */
@@ -7145,20 +7442,39 @@ body #opponent-thinking-popup .popup-box,
 body #notice-action-popup .popup-box,
 body.field-white #guard-popup .popup-box,
 body.field-cyber.field-white #guard-popup .popup-box {
-  background: var(--bubble-bg) !important;
-  border: var(--bubble-border) !important;
-  border-radius: 14px !important;
-  box-shadow: var(--bubble-shadow) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--bubble-text) !important;
-  padding: 20px 28px !important;
+  background: linear-gradient(180deg, rgba(14, 23, 42, 0.97) 0%, rgba(6, 11, 22, 0.99) 100%) !important;
+  border: 1.5px solid rgba(245, 208, 100, 0.85) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.95),
+    0 0 32px rgba(227, 178, 60, 0.28),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #f1f5f9 !important;
+  padding: 24px 26px 22px !important;
+  position: relative !important;
+  overflow: visible !important;
 }
 
-body #guard-popup .popup-box::before {
-  display: none !important;
+/* ポップアップの四隅にプロゲーム特有の内側装飾ライン */
+body #guard-popup .popup-box::before,
+body #run-support-popup .popup-box::before,
+body #run-select-horse-popup .popup-box::before,
+body #situation-hint-popup .popup-box::before,
+body #opponent-thinking-popup .popup-box::before,
+body #notice-action-popup .popup-box::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 12px;
+  pointer-events: none;
 }
 
+/* タイトル：上質なメタリックゴールドの輝き＋ディバイダー装飾 */
 body #guard-popup .popup-title,
 body #run-support-popup .popup-title,
 body #run-select-horse-popup .popup-title,
@@ -7166,15 +7482,37 @@ body #situation-hint-popup .popup-title,
 body #opponent-thinking-popup .popup-title,
 body #notice-action-popup .popup-title,
 body.field-white #guard-popup .popup-title {
-  font-family: inherit !important;
-  color: #0c2b48 !important;
-  font-weight: 800 !important;
-  font-size: 17.5px !important;
-  text-shadow: none !important;
-  letter-spacing: 0.02em;
-  margin-bottom: 8px;
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 20px !important;
+  letter-spacing: 0.1em !important;
+  text-align: center;
+  margin-bottom: 14px !important;
+  padding-bottom: 12px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #ffeaa7 30%, #ffd043 70%, #d49200 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 12px rgba(251, 191, 36, 0.5)) !important;
+  position: relative;
 }
 
+/* タイトル下のアートライン・ディバイダー */
+body #guard-popup .popup-title::after,
+body #run-support-popup .popup-title::after,
+body #run-select-horse-popup .popup-title::after,
+body #situation-hint-popup .popup-title::after,
+body #opponent-thinking-popup .popup-title::after,
+body #notice-action-popup .popup-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 12%;
+  right: 12%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 208, 100, 0.9) 50%, transparent 100%);
+}
+
+/* 本文テキスト：視認性の高いルミナスシルバー、十分な行間と引き締まった文字間隔 */
 body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
 body #run-select-horse-popup .popup-desc,
@@ -7182,15 +7520,83 @@ body #situation-hint-popup .popup-desc,
 body #opponent-thinking-popup .popup-desc,
 body #notice-action-popup .popup-desc,
 body.field-white #guard-popup .popup-desc {
-  font-family: inherit !important;
-  color: #1e293b !important;
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  color: #e2e8f0 !important;
   font-weight: 600 !important;
-  font-size: 13.5px !important;
-  line-height: 1.6 !important;
-  text-shadow: none !important;
-  letter-spacing: 0.01em;
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+  letter-spacing: 0.03em !important;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
+/* ポップアップ内リード文（主要な指示・問いかけ） */
+body .popup-box .popup-lead {
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9) !important;
+  margin-bottom: 6px !important;
+  line-height: 1.5 !important;
+}
+
+/* ポップアップ内補足説明文（注釈やルールの補足） */
+body .popup-box .popup-subtext {
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.025em !important;
+  margin-top: 4px !important;
+}
+
+/* ポップアップ内ステータス・内訳バー */
+body .popup-box .popup-stat-row {
+  margin: 6px 0 !important;
+  font-size: 13.5px !important;
+  color: #cbd5e1 !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+body .popup-box .popup-breakdown {
+  margin: 8px auto !important;
+  padding: 6px 14px !important;
+  background: rgba(15, 28, 48, 0.85) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 8px !important;
+  color: #cbd5e1 !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  display: inline-block !important;
+  box-shadow: inset 0 0 10px rgba(2, 132, 199, 0.2) !important;
+}
+
+body .popup-box .popup-highlight-value {
+  color: #38bdf8 !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+  margin-left: 2px !important;
+}
+
+body .popup-box .popup-highlight-title {
+  display: block !important;
+  font-size: 15px !important;
+  color: #f8fafc !important;
+  font-weight: 800 !important;
+  margin-bottom: 8px !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* 強調文字・カード名（例: 「ゴールドシップ」）：シアン/ゴールドのネオンバッジスタイル */
 body #guard-popup .popup-desc b,
 body #guard-popup .popup-desc strong,
 body #run-support-popup .popup-desc b,
@@ -7198,58 +7604,63 @@ body #run-select-horse-popup .popup-desc b,
 body #situation-hint-popup .popup-desc b,
 body #opponent-thinking-popup .popup-desc b,
 body #notice-action-popup .popup-desc b {
-  color: #0284c7 !important;
+  color: #38bdf8 !important;
   font-weight: 800 !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+  padding: 2px 7px;
+  background: rgba(14, 165, 233, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 6px;
 }
 
-/* ポップアップ内の文字色衝突対策：ゴールド系や淡色文字を明瞭な濃色に上書き */
+/* ポップアップ内のステータス等のプレート */
+body .popup-box div[style*="background:rgba(227,178,60"],
+body .popup-box div[style*="background: rgba(227,178,60"],
+body .popup-box div[style*="background:rgba(2, 132, 199"],
+body .popup-box div[style*="background: rgba(2, 132, 199"],
+body .popup-box div[style*="background:rgba(2,132,199"] {
+  background: rgba(15, 28, 48, 0.85) !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  color: #f8fafc !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
+  box-shadow: inset 0 0 14px rgba(2, 132, 199, 0.25) !important;
+}
+
 body .popup-box [style*="color:var(--rail-dim)"],
 body .popup-box [style*="color: var(--rail-dim)"] {
-  color: #475569 !important;
-  font-weight: 600 !important;
+  color: #94a3b8 !important;
 }
 
 body .popup-box [style*="color:var(--gold-2)"],
 body .popup-box [style*="color: var(--gold-2)"],
 body .popup-box [style*="color: var(--gold)"] {
-  color: #0284c7 !important;
+  color: #ffd859 !important;
   font-weight: 800 !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.5) !important;
 }
 
-body .popup-box div[style*="background:rgba(227,178,60"],
-body .popup-box div[style*="background: rgba(227,178,60"] {
-  background: rgba(2, 132, 199, 0.08) !important;
-  border: 1px solid rgba(2, 132, 199, 0.25) !important;
-  color: #0f172a !important;
-  border-radius: 8px !important;
-  padding: 6px 12px !important;
-}
-
-/* ボタン：主ボタン＝シアンブルー／副ボタン＝ライトグレー地に濃いスレート枠 */
+/* 主ボタン（決定・馬カードを選ぶ・はい）：ゴールド立体グラデーション */
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #run-select-horse-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
 body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
-  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
-  color: #ffffff !important;
-  border: 1.5px solid #00b4d8 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4) !important;
-  text-shadow: none !important;
-}
-
-body #guard-popup .btn-skip,
-body #run-support-popup .btn-skip,
-body #run-select-horse-popup .btn-skip,
-body #situation-hint-popup .btn-skip {
-  background: #f1f5f9 !important;
-  color: #1e293b !important;
-  border: 1.5px solid #94a3b8 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-  text-shadow: none !important;
+  background: linear-gradient(180deg, #fff2cc 0%, #ffd859 35%, #f59e0b 70%, #d97706 100%) !important;
+  color: #261600 !important;
+  border: 1.5px solid #fffbeb !important;
+  border-radius: 10px !important;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.65),
+    0 0 18px rgba(245, 158, 11, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  font-weight: 900 !important;
+  font-size: 14.5px !important;
+  letter-spacing: 0.05em !important;
+  padding: 10px 24px !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease !important;
 }
 
 body #guard-popup .btn-guard:hover,
@@ -7257,16 +7668,61 @@ body #run-support-popup .btn-guard:hover,
 body #run-select-horse-popup .btn-guard:hover,
 body #situation-hint-popup .btn-guard:hover,
 body #notice-action-popup .btn-guard:hover {
-  background: linear-gradient(180deg, #0390dc 0%, #0284c7 100%) !important;
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.08);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.75),
+    0 0 24px rgba(245, 158, 11, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+body #guard-popup .btn-guard:active,
+body #run-support-popup .btn-guard:active,
+body #run-select-horse-popup .btn-guard:active,
+body #situation-hint-popup .btn-guard:active,
+body #notice-action-popup .btn-guard:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* 副ボタン（キャンセル・使わない・いいえ）：重厚なダークスレート＋シルバー枠 */
+body #guard-popup .btn-skip,
+body #run-support-popup .btn-skip,
+body #run-select-horse-popup .btn-skip,
+body #situation-hint-popup .btn-skip {
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.96) 100%) !important;
+  color: #cbd5e1 !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.5) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  font-weight: 700 !important;
+  font-size: 14.5px !important;
+  letter-spacing: 0.04em !important;
+  padding: 10px 24px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  transition: transform 0.15s ease, filter 0.15s ease, border-color 0.15s ease !important;
 }
 
 body #guard-popup .btn-skip:hover,
 body #run-support-popup .btn-skip:hover,
 body #run-select-horse-popup .btn-skip:hover,
 body #situation-hint-popup .btn-skip:hover {
-  background: #e2e8f0 !important;
-  color: #0f172a !important;
-  border-color: #64748b !important;
+  background: linear-gradient(180deg, rgba(45, 60, 85, 0.95) 0%, rgba(20, 32, 54, 0.98) 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(203, 213, 225, 0.75) !important;
+  transform: translateY(-1px);
+}
+
+body #guard-popup .popup-btns,
+body #run-support-popup .popup-btns,
+body #run-select-horse-popup .popup-btns,
+body #situation-hint-popup .popup-btns,
+body #notice-action-popup .popup-btns {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  margin-top: 14px !important;
 }
 
 body #guard-popup .popup-btns button,
@@ -7282,15 +7738,17 @@ body .banner-box,
 body .banner-stage.has-card .banner-box,
 body .banner-stage.has-card:not(.is-guard) .banner-box,
 body .banner-stage.has-card.is-guard .banner-box {
-  background: var(--bubble-bg) !important;
-  border: var(--bubble-border) !important;
-  border-radius: 12px !important;
-  box-shadow: var(--bubble-shadow) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--bubble-text) !important;
-  text-shadow: none !important;
-  padding: 12px 28px !important;
+  background: linear-gradient(180deg, rgba(14, 23, 42, 0.97) 0%, rgba(6, 11, 22, 0.99) 100%) !important;
+  border: 1.5px solid rgba(245, 208, 100, 0.85) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.95),
+    0 0 32px rgba(227, 178, 60, 0.35),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 16px 28px !important;
 }
 
 body .banner-box::before,
@@ -7302,85 +7760,217 @@ body .banner-stage.has-card.is-guard .banner-box::before {
   display: none !important;
 }
 
+/* バナー内タイトル（走破成功！など）：ゴールド特大見出し */
 body .banner-box .banner-box-text,
 body .banner-stage.has-card .banner-box .banner-box-text,
 body .banner-stage.has-card:not(.is-guard) .banner-box .banner-box-text,
 body .banner-stage.has-card.is-guard .banner-box .banner-box-text {
-  font-family: inherit !important;
-  color: var(--bubble-text) !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.02em !important;
-  text-shadow: none !important;
-  font-size: clamp(14px, 3.8vw, 18px) !important;
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em !important;
+  font-size: clamp(17px, 4.5vw, 22px) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #ffeaa7 30%, #ffd043 70%, #d49200 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 14px rgba(251, 191, 36, 0.5)) !important;
+  text-align: center;
   padding: 0 4px !important;
 }
 
+/* バナー内サブキャプション（相手（CPU）は走破に成功しました等） */
 body .banner-box .banner-sub-caption,
 body .banner-stage.has-card .banner-box .banner-sub-caption,
 body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
-  font-family: inherit !important;
-  color: var(--bubble-accent) !important;
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  color: #7dd3fc !important;
   font-weight: 700 !important;
-  font-size: 13px !important;
-  text-shadow: none !important;
-  margin-bottom: 4px !important;
+  font-size: 13.5px !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  margin-bottom: 6px !important;
+  text-align: center;
+}
+
+/* バナーのタップヒント：完全非表示（削除対応） */
+body .banner-box .banner-tap-hint,
+body .banner-stage .banner-tap-hint,
+.banner-tap-hint,
+#banner-tap-hint {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* ---- トースト通知（画面中央ポップアップ） ---- */
 body .game-toast,
 body.field-white .game-toast {
-  background: var(--bubble-bg) !important;
-  border: var(--bubble-border) !important;
+  background: linear-gradient(180deg, rgba(14, 23, 42, 0.97) 0%, rgba(6, 11, 22, 0.99) 100%) !important;
+  border: 1.5px solid rgba(245, 208, 100, 0.8) !important;
   border-radius: 14px !important;
-  box-shadow: var(--bubble-shadow) !important;
-  color: var(--bubble-text) !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.95),
+    0 0 24px rgba(227, 178, 60, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+  color: #f1f5f9 !important;
   font-family: inherit !important;
   font-weight: 700 !important;
-  letter-spacing: 0.02em !important;
-  text-shadow: none !important;
-  padding: 18px 28px !important;
-  line-height: 1.55 !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  padding: 16px 28px !important;
+  line-height: 1.6 !important;
 }
 
 /* ---- カード拡大表示（状況カード使用など）の説明・ラベル ---- */
 body #closeup-layer .closeup-toast,
 body.field-cyber #closeup-layer .closeup-toast {
-  background: var(--bubble-bg) !important;
-  border: var(--bubble-border) !important;
-  border-radius: 28px !important;
-  box-shadow: var(--bubble-shadow) !important;
-  color: var(--bubble-text) !important;
+  background: linear-gradient(180deg, rgba(14, 23, 42, 0.97) 0%, rgba(6, 11, 22, 0.99) 100%) !important;
+  border: 1.5px solid rgba(245, 208, 100, 0.8) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.95),
+    0 0 24px rgba(227, 178, 60, 0.3),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.2) !important;
+  color: #f1f5f9 !important;
   font-weight: 600 !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
+  letter-spacing: 0.03em !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 16px 24px !important;
+}
+
+body #closeup-layer .closeup-name-row {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+body #closeup-layer .closeup-card-name {
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.06em !important;
+  background: linear-gradient(180deg, #ffffff 0%, #ffeaa7 30%, #ffd043 70%, #d49200 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 10px rgba(251, 191, 36, 0.4)) !important;
+}
+
+body #closeup-layer .closeup-card-en {
+  font-family: 'Orbitron', 'Oswald', sans-serif !important;
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+  letter-spacing: 0.08em !important;
+}
+
+body #closeup-layer .closeup-type-badge {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 2px 8px !important;
+  border-radius: 999px !important;
+  background: rgba(14, 165, 233, 0.16) !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  color: #38bdf8 !important;
+  letter-spacing: 0.04em !important;
+}
+
+body #closeup-layer .closeup-type-badge.type-situation {
+  background: rgba(168, 85, 247, 0.16) !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  color: #c084fc !important;
+}
+
+body #closeup-layer .closeup-stats-box {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 8px 0 !important;
+  padding: 6px 14px !important;
+  background: rgba(15, 28, 48, 0.85) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 8px !important;
+  box-shadow: inset 0 0 12px rgba(2, 132, 199, 0.25) !important;
+}
+
+body #closeup-layer .closeup-stat-chip {
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+body #closeup-layer .chip-v {
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+body #closeup-layer .chip-v.cost-v { color: #fbbf24 !important; }
+body #closeup-layer .chip-v.run-v { color: #f43f5e !important; }
+body #closeup-layer .chip-v.guard-v {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+}
+
+body #closeup-layer .closeup-trait-row {
+  font-size: 12.5px !important;
+  color: #cbd5e1 !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  margin-top: 4px !important;
+}
+
+body #closeup-layer .closeup-trait-row b {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+body #closeup-layer .closeup-effect-text {
+  font-size: 13.5px !important;
+  color: #f1f5f9 !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+  margin: 6px 0 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+body #closeup-layer .closeup-timing-hint {
+  font-size: 11.5px !important;
+  color: #94a3b8 !important;
+  text-align: center !important;
+  margin-top: 4px !important;
+}
+
+body #closeup-layer .closeup-tap-wrap {
+  margin-top: 10px !important;
+  text-align: center !important;
 }
 
 body #closeup-layer .closeup-toast b {
-  color: var(--bubble-accent) !important;
+  color: #ffd859 !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.45) !important;
 }
 
 body #closeup-layer .closeup-toast span {
-  color: #1e293b !important;
-}
-
-body .banner-box .banner-tap-hint,
-body .banner-stage .banner-tap-hint,
-#banner-tap-hint {
-  color: #0f172a !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.03em !important;
+  color: #cbd5e1 !important;
 }
 
 body #closeup-layer .closeup-label,
 body.field-cyber #closeup-layer .closeup-label,
 body.field-white .closeup-label {
-  background: var(--bubble-bg) !important;
-  border: var(--bubble-border) !important;
+  background: linear-gradient(180deg, rgba(14, 23, 42, 0.95) 0%, rgba(6, 11, 22, 0.98) 100%) !important;
+  border: 1.5px solid rgba(245, 208, 100, 0.8) !important;
   border-radius: 9999px !important;
-  box-shadow: var(--bubble-shadow) !important;
-  color: var(--bubble-accent) !important;
-  font-weight: 700 !important;
-  text-shadow: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), 0 0 14px rgba(227, 178, 60, 0.3) !important;
+  color: #ffd859 !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important;
   padding: 5px 18px !important;
 }
 
@@ -7853,9 +8443,10 @@ body.awaiting-next .app * {
 /* =====================================================================
    ポップアップ調整：適度な角丸(12px)／高コントラスト文字色／文字量でも枠からはみ出さない／馬カードと重ねない
    ===================================================================== */
-/* 角丸：ポップアップ・バナー・トースト・ラベルは 12px */
+/* 角丸・装飾フレーム：プロ仕様の重厚な二重枠・ダークアビス背景 */
 body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
+body #run-select-horse-popup .popup-box,
 body #situation-hint-popup .popup-box,
 body #opponent-thinking-popup .popup-box,
 body #notice-action-popup .popup-box,
@@ -7868,61 +8459,79 @@ body .game-toast,
 body.field-white .game-toast,
 body #closeup-layer .closeup-toast,
 body.field-cyber #closeup-layer .closeup-toast {
-  border-radius: 12px !important;
+  border-radius: 14px !important;
 }
 
 body #closeup-layer .closeup-label,
 body.field-cyber #closeup-layer .closeup-label,
 body.field-white .closeup-label {
-  border-radius: 8px !important;
+  border-radius: 9999px !important;
 }
 
-/* ボタン：角丸8px、高コントラストで視認性抜群 */
+/* ボタン：プロTCG基準の立体メタリックゴールド決定ボタン */
 body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
+body #run-select-horse-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
 body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
-  border-radius: 8px !important;
-  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
-  color: #ffffff !important;
-  border: 1.5px solid #00b4d8 !important;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4) !important;
-  font-weight: 700 !important;
+  border-radius: 10px !important;
+  background: linear-gradient(180deg, #fff3cb 0%, #ffd95c 30%, #f59e0b 70%, #d97706 100%) !important;
+  color: #261600 !important;
+  border: 1.5px solid #fffbeb !important;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.65),
+    0 0 16px rgba(245, 158, 11, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  font-weight: 900 !important;
   font-size: 14px !important;
-  padding: 9px 24px !important;
-  text-shadow: none !important;
-  letter-spacing: 0.02em !important;
+  padding: 10px 24px !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  letter-spacing: 0.05em !important;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease !important;
 }
 
+/* キャンセル・スキップボタン：重厚なダークスレート＋シルバー枠 */
 body #guard-popup .btn-skip,
 body #run-support-popup .btn-skip,
+body #run-select-horse-popup .btn-skip,
 body #situation-hint-popup .btn-skip {
-  border-radius: 8px !important;
-  background: #f1f5f9 !important;
-  color: #1e293b !important;
-  border: 1.5px solid #94a3b8 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+  color: #cbd5e1 !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.55) !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
   font-weight: 700 !important;
   font-size: 14px !important;
-  padding: 9px 24px !important;
-  text-shadow: none !important;
-  letter-spacing: 0.02em !important;
+  padding: 10px 24px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+  letter-spacing: 0.04em !important;
+  transition: transform 0.15s ease, filter 0.15s ease, border-color 0.15s ease !important;
 }
 
 body #guard-popup .btn-guard:hover,
 body #run-support-popup .btn-guard:hover,
-body #situation-hint-popup .btn-guard:hover {
-  background: linear-gradient(180deg, #0390dc 0%, #0284c7 100%) !important;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.55) !important;
+body #run-select-horse-popup .btn-guard:hover,
+body #situation-hint-popup .btn-guard:hover,
+body #notice-action-popup .btn-guard:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.08);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.75),
+    0 0 22px rgba(245, 158, 11, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
 }
 
 body #guard-popup .btn-skip:hover,
 body #run-support-popup .btn-skip:hover,
+body #run-select-horse-popup .btn-skip:hover,
 body #situation-hint-popup .btn-skip:hover {
-  background: #e2e8f0 !important;
-  color: #0f172a !important;
-  border-color: #64748b !important;
+  background: linear-gradient(180deg, rgba(45, 60, 85, 0.96) 0%, rgba(20, 32, 54, 0.98) 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+  transform: translateY(-1px);
 }
 
 /* バナー枠：文字が枠線に当たらず余裕を持って収まるようにパディングと幅を調整 */
@@ -7934,8 +8543,8 @@ body .banner-box {
   min-width: min(280px, 86vw) !important;
   max-width: min(94vw, 440px) !important;
   box-sizing: border-box !important;
-  padding: 12px 30px !important;
-  border-radius: 12px !important;
+  padding: 14px 28px !important;
+  border-radius: 14px !important;
   overflow: visible !important;
 }
 
@@ -7949,33 +8558,76 @@ body .banner-stage.has-card.is-guard .banner-box .banner-box-text {
   line-height: 1.45;
   text-align: center;
   max-width: 100%;
-  font-size: clamp(14px, 3.8vw, 17.5px) !important;
-  letter-spacing: 0.02em !important;
+  font-size: clamp(15px, 4vw, 19px) !important;
+  letter-spacing: 0.03em !important;
   padding: 0 4px !important;
 }
 
 body .banner-box .banner-sub-caption,
 body .banner-stage.has-card .banner-box .banner-sub-caption,
 body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
-  font-size: 13px !important;
-  color: #0284c7 !important;
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-size: 13.5px !important;
+  color: #7dd3fc !important;
   font-weight: 700 !important;
   text-align: center;
-  margin-bottom: 4px !important;
+  margin-bottom: 6px !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(56, 189, 248, 0.5) !important;
+  letter-spacing: 0.04em !important;
 }
 
-body .game-toast {
+/* モバイルでの日本語ワードラップ・禁則処理の徹底最適化 */
+.u-nowrap,
+.nobr,
+.text-nowrap,
+.phrase-unit {
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
+body .game-toast,
+body.field-white .game-toast {
   white-space: normal !important;
-  max-width: min(92vw, 420px);
+  min-width: min(84vw, 300px);
+  max-width: min(94vw, 420px);
   text-align: center;
   box-sizing: border-box;
+  line-break: strict;
+  -webkit-line-break: strict;
+  word-break: auto-phrase;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 body #guard-popup .popup-title,
 body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
-body #situation-hint-popup .popup-desc {
-  overflow-wrap: anywhere;
+body #run-select-horse-popup .popup-desc,
+body #situation-hint-popup .popup-desc,
+body #notice-action-popup .popup-desc,
+body .banner-box .banner-box-text,
+body .narrator-text {
+  line-break: strict;
+  -webkit-line-break: strict;
+  word-break: auto-phrase;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  body .game-toast,
+  body.field-white .game-toast {
+    padding: 11px 18px !important;
+    min-width: min(86vw, 300px) !important;
+    max-width: min(95vw, 390px) !important;
+    font-size: clamp(14px, 4vw, 15.5px) !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.02em !important;
+  }
 }
 
 /* =====================================================================

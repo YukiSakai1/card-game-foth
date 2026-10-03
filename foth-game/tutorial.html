@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=61">
+  <link rel="stylesheet" href="style.css?v=69">
   <script type="importmap">
 {
     "imports": {
@@ -60,13 +60,13 @@
             <span class="horse-pin-arrow"></span>
           </div>
           <div class="track-flag" id="track-flag" title="GOAL">
-            <span class="flag-icon">🏁</span>
+            <span class="flag-icon"><img src="images/icon-flag.svg" alt="GOAL" class="img-icon"></span>
           </div>
         </div>
       </div>
       <div class="race-info" id="race-info" aria-label="レース情報"></div>
       <div class="topbar-menu" id="topbar-menu">
-        <button class="settings-gear" id="settings-gear" type="button" title="設定">⚙<span class="full-label"> 設定</span></button>
+        <button class="settings-gear" id="settings-gear" type="button" title="設定"><img src="images/icon-gear.svg" alt="" class="img-icon"><span class="full-label"> 設定</span></button>
       </div>
     </header>
 
@@ -74,12 +74,12 @@
       <div class="settings-panel">
         <div class="settings-head">
           <div class="settings-title">SETTINGS / 設定</div>
-          <button class="settings-close" id="settings-close" type="button" aria-label="閉じる">✕</button>
+          <button class="settings-close" id="settings-close" type="button" aria-label="閉じる"><img src="images/icon-close.svg" alt="閉じる" class="img-icon"></button>
         </div>
 
         <div class="settings-tabs" role="tablist">
-          <button class="settings-tab-btn active" data-tab="game" type="button" role="tab" aria-selected="true">🎮 ゲーム設定</button>
-          <button class="settings-tab-btn" data-tab="camera" type="button" role="tab" aria-selected="false">🎥 視点・カメラ</button>
+          <button class="settings-tab-btn active" data-tab="game" type="button" role="tab" aria-selected="true"><img src="images/icon-gamepad.svg" alt="" class="img-icon img-icon-inline">ゲーム設定</button>
+          <button class="settings-tab-btn" data-tab="camera" type="button" role="tab" aria-selected="false"><img src="images/icon-camera.svg" alt="" class="img-icon img-icon-inline">視点・カメラ</button>
         </div>
 
         <div class="settings-body">
@@ -100,8 +100,9 @@
                 <button class="theme-opt active" data-theme="cyber" type="button">Cyber (電脳)</button>
                 <button class="theme-opt" data-theme="dark" type="button">Dark (標準)</button>
                 <button class="theme-opt" data-theme="nature" type="button">Nature (自然・芝)</button>
+                <button class="theme-opt" data-theme="racetrack" type="button">Racetrack (競馬場)</button>
               </div>
-              <div class="settings-desc">3D電脳空間「Cyber」、ダーク「Dark」、全画面芝生の「Nature」など背景テーマを選択できます。</div>
+              <div class="settings-desc">3D電脳空間「Cyber」、ダーク「Dark」、緑の芝生「Nature」、本格本馬場コース「Racetrack」など背景テーマを選択できます。</div>
             </div>
 
             <div class="settings-group">
@@ -115,20 +116,24 @@
 
             <div class="settings-group">
               <div class="settings-label">BGM (サウンド)</div>
-              <button class="bgm-toggle settings-bgm-toggle" id="bgm-toggle" type="button" title="BGM切替" style="margin-bottom:10px;">🔊 BGM (ON)</button>
+              <button class="bgm-toggle settings-bgm-toggle" id="bgm-toggle" type="button" title="BGM切替" style="margin-bottom:10px;"><img src="images/icon-sound-on.svg" alt="" class="img-icon img-icon-inline" id="bgm-toggle-icon"><span id="bgm-toggle-text">BGM (ON)</span></button>
               
-              <div class="settings-label" style="font-size:11.5px;color:var(--gold-2);margin-bottom:6px;">🎵 BGM楽曲セレクト</div>
+              <div class="settings-label" style="font-size:11.5px;color:var(--gold-2);margin-bottom:6px;"><img src="images/icon-music.svg" alt="" class="img-icon img-icon-inline">BGM楽曲セレクト</div>
               <div class="bgm-track-grid" id="bgm-track-select">
-                <button class="bgm-track-opt active" data-track="banners_opt" type="button">
-                  <span>🚩 Banners in the Gale (Opt)</span>
+                <button class="bgm-track-opt active" data-track="system_overdrive" type="button">
+                  <span><img src="images/icon-sound-on.svg" alt="" class="img-icon img-icon-inline">System Overdrive 2</span>
+                  <span class="bgm-badge">デフォルト推奨</span>
+                </button>
+                <button class="bgm-track-opt" data-track="banners_opt" type="button">
+                  <span><img src="images/icon-red-flag.svg" alt="" class="img-icon img-icon-inline">Banners in the Gale (Opt)</span>
                   <span class="bgm-badge">疾風の旗手 (2分オーケストラArr.)</span>
                 </button>
                 <button class="bgm-track-opt" data-track="banners" type="button">
-                  <span>🚩 Banners in the Gale</span>
+                  <span><img src="images/icon-red-flag.svg" alt="" class="img-icon img-icon-inline">Banners in the Gale</span>
                   <span class="bgm-badge">疾風の旗手 (オーケストラArr.)</span>
                 </button>
                 <button class="bgm-track-opt" data-track="grandprix" type="button">
-                  <span>🏆 Grand Prix Royale</span>
+                  <span><img src="images/icon-trophy.svg" alt="" class="img-icon img-icon-inline">Grand Prix Royale</span>
                   <span class="bgm-badge">栄光のグランプリ (壮麗)</span>
                 </button>
               </div>
@@ -163,9 +168,9 @@
             <div class="settings-group">
               <div class="settings-row">
                 <span>CAMERA ZOOM (倍率)</span>
-                <span class="settings-value" id="zoom-value">114%</span>
+                <span class="settings-value" id="zoom-value">100%</span>
               </div>
-              <input type="range" id="zoom-range" min="100" max="200" value="114" step="1">
+              <input type="range" id="zoom-range" min="100" max="200" value="100" step="1">
             </div>
             <div class="settings-group">
               <label class="settings-toggle-row">
@@ -265,6 +270,12 @@
                   <span class="btn-label">アイテム</span>
                 </div>
               </button>
+              <button class="cmd-menu-btn" data-cmd="hand" type="button">
+                <div class="btn-text-wrap">
+                  <span class="btn-sub">確認</span>
+                  <span class="btn-label">手札</span>
+                </div>
+              </button>
               <button class="cmd-menu-btn" data-cmd="end" type="button">
                 <div class="btn-text-wrap">
                   <span class="btn-sub">フェイズ切替</span>
@@ -326,7 +337,6 @@
         <div class="banner-card-backdrop" id="banner-card-backdrop"></div>
         <div class="banner-box" id="banner-box"></div>
       </div>
-      <div class="banner-tap-hint" id="banner-tap-hint">タップして続ける</div>
     </div>
 
     <!-- ターンチェンジ演出オーバーレイ（デュエルリンクス風） -->
@@ -371,7 +381,7 @@
     <!-- 相手思考ポップアップ（ガード確認） -->
     <div id="opponent-thinking-popup">
       <div class="popup-box">
-        <div class="popup-title">🛡️ ガード確認</div>
+        <div class="popup-title"><img src="images/icon-shield.svg" alt="" class="img-icon img-icon-inline">ガード確認</div>
         <div class="popup-desc">相手プレイヤーがガードをするか考えています…</div>
       </div>
     </div>
@@ -391,7 +401,7 @@
     <!-- 状況カード使用確認（ターン開始時など） -->
     <div id="situation-hint-popup">
       <div class="popup-box">
-        <div class="popup-title" id="situation-hint-desc">☀️ 状況カード</div>
+        <div class="popup-title" id="situation-hint-desc"><img src="images/icon-sun.svg" alt="" class="img-icon img-icon-inline">状況カード</div>
         <div class="popup-desc" id="situation-hint-desc-body">使用可能な状況カードが手札にあります。状況カードを使いますか？</div>
         <div class="popup-btns">
           <button class="btn-guard" id="situation-hint-yes">はい</button>
@@ -427,7 +437,7 @@
     <div class="victory-overlay" id="victory-overlay">
       <div class="victory-confetti" id="victory-confetti"></div>
       <div class="victory-card" id="victory-card">
-        <div class="victory-icon" id="victory-icon">🏆</div>
+        <div class="victory-icon" id="victory-icon"><img src="images/icon-crown.svg" alt="" style="width:48px;height:48px;"></div>
         <div class="victory-title" id="victory-title">VICTORY</div>
         <div class="victory-subtitle" id="victory-subtitle"></div>
         <div class="victory-message" id="victory-message"></div>
@@ -437,7 +447,7 @@
 
   </div>
 
-  <script src="script.js?v=83"></script>
+  <script src="script.js?v=94"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -720,9 +730,146 @@
       return texture;
     }
 
+    function createRacetrackTexture() {
+      const size = 2048;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // 1. ベースのディープターフグリーン（本馬場天然芝）
+      ctx.fillStyle = '#0a2314';
+      ctx.fillRect(0, 0, size, size);
+
+      // 2. 芝コースの刈り込みストライプ（Turf Mowing Stripes: 16列の交互グリーン）
+      const stripeCount = 16;
+      const stripeW = size / stripeCount;
+      for (let s = 0; s < stripeCount; s++) {
+        ctx.fillStyle = (s % 2 === 1) ? 'rgba(24, 78, 42, 0.55)' : 'rgba(8, 28, 15, 0.45)';
+        ctx.fillRect(s * stripeW, 0, stripeW, size);
+      }
+
+      // 3. ダート（砂）コース帯（両外側に幅280pxのダートコース）
+      const dirtWidth = 280;
+      const dirtGradLeft = ctx.createLinearGradient(0, 0, dirtWidth, 0);
+      dirtGradLeft.addColorStop(0, '#2d1c0e');
+      dirtGradLeft.addColorStop(0.7, '#3e2716');
+      dirtGradLeft.addColorStop(1, '#321f11');
+      ctx.fillStyle = dirtGradLeft;
+      ctx.fillRect(0, 0, dirtWidth, size);
+
+      const dirtGradRight = ctx.createLinearGradient(size - dirtWidth, 0, size, 0);
+      dirtGradRight.addColorStop(0, '#321f11');
+      dirtGradRight.addColorStop(0.3, '#3e2716');
+      dirtGradRight.addColorStop(1, '#2d1c0e');
+      ctx.fillStyle = dirtGradRight;
+      ctx.fillRect(size - dirtWidth, 0, dirtWidth, size);
+
+      // ダートのリアルな砂粒テクスチャ
+      let randSeed = 42195;
+      function pseudoRand() {
+        randSeed = (randSeed * 9301 + 49297) % 233280;
+        return randSeed / 233280;
+      }
+      for (let d = 0; d < 2400; d++) {
+        const isLeft = pseudoRand() > 0.5;
+        const x = isLeft ? pseudoRand() * dirtWidth : size - dirtWidth + pseudoRand() * dirtWidth;
+        const y = pseudoRand() * size;
+        const radius = 0.8 + pseudoRand() * 1.5;
+        ctx.fillStyle = pseudoRand() > 0.5 ? 'rgba(215, 175, 120, 0.40)' : 'rgba(25, 14, 8, 0.55)';
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 4. 内ラチ・外ラチ（ホワイトレールフェンス: 競馬場の白い柵と支柱）
+      const railPositions = [dirtWidth - 6, dirtWidth + 8, size - dirtWidth - 8, size - dirtWidth + 6];
+      railPositions.forEach(rx => {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.lineWidth = 3.5;
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.moveTo(rx, 0);
+        ctx.lineTo(rx, size);
+        ctx.stroke();
+
+        // 52px ごとに支柱杭（ホワイトポスト）
+        for (let py = 0; py < size; py += 52) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(rx, py, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+
+      // 5. ターフコースのレーンガイド点線
+      const turfStart = dirtWidth + 24;
+      const turfEnd = size - dirtWidth - 24;
+      const turfWidth = turfEnd - turfStart;
+      const laneDivs = 8;
+      const laneStep = turfWidth / laneDivs;
+      ctx.save();
+      ctx.setLineDash([16, 24]);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.24)';
+      ctx.lineWidth = 1.5;
+      for (let l = 1; l < laneDivs; l++) {
+        const lx = turfStart + l * laneStep;
+        ctx.beginPath();
+        ctx.moveTo(lx, 0);
+        ctx.lineTo(lx, size);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 6. ハロン棒（赤白ストライプの距離標識ポスト）
+      for (let fy = 120; fy < size; fy += 512) {
+        [dirtWidth - 22, size - dirtWidth + 22].forEach(fx => {
+          ctx.save();
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(fx - 6, fy - 20, 12, 40);
+          for (let b = 0; b < 4; b++) {
+            ctx.fillStyle = (b % 2 === 0) ? '#ef4444' : '#ffffff';
+            ctx.fillRect(fx - 5, fy - 18 + b * 9, 10, 9);
+          }
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(fx, fy - 22, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      // 7. ナイターカクテル光線のスタジアムライティング
+      const stadiumLights = [
+        { x: size * 0.5, y: size * 0.2, r: size * 0.5, c: 'rgba(52, 211, 153, 0.18)' },
+        { x: size * 0.5, y: size * 0.8, r: size * 0.5, c: 'rgba(52, 211, 153, 0.18)' },
+        { x: size * 0.2, y: size * 0.5, r: size * 0.45, c: 'rgba(245, 158, 11, 0.14)' },
+        { x: size * 0.8, y: size * 0.5, r: size * 0.45, c: 'rgba(245, 158, 11, 0.14)' },
+      ];
+      stadiumLights.forEach(g => {
+        const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
+        rad.addColorStop(0, g.c);
+        rad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, size, size);
+      });
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      if (renderer.capabilities && renderer.capabilities.getMaxAnisotropy) {
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      }
+      return texture;
+    }
+
     const darkTexture = createCyberTexture('dark');
     let whiteTexture = null;
     let natureTexture = null;
+    let racetrackTexture = null;
 
     // Floor and Ceiling Planes (Symmetrical perspective expanding from center horizon)
     const planeGeo = new THREE.PlaneGeometry(8000, 8000);
@@ -771,7 +918,35 @@
       ceiling.visible = true;
       horizonGlow.visible = true;
 
-      if (t === 'nature') {
+      if (t === 'racetrack') {
+        if (!racetrackTexture) racetrackTexture = createRacetrackTexture();
+        planeMat.map = racetrackTexture;
+        planeMat.needsUpdate = true;
+        scene.background = new THREE.Color(0x06140b);
+        scene.fog = new THREE.Fog(0x06140b, 220, 1800);
+        horizonGlowMat.color.setHex(0x10b981);
+        horizonGlowMat.opacity = 0.35;
+        bloomPass.strength = 0.38;
+        bloomPass.threshold = 0.32;
+        for (let i = 0; i < particleCount; i++) {
+          const pColor = new THREE.Color();
+          const r = Math.random();
+          if (r < 0.45) {
+            // 鮮やかな芝生のグリーン
+            pColor.setHSL(0.32 + Math.random() * 0.08, 0.90, 0.65 + Math.random() * 0.20);
+          } else if (r < 0.78) {
+            // ダートの砂金・ゴールドスパークル
+            pColor.setHSL(0.12 + Math.random() * 0.05, 0.95, 0.70 + Math.random() * 0.20);
+          } else {
+            // シャンパンホワイト
+            pColor.setRGB(0.96, 0.98, 0.92);
+          }
+          colors[i * 3] = pColor.r;
+          colors[i * 3 + 1] = pColor.g;
+          colors[i * 3 + 2] = pColor.b;
+        }
+        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
+      } else if (t === 'nature') {
         if (!natureTexture) natureTexture = createCyberTexture('nature');
         planeMat.map = natureTexture;
         planeMat.needsUpdate = true;
