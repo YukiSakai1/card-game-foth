@@ -1145,11 +1145,13 @@
     });
   }
 
-  function showOpponentBubble(text) {
+  function showOpponentBubble(text, durationMs) {
     var b = $('opponent-bubble');
+    if (!b) return Promise.resolve();
     b.textContent = text;
     b.classList.add('show');
-    return sleep(1300).then(function () { b.classList.remove('show'); });
+    var ms = durationMs !== undefined ? durationMs : (text.indexOf('思考中') >= 0 ? 2500 : 1300);
+    return sleep(ms).then(function () { b.classList.remove('show'); });
   }
 
   /* ===================== fly / move animation ===================== */
@@ -1690,8 +1692,8 @@
     renderAll();
     showTurnChange('相手のターン').then(function () {
       setNarrator(iconImg('brain', 'img-icon-inline') + 'CPU思考中…');
-      showOpponentBubble('思考中…');
-      sleep(900).then(function () {
+      showOpponentBubble('思考中…', 2500);
+      sleep(2500).then(function () {
         cpuTurn();
       });
     });
@@ -2044,9 +2046,8 @@
 
     // ドロー完了後：手札を見て次の手を考える「思考中…」の吹き出しとナレーター
     await sleep(400);
-    showOpponentBubble('思考中…');
     setNarrator(iconImg('brain', 'img-icon-inline') + '相手プレイヤーがドローした手札を確認して考え中…');
-    await sleep(900);
+    await showOpponentBubble('思考中…', 2500);
 
     // 2. 走破できる馬がいない時だけ、獣医師で回収してから走破を狙う（馬を出す前に必要な唯一のアイテム）
     await cpuPlayItemIfApplicable('recovery');
