@@ -3761,13 +3761,13 @@
   var BGM_TRACKS = {
     'system_overdrive': { name: 'System Overdrive 2', src: 'System_Overdrive-2.mp3?v=1' },
     'banners_opt': { name: 'Banners in the Gale (Opt 2分オーケストラArr.)', src: 'audio/bgm_banners_gale_opt.wav?v=4' },
-    'banners': { name: 'Banners in the Gale (疾風の旗手 / Arranged Loop)', src: 'audio/bgm_banners_gale.wav?v=3' },
     'grandprix': { name: 'Grand Prix Royale (栄光)', src: 'audio/bgm_grand_prix.wav?v=3' }
   };
 
   var currentBgmTrackKey = 'system_overdrive';
   try {
     var savedTrack = localStorage.getItem('foth_bgm_track');
+    if (savedTrack === 'banners') savedTrack = 'banners_opt';
     if (savedTrack && BGM_TRACKS[savedTrack]) {
       currentBgmTrackKey = savedTrack;
     } else {
