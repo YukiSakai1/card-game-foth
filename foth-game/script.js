@@ -3543,11 +3543,25 @@
     setZoneActive('field-body', false);
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 9: 選んだ馬に必要なフォースカードをファームへ送る
+    // STEP 9: 選んだ馬に必要なフォースカードをファームへ送る（馬カードを大きく表示＋コスト数をハイライト）
     setProgress(10);
-    var runHorseCost = field ? (field.cost || 2) : 2;
-    setNarrator('<b>' + (field ? field.name : 'この馬') + '</b>を走破させるコストとして、<b>フォースカードを' + runHorseCost + '枚</b>選んで、手札からファームに送ろう。カードをタップしてね。');
+    var targetFieldCard = field || targetHorse || goldShip();
+    var runHorseCost = targetFieldCard ? (targetFieldCard.cost || 2) : 2;
+    var horseName = targetFieldCard ? targetFieldCard.name : 'この馬';
+
+    // 馬カードを大きく表示し、左上のコスト数をハイライト
+    cardExplainShow(targetFieldCard);
+    cardExplainRing('ring-cost');
+    setNarrator('<b>' + horseName + '</b>を走破させるコストとして、<b>フォースカードを' + runHorseCost + '枚</b>選んで、手札からファームに送ろう。');
+    showNextButton(true);
+    await waitNext();
+    if (myRunId !== tutorialRunId) { cardExplainHide(); return; }
+
+    // カード解説を閉じて手札を選択させる
+    cardExplainHide();
+    setNarrator('手札から<b>フォースカードを' + runHorseCost + '枚</b>選んで、ファームに送ろう。カードをタップしてね。');
     setZoneActive('zone-farm', true);
+    showNextButton(false);
     await waitSelect('select-force', runHorseCost);
     setZoneActive('zone-farm', false);
     if (myRunId !== tutorialRunId) return;
