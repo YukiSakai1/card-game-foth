@@ -723,15 +723,15 @@
       bg.innerHTML =
         '<div class="field-situation-card" style="background-image:url(' + artSrc + ');">' +
         '<div class="card-shine"></div>' +
-        '</div>' +
-        btnHtml;
+        btnHtml +
+        '</div>';
     } else {
       bg.innerHTML =
         '<div class="field-situation-card card type-situation" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; background:rgba(20,30,48,0.72);">' +
         '<div class="card-art" style="font-size:72px; text-align:center;">' + situation.icon + '</div>' +
         '<div class="card-shine"></div>' +
-        '</div>' +
-        btnHtml;
+        btnHtml +
+        '</div>';
     }
     var checkBtn = bg.querySelector('.field-situation-check-btn');
     if (checkBtn) {
