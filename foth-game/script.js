@@ -3585,15 +3585,20 @@
     hideArrow();
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 7: 実際に走破してみよう（ポップアップは削除し、自然に進行）
+    // STEP 7: 馬を置く場所（フィールド）
     setProgress(8);
+    await explainStep($('field-body'), 'field-body', 'ここが<b>フィールド</b>だ。ここに走らせたい馬を置く場所だよ。');
+    if (myRunId !== tutorialRunId) return;
+
+    // STEP 8: 実際に走破してみよう（ポップアップは削除し、自然に進行）
+    setProgress(9);
     setNarrator('それじゃあ、<b>実際に走破してみよう！</b>');
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 8: 走破させたい馬カードを選んでフィールドに出す
-    setProgress(9);
+    // STEP 9: 走破させたい馬カードを選んでフィールドに出す
+    setProgress(10);
     setNarrator('まずは<b>走破させたい馬カード</b>を選んでタップしてね。対戦フィールドに出すよ。');
     setZoneActive('field-body', true);
     showNextButton(false);
@@ -3601,8 +3606,8 @@
     setZoneActive('field-body', false);
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 9: 選んだ馬に必要なフォースカードをファームへ送る（馬カードを大きく表示＋コスト数をハイライト）
-    setProgress(10);
+    // STEP 10: 選んだ馬に必要なフォースカードをファームへ送る（馬カードを大きく表示＋コスト数をハイライト）
+    setProgress(11);
     var targetFieldCard = field || targetHorse || goldShip();
     var runHorseCost = targetFieldCard ? (targetFieldCard.cost || 2) : 2;
     var horseName = targetFieldCard ? targetFieldCard.name : 'この馬';
@@ -3624,8 +3629,8 @@
     setZoneActive('zone-farm', false);
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 10: 相手のガード確認
-    setProgress(11);
+    // STEP 11: 相手のガード確認
+    setProgress(12);
     setNarrator('<b>フォースカードをコストとして支払った</b>ので、馬を<b>走破させられる</b>よ。');
     showNextButton(true);
     await waitNext();
@@ -3640,8 +3645,8 @@
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 11: 走破成功 → 報酬ドロー（馬カードを大きく表示＋走破数をハイライト）
-    setProgress(12);
+    // STEP 12: 走破成功 → 報酬ドロー（馬カードを大きく表示＋走破数をハイライト）
+    setProgress(13);
     var runCard = field || targetHorse || goldShip();
     var runCount = runCard ? (runCard.run || 3) : 3;
     setNarrator('やった、<b>走破成功だ！</b> 走破に成功したら、馬カードの走破数ぶんだけ山札からカードを引くよ。');
