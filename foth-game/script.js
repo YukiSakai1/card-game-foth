@@ -5193,7 +5193,7 @@
       opts = opts || {};
       slot.innerHTML = '';
       slot.appendChild(buildCardEl(card));
-      labelEl.textContent = opts.label || 'カード詳細';
+      labelEl.innerHTML = opts.label || 'カード詳細';
 
       var detailHtml = opts.toast || formatCardDetail(card);
       toastEl.innerHTML = detailHtml;
