@@ -8599,7 +8599,106 @@ body .banner-stage.has-card:not(.is-guard) .banner-box .banner-sub-caption {
   text-align: center;
   margin-bottom: 6px !important;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(56, 189, 248, 0.5) !important;
-  letter-spacing: 0.04em !important;
+}
+
+/* ガード計算式（自分の走破数 − 相手のガード数）表示用HUD */
+.guard-calc-formula {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  flex-wrap: wrap !important;
+  margin: 6px auto 10px !important;
+  padding: 6px 14px !important;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%) !important;
+  border: 1.5px solid rgba(251, 191, 36, 0.75) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 12px rgba(245, 158, 11, 0.25) !important;
+  font-family: 'Zen Kaku Gothic New', sans-serif !important;
+  font-size: clamp(11.5px, 3.4vw, 13px) !important;
+  color: #f8fafc !important;
+  text-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.guard-calc-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 3px 10px !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap !important;
+}
+
+.guard-calc-pill b {
+  font-family: 'Oswald', sans-serif !important;
+  font-size: 1.3em !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+}
+
+.guard-calc-pill.pill-run {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 205, 210, 0.7) !important;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.4) !important;
+}
+
+.guard-calc-pill.pill-guard {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(187, 247, 208, 0.7) !important;
+  box-shadow: 0 2px 8px rgba(22, 101, 52, 0.4) !important;
+}
+
+.guard-calc-pill.pill-result-win {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #fff !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: 0 2px 12px rgba(2, 132, 199, 0.6) !important;
+}
+
+.guard-calc-pill.pill-result-lose {
+  background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
+  color: #cbd5e1 !important;
+  border: 1.5px solid #94a3b8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+.guard-calc-op {
+  font-family: 'Oswald', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  color: #fde047 !important;
+  text-shadow: 0 0 6px rgba(253, 224, 71, 0.6) !important;
+  line-height: 1 !important;
+  user-select: none !important;
+  padding: 0 1px !important;
+}
+
+/* ポップアップ内のガード計算式ボックス */
+.popup-guard-calc-box {
+  margin: 6px 0 10px !important;
+  padding: 10px 14px !important;
+  background: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.popup-guard-calc-box .calc-explain-lead {
+  font-size: 13px !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+}
+
+.popup-guard-calc-box .calc-explain-lead b {
+  color: #38bdf8 !important;
 }
 
 /* モバイルでの日本語ワードラップ・禁則処理の徹底最適化 */

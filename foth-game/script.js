@@ -2161,9 +2161,29 @@
         farm.push(card);
         phase = 'idle';
         renderAll();
-        var guardText = '自分がガード！ ' + card.name + ' / ガード ' + guardVal;
-        setNarrator(iconImg('shield', 'img-icon-inline') + 'ガード値 <b>' + guardVal + '</b> でガード！ 相手のドローが ' + guardVal + ' 減少します。');
-        showBanner(guardText, 2800, card).then(function () {
+        var cpuRun = cpuRunValue;
+        var myGuard = guardVal;
+        var actualDraw = Math.max(0, cpuRun - myGuard);
+        var isFullyDefended = (actualDraw === 0);
+
+        var calcSubHtml =
+          '<div class="guard-calc-formula">' +
+          '<span class="guard-calc-pill pill-run">相手の走破数 <b>' + cpuRun + '</b></span>' +
+          '<span class="guard-calc-op">−</span>' +
+          '<span class="guard-calc-pill pill-guard">自分のガード数 <b>' + myGuard + '</b></span>' +
+          '<span class="guard-calc-op">＝</span>' +
+          (isFullyDefended ?
+            '<span class="guard-calc-pill pill-result-win">完全防御 (0)</span>' :
+            '<span class="guard-calc-pill pill-result-lose">相手ドロー <b>' + actualDraw + '枚</b></span>'
+          ) +
+          '</div>';
+
+        var guardTitle = isFullyDefended ?
+          '自分がガード！ 走破を完全に防いだ！' :
+          ('自分がガード！ 相手のドローを' + myGuard + '枚減少！');
+
+        setNarrator(iconImg('shield', 'img-icon-inline') + '<b>【' + card.name + '】でガード！</b> 相手の走破数 <b>' + cpuRun + '</b> − 自分のガード数 <b>' + myGuard + '</b> ＝ ' + (isFullyDefended ? '相手の走破を完全に阻止！' : '相手のドローが <b>' + actualDraw + '枚</b> に減少。'));
+        showBanner(guardTitle, 3200, card, calcSubHtml).then(function () {
           executeCpuDraw(cpuRunValue - guardVal);
         });
       });
@@ -2416,14 +2436,32 @@
               renderField();
               var guardVal = (guardHorse.guard || 0) + cpuItemGuardBonus;
               cpuItemGuardBonus = 0;
-              var guardText = '相手がガード！ ' + guardHorse.name + ' / ガード ' + guardVal;
-              return showBanner(guardText, 3000, guardHorse).then(function () {
-                if (totalRun <= guardVal) {
-                  setNarrator(iconImg('cross', 'img-icon-inline') + '走破失敗。相手のガード値 <b>' + guardVal + '</b> により防がれました。実効走破 <b>' + totalRun + '</b> では突破できず、走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
+              var isBreached = (totalRun > guardVal);
+              var runDistance = isBreached ? (totalRun - guardVal) : 0;
+
+              // 「自分の走破数 − 相手のガード数」を視覚的に明示する計算式パネル
+              var calcSubHtml =
+                '<div class="guard-calc-formula">' +
+                '<span class="guard-calc-pill pill-run">自分の走破数 <b>' + totalRun + '</b></span>' +
+                '<span class="guard-calc-op">−</span>' +
+                '<span class="guard-calc-pill pill-guard">相手のガード数 <b>' + guardVal + '</b></span>' +
+                '<span class="guard-calc-op">＝</span>' +
+                (isBreached ?
+                  '<span class="guard-calc-pill pill-result-win">走破 <b>' + runDistance + '</b></span>' :
+                  '<span class="guard-calc-pill pill-result-lose">防がれた (0)</span>'
+                ) +
+                '</div>';
+
+              var bannerTitle = isBreached ?
+                ('相手のガードを突破！ 実効走破 <b>' + runDistance + '</b>') :
+                ('相手がガード！ 走破を防がれました');
+
+              return showBanner(bannerTitle, 3500, guardHorse, calcSubHtml).then(function () {
+                if (!isBreached) {
+                  setNarrator(iconImg('cross', 'img-icon-inline') + '<b>走破失敗。</b> 自分の走破数 <b>' + totalRun + '</b> − 相手のガード数 <b>' + guardVal + '</b> ≦ 0 のため防がれました。走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
                   return sendHorseToFarmAndReset();
                 } else {
-                  var runDistance = totalRun - guardVal;
-                  setNarrator(iconImg('shield', 'img-icon-inline') + '実効走破 ' + totalRun + ' − 実効ガード ' + guardVal + ' = <b>走破距離 ' + runDistance + '</b>。ガードを突破しました！');
+                  setNarrator(iconImg('shield', 'img-icon-inline') + '<b>ガード突破！</b> 自分の走破数 <b>' + totalRun + '</b> − 相手のガード数 <b>' + guardVal + '</b> ＝ <b>実効走破 ' + runDistance + '</b>。ガードを突破しました！');
                   return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
                 }
               });
@@ -2450,11 +2488,30 @@
       setNarrator(reason + ' だから山札から <b>' + drawCount + '枚</b> 引きます。その後、走破数−1枚（<b>' + discardCount + '枚</b>）をファームに捨てます。走破した馬はフィールドに残ります。');
       showToast('走破数 ' + finalRun + '枚ドロー → 走破数−1（' + discardCount + '枚）捨て', 'info', 3000);
 
+      var noticeTitle = usedGuard ? '走破ドロー（ガード突破）' : '走破ドロー';
+      var noticeDesc = '';
+      if (usedGuard) {
+        noticeDesc =
+          '<div class="popup-guard-calc-box">' +
+          '<div class="calc-explain-lead">相手のガード（<b>' + usedGuardVal + '</b>）を突破しました！</div>' +
+          '<div class="guard-calc-formula">' +
+          '<span class="guard-calc-pill pill-run">自分の走破数 <b>' + totalRun + '</b></span>' +
+          '<span class="guard-calc-op">−</span>' +
+          '<span class="guard-calc-pill pill-guard">相手のガード数 <b>' + usedGuardVal + '</b></span>' +
+          '<span class="guard-calc-op">＝</span>' +
+          '<span class="guard-calc-pill pill-result-win">引く枚数 <b>' + drawCount + '枚</b></span>' +
+          '</div>' +
+          '</div>' +
+          '走破数からガード数を引いた差分（<b>' + drawCount + '枚</b>）カードを山札から引きます。';
+      } else {
+        noticeDesc = '走破数分（<b>' + drawCount + '枚</b>）カードを引きます。';
+      }
+
       // 1. 走破したら走破数分カードを引きますのポップアップ
       return showNoticePopup(
-        '走破ドロー',
-        '走破数分（<b>' + drawCount + '枚</b>）カードを引きます。',
-        'カードを引く'
+        noticeTitle,
+        noticeDesc,
+        'カードを引く（' + drawCount + '枚）'
       ).then(function () {
         var chain = Promise.resolve();
         for (var i = 0; i < drawCount; i++) {
