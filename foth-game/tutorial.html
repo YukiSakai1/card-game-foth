@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=81">
+  <link rel="stylesheet" href="style.css?v=82">
   <script type="importmap">
 {
     "imports": {
@@ -66,7 +66,7 @@
       </div>
       <div class="race-info" id="race-info" aria-label="レース情報"></div>
       <div class="topbar-menu" id="topbar-menu">
-        <button class="settings-gear" id="settings-gear" type="button" title="設定"><img src="images/icon-gear.svg" alt="" class="img-icon"><span class="full-label"> 設定</span></button>
+        <button class="settings-gear" id="settings-gear" type="button" title="設定"><span class="settings-gear-emoji" aria-hidden="true">⚙️</span><span class="full-label"> 設定</span></button>
       </div>
     </header>
 
@@ -118,18 +118,18 @@
               <div class="settings-label">BGM (サウンド)</div>
               <button class="bgm-toggle settings-bgm-toggle" id="bgm-toggle" type="button" title="BGM切替" style="margin-bottom:10px;"><img src="images/icon-sound-on.svg" alt="" class="img-icon img-icon-inline" id="bgm-toggle-icon"><span id="bgm-toggle-text">BGM (ON)</span></button>
               
-              <div class="settings-label" style="font-size:11.5px;color:var(--gold-2);margin-bottom:6px;"><img src="images/icon-music.svg" alt="" class="img-icon img-icon-inline">BGM楽曲セレクト</div>
+              <div class="settings-label" style="font-size:11.5px;color:var(--gold-2);margin-bottom:6px;">BGM楽曲セレクト</div>
               <div class="bgm-track-grid" id="bgm-track-select">
                 <button class="bgm-track-opt active" data-track="system_overdrive" type="button">
-                  <span><img src="images/icon-sound-on.svg" alt="" class="img-icon img-icon-inline">System Overdrive 2</span>
+                  <span>System Overdrive 2</span>
                   <span class="bgm-badge">デフォルト推奨</span>
                 </button>
                 <button class="bgm-track-opt" data-track="banners_opt" type="button">
-                  <span><img src="images/icon-red-flag.svg" alt="" class="img-icon img-icon-inline">Banners in the Gale (Opt)</span>
+                  <span>Banners in the Gale (Opt)</span>
                   <span class="bgm-badge">疾風の旗手 (2分オーケストラArr.)</span>
                 </button>
                 <button class="bgm-track-opt" data-track="grandprix" type="button">
-                  <span><img src="images/icon-trophy.svg" alt="" class="img-icon img-icon-inline">Grand Prix Royale</span>
+                  <span>Grand Prix Royale</span>
                   <span class="bgm-badge">栄光のグランプリ (壮麗)</span>
                 </button>
               </div>
@@ -469,7 +469,7 @@
 
   </div>
 
-  <script src="script.js?v=112"></script>
+  <script src="script.js?v=113"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

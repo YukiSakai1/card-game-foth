@@ -1070,7 +1070,7 @@
     var waitClick = isFreeplay || isGuard;
     var tapHintHtml = '';
     var subHtml = subText ? '<div class="banner-sub-caption">' + subText + '</div>' : '';
-    box.innerHTML = '<span class="banner-shine"></span>' + subHtml + '<span class="banner-box-text">' + text + '</span>' + tapHintHtml;
+    box.innerHTML = '<span class="banner-shine"></span><span class="banner-box-text">' + text + '</span>' + subHtml + tapHintHtml;
     box.classList.add('show');
     overlay.classList.add('active');
     return new Promise(function (resolve) {
@@ -2214,7 +2214,7 @@
     var breakdownHtml = '';
     if (breakdownParts.length > 1 || cpuRunBonus > 0) {
       breakdownHtml = '<div class="popup-breakdown">' +
-        '内訳: ' + breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b class="popup-highlight-value">' + runValue + '</b>' +
+        breakdownParts.join(' ＋ ') + ' ＝ 実効走破 <b class="popup-highlight-value">' + runValue + '</b>' +
         '</div>';
     }
 
@@ -3741,7 +3741,7 @@
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
-    setNarrator('40枚のカードデッキを使って対戦するよ。まずは対戦の準備をしよう！');
+    setNarrator('今回はチュートリアルなので、本番よりもカードが20枚少ない、40枚のカードデッキを使って対戦するよ。まず対戦の準備をしよう！');
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
@@ -3938,6 +3938,9 @@
     clearZoneActive();
     $('zone-deck').classList.add('tappable');
     $('narrator').style.display = 'none';
+    // 自分で操作モードと同様に、コマンドバーを傾き(rotateX)の外（body直下）へ移動して固定表示にする
+    var cmdBarEl = $('command-bar');
+    if (cmdBarEl && cmdBarEl.parentNode !== document.body) document.body.appendChild(cmdBarEl);
     document.body.classList.add('manual-mode');
     var modeOpts = document.querySelectorAll('#mode-switch .mode-opt');
     modeOpts.forEach(function (opt) {
