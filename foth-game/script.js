@@ -2420,7 +2420,7 @@
     showOpponentBubble('走破成功！');
 
     var horse = cpuHorseCard || goldShip();
-    showBanner('走破成功！', 2600, horse, '相手（CPU）は走破に成功しました<br><b>馬の走破数 ' + actualDraw + '</b>').then(function () {
+    showBanner('走破成功！', 2600, horse, '相手（CPU）は走破に成功しました<br><b>' + (horse && horse.name ? horse.name : '馬') + 'の走破数 ' + actualDraw + '</b>').then(function () {
       var chain = Promise.resolve();
       var handEl = $('opponent-hand-display') || $('zone-opponent');
       var opponentRect = handEl ? handEl.getBoundingClientRect() : { left: 200, top: 20, width: 80, height: 30 };
