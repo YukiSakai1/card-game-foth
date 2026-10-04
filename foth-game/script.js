@@ -3589,7 +3589,7 @@
     hideArrow();
     await rewardDraw(runCount);
     if (myRunId !== tutorialRunId) return;
-    setNarrator('引いた枚数マイナス1枚、つまり <b>' + (runCount - 1) + '枚</b> をファームに捨てよう。カードをタップしてね。');
+    setNarrator('走破成功後の手札調整として、引いた枚数マイナス1枚、つまり <b>' + (runCount - 1) + '枚</b> をファームに捨てよう。カードをタップしてね。');
     showNextButton(false);
     setZoneActive('zone-farm', true);
     await waitSelect('select-any', runCount - 1);
