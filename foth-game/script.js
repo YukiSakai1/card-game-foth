@@ -395,7 +395,7 @@
     var mods = [];
     if ((card.surface || []).indexOf(race.surface) < 0) mods.push({ value: -1, label: '馬場不一致 -1' });
     if ((card.dist || '').indexOf(raceDistanceKey(race.distance)) < 0) mods.push({ value: -1, label: '距離不一致 -1' });
-    if (styleMatchesCurrentArea(card)) mods.push({ value: 1, label: '脚質一致 +1' });
+    // 脚質一致による走破数ボーナスは廃止
     return mods;
   }
   function effectiveRun(card, bonus) {
