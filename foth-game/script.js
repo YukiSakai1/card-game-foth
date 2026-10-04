@@ -2880,10 +2880,10 @@
       if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
 
       if (selectedForces.length >= cost) {
-        // コスト支払い完了：まずトーストをしっかり表示し、消去完了後に走破ポップアップ（サポート確認等）へ進む
+        // コストを支払いました。：まずトーストをしっかり表示し、消去完了後に走破ポップアップ（サポート確認等）へ進む
         phase = 'cost_paid';
         updateCommandButtons();
-        showToast('コスト支払い完了！ 走破します', 1400);
+        showToast('コストを支払いました。走破します', 1400);
         sleep(1400).then(function () {
           hideToast();
           executeRun();
