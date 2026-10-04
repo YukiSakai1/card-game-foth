@@ -5317,6 +5317,33 @@
 
   })();
 
+  /* ===================== popup / banner style switch (White / Dark) ===================== */
+  (function setupPopupStyleSwitch() {
+    var wrap = $('popup-style-switch');
+    if (!wrap) return;
+    var opts = wrap.querySelectorAll('[data-popup-style]');
+
+    function applyPopupStyle(style) {
+      var dark = (style === 'dark');
+      document.body.classList.toggle('popup-dark', dark);
+      opts.forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.popupStyle === (dark ? 'dark' : 'white'));
+      });
+      try { localStorage.setItem('foth_popup_style', dark ? 'dark' : 'white'); } catch (e) {}
+    }
+
+    var saved = 'white';
+    try { saved = localStorage.getItem('foth_popup_style') || 'white'; } catch (e) {}
+    applyPopupStyle(saved);
+
+    opts.forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        Haptics.tap();
+        applyPopupStyle(opt.dataset.popupStyle);
+      });
+    });
+  })();
+
   /* ===================== field theme switch (Cyber / Dark / Nature) ===================== */
   (function setupThemeSwitch() {
     var switchWrap = $('theme-switch');

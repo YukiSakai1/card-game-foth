@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=82">
+  <link rel="stylesheet" href="style.css?v=83">
   <script type="importmap">
 {
     "imports": {
@@ -103,6 +103,15 @@
                 <button class="theme-opt" data-theme="racetrack" type="button">Racetrack (競馬場)</button>
               </div>
               <div class="settings-desc">3D電脳空間「Cyber」、ダーク「Dark」、緑の芝生「Nature」、本格本馬場コース「Racetrack」など背景テーマを選択できます。</div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-label">ポップアップ・バナーの配色</div>
+              <div class="theme-switch" id="popup-style-switch" role="group" aria-label="ポップアップ配色切り替え">
+                <button class="theme-opt active" data-popup-style="white" type="button">White (白)</button>
+                <button class="theme-opt" data-popup-style="dark" type="button">Dark (黒)</button>
+              </div>
+              <div class="settings-desc">確認ポップアップや結果バナーの配色を、白ベースまたは黒ベース（ゴールド枠）から選べます。初期値は白です。</div>
             </div>
 
             <div class="settings-group">
@@ -469,7 +478,7 @@
 
   </div>
 
-  <script src="script.js?v=113"></script>
+  <script src="script.js?v=114"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
