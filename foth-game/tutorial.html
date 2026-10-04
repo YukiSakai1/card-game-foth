@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=80">
+  <link rel="stylesheet" href="style.css?v=81">
   <script type="importmap">
 {
     "imports": {
@@ -396,6 +396,18 @@
       </div>
     </div>
 
+    <!-- ガードサポート確認 -->
+    <div id="guard-support-popup">
+      <div class="popup-box">
+        <div class="popup-title">ガードサポート</div>
+        <div class="popup-desc" id="guard-support-desc">ガード値を増減できるアイテムカードを使いますか？</div>
+        <div class="popup-btns">
+          <button class="btn-guard" id="guard-support-yes">使う</button>
+          <button class="btn-skip" id="guard-support-no">使わない</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 状況カード使用確認（ターン開始時など） -->
     <div id="situation-hint-popup">
       <div class="popup-box">
@@ -457,7 +469,7 @@
 
   </div>
 
-  <script src="script.js?v=111"></script>
+  <script src="script.js?v=112"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';

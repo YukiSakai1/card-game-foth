@@ -127,9 +127,10 @@
   var FREEPLAY_POOL = [
     // 状況カード（1枚 / 2.5%）
     function () { return situationCard('かんかん照り', '馬場状態を一段階良くする', KANKAN_IMG); },
-    // アイテムカード（3枚 / 7.5%）
+    // アイテムカード（4枚 / 10%）
     function () { return eliteJockey(); },
     function () { return whip(); },
+    function () { return kutsuwa(); },
     function () { return veterinarian(); },
     // 馬カード（17枚 / 42.5%）
     function () { return goldShip(); },
@@ -300,8 +301,9 @@
       function () { return rousham(); },         // 10手番目: ローシャムパーク
       function () { return forceCard(); },       // 11手番目: フォース
       function () { return eliteJockey(); },     // 12手番目: エリートジョッキー
-      function () { return seferRasiel(); },     // 13手番目: セファーラジエル
-      function () { return forceCard(); }        // 14手番目: フォース
+      function () { return kutsuwa(); },         // 13手番目: 口輪（ガード-1）
+      function () { return seferRasiel(); },     // 14手番目: セファーラジエル
+      function () { return forceCard(); }        // 15手番目: フォース
     ];
   }
 
@@ -562,17 +564,31 @@
       if (isGuardSelect) {
         var isHorse = (c.type === 'horse');
         var isDistMatch = isHorse && ((c.dist || '').indexOf(distKey) >= 0);
-        el.classList.add(isHorse && isDistMatch ? 'selectable' : 'disabled');
+        var isGuardItem = (c.type === 'item' || c.type === 'jockey') &&
+          (c.effectType === 'guard_bonus' || c.effectType === 'elite_jockey' || (c.guardBonus != null && c.guardBonus !== 0));
+        el.classList.add((isHorse && isDistMatch) || isGuardItem ? 'selectable' : 'disabled');
         if (isHorse) {
           // ガード選択中：ガード値が大きく一目でわかる専用バッジを表示
+          var effectiveGuard = (c.guard || 0) + itemGuardBonus;
           var gBadge = document.createElement('div');
           gBadge.className = 'card-guard-floating-badge' + (isDistMatch ? ' is-valid' : ' is-invalid');
           gBadge.innerHTML =
             '<span class="guard-icon">' + iconImg('shield') + '</span>' +
             '<span class="guard-lbl">ガード</span>' +
-            '<span class="guard-val">' + (c.guard || 0) + '</span>' +
+            '<span class="guard-val">' + effectiveGuard + (itemGuardBonus !== 0 ? ' <small style="color:#10b981;font-size:11px;font-weight:800;">(' + (itemGuardBonus > 0 ? '+' : '') + itemGuardBonus + ')</small>' : '') + '</span>' +
             (!isDistMatch ? '<span class="guard-dist-warn">距離外</span>' : '<span class="guard-dist-ok">適性○</span>');
           el.appendChild(gBadge);
+        } else if (isGuardItem) {
+          // ガード支援アイテム用バッジ
+          var iBadge = document.createElement('div');
+          iBadge.className = 'card-guard-floating-badge is-valid';
+          var bonusVal = c.effectType === 'elite_jockey' ? '+1' : ((c.effectValue || 0) > 0 ? ('+' + c.effectValue) : (c.effectValue || 0));
+          iBadge.innerHTML =
+            '<span class="guard-icon">' + iconImg('shield') + '</span>' +
+            '<span class="guard-lbl">ガード補正</span>' +
+            '<span class="guard-val">' + bonusVal + '</span>' +
+            '<span class="guard-dist-ok">タップで使用</span>';
+          el.appendChild(iBadge);
         }
       } else if (interactionMode === 'select-force') {
         el.classList.add(c.type === 'force' ? 'selectable' : 'disabled');
@@ -1545,6 +1561,115 @@
     });
   }
 
+  // 自分がガードする時にガード値を強化・調整できるアイテムカード（エリートジョッキーなど）
+  function selfGuardBuffCards() {
+    return hand.filter(function (c) {
+      if (c.type !== 'item' && c.type !== 'jockey') return false;
+      if (c.effectType === 'elite_jockey') return true;
+      if (c.effectType === 'guard_bonus' && (c.effectValue || 0) > 0) return true;
+      if (c.guardBonus && c.guardBonus > 0) return true;
+      return false;
+    });
+  }
+
+  // 相手のガード値を減らすアイテムカード（口輪など）
+  function opponentGuardDebuffCards() {
+    return hand.filter(function (c) {
+      if (c.type !== 'item' && c.type !== 'jockey') return false;
+      if (c.effectType === 'guard_bonus' && (c.effectValue || 0) < 0) return true;
+      if (c.effectType === 'guard_penalty') return true;
+      return false;
+    });
+  }
+
+  // ガード時にプレイヤーが使えるガード関連アイテム全般
+  function guardSupportCards() {
+    return hand.filter(function (c) {
+      if (c.type !== 'item' && c.type !== 'jockey') return false;
+      return c.effectType === 'elite_jockey' || c.effectType === 'guard_bonus' || (c.guardBonus != null && c.guardBonus !== 0);
+    });
+  }
+
+  var pendingGuardHorse = null;
+
+  function offerGuardSupport(horseCard) {
+    var supports = selfGuardBuffCards();
+    if (!supports.length) {
+      finalizePlayerGuard(horseCard);
+      return;
+    }
+    pendingGuardHorse = horseCard;
+    phase = 'guard_support_choice';
+    renderAll();
+    var currentVal = (horseCard.guard || 0) + itemGuardBonus;
+    var supportNames = supports.map(function (c) { return '「' + c.name + '」'; }).join('・');
+    $('guard-support-desc').innerHTML =
+      '<b>' + horseCard.name + '</b>（現在のガード値: <b>' + currentVal + '</b>）でガードします。<br>' +
+      'ガード値を増やせるアイテムカード（' + supportNames + '）が ' + supports.length + '枚 あります。使いますか？';
+    hideToast();
+    $('guard-support-popup').style.display = 'flex';
+  }
+
+  function closeGuardSupportChoice(useCard) {
+    $('guard-support-popup').style.display = 'none';
+    if (useCard) {
+      phase = 'guard_select';
+      setNarrator('ガード値を増やす<b>アイテム／騎手カード</b>を手札から選んでタップしてください。<br><span style="color:#64748b;font-size:12px;">（アイテムを使った後、もう一度馬カードをタップしてガードを確定できます）</span>');
+      renderAll();
+    } else {
+      var h = pendingGuardHorse;
+      pendingGuardHorse = null;
+      if (h) finalizePlayerGuard(h);
+    }
+  }
+
+  function promptOpponentGuardDebuff(oppHorse, oppGuardVal, myRunVal, debuffCards) {
+    return new Promise(function (resolve) {
+      var popup = $('guard-support-popup');
+      var descEl = $('guard-support-desc');
+      var item = debuffCards[0];
+      var penalty = Math.abs(item.effectValue || 1);
+      descEl.innerHTML =
+        '相手が<b>【' + oppHorse.name + '】</b>（ガード値: <b>' + oppGuardVal + '</b>）でガードしてきました！<br>' +
+        'アイテム「<b>' + item.name + '</b>」を使って相手のガード値を <b>-' + penalty + '</b> 減らしますか？';
+      popup.style.display = 'flex';
+
+      function onYes() {
+        cleanup();
+        hand = hand.filter(function (c) { return c.id !== item.id; });
+        farm.push(item);
+        applyItemEffect(item);
+
+        var farmZone = $('zone-farm');
+        var farmRect = farmZone ? farmZone.getBoundingClientRect() : null;
+        var el = cardElById(item.id);
+        if (el && farmRect) flyGhost(el, farmRect);
+        renderAll();
+
+        var newGuard = Math.max(0, oppGuardVal - penalty);
+        setNarrator(iconImg('bolt', 'img-icon-inline') + 'アイテム「<b>' + item.name + '</b>」を発動！ 相手のガード値を <b>-' + penalty + '</b> 減らしました！（' + oppGuardVal + ' → <b>' + newGuard + '</b>）');
+        showToast('【' + item.name + '】発動！ 相手ガード値 -' + penalty, 'info', 2200);
+        sleep(600).then(function () {
+          resolve(newGuard);
+        });
+      }
+
+      function onNo() {
+        cleanup();
+        resolve(oppGuardVal);
+      }
+
+      function cleanup() {
+        popup.style.display = 'none';
+        $('guard-support-yes').removeEventListener('click', onYes);
+        $('guard-support-no').removeEventListener('click', onNo);
+      }
+
+      $('guard-support-yes').addEventListener('click', onYes);
+      $('guard-support-no').addEventListener('click', onNo);
+    });
+  }
+
   function beginForceSelection() {
     phase = 'select_force';
     prevPhase = null;
@@ -2140,7 +2265,33 @@
     }
   }
 
+  // ガード支援アイテムを手札から直接発動
+  function playGuardItemDirectly(card) {
+    if (card.type !== 'item' && card.type !== 'jockey') return;
+    hand = hand.filter(function (c) { return c.id !== card.id; });
+    farm.push(card);
+    applyItemEffect(card);
+
+    var farmZone = $('zone-farm');
+    var farmRect = farmZone ? farmZone.getBoundingClientRect() : null;
+    var el = cardElById(card.id);
+    if (el && farmRect) {
+      flyGhost(el, farmRect);
+    }
+    renderAll();
+    Haptics.place();
+    if (window.SoundFX && typeof SoundFX.deal === 'function') SoundFX.deal();
+
+    var bonusText = itemGuardBonus > 0 ? ('+' + itemGuardBonus) : itemGuardBonus;
+    setNarrator(iconImg('shield', 'img-icon-inline') + 'アイテム「<b>' + card.name + '</b>」を使用しました！（現在のガード補正: <b>' + bonusText + '</b>）<br>続けてガードする<b>馬カード</b>を選んでタップしてください。');
+    showToast('【' + card.name + '】発動！ ガード補正 ' + bonusText, 'info', 2200);
+  }
+
   function selectGuard(card) {
+    selectGuardWithSupportCheck(card);
+  }
+
+  function selectGuardWithSupportCheck(card) {
     if (phase !== 'guard_select') return;
     if (card.type !== 'horse') { shakeCard(card.id); return; }
     if ((card.dist || '').indexOf(raceDistanceKey(race.distance)) < 0) {
@@ -2148,46 +2299,84 @@
       shakeCard(card.id);
       return;
     }
-    var guardVal = (card.guard || 0) + itemGuardBonus;
-    itemGuardBonus = 0;
-    guardValue = guardVal;
+    // 手札にガード値を増やせるアイテムが残っていれば確認ポップアップを出す
+    var supports = selfGuardBuffCards();
+    if (supports.length > 0) {
+      offerGuardSupport(card);
+      return;
+    }
+    finalizePlayerGuard(card);
+  }
+
+  async function finalizePlayerGuard(card) {
     var el = cardElById(card.id);
+    var farmRect = $('zone-farm').getBoundingClientRect();
     if (el) {
       el.style.pointerEvents = 'none';
       el.classList.add('selected');
-      var farmRect = $('zone-farm').getBoundingClientRect();
-      flyGhost(el, farmRect).then(function () {
-        hand = hand.filter(function (c) { return c.id !== card.id; });
-        farm.push(card);
-        phase = 'idle';
-        renderAll();
-        var cpuRun = cpuRunValue;
-        var myGuard = guardVal;
-        var actualDraw = Math.max(0, cpuRun - myGuard);
-        var isFullyDefended = (actualDraw === 0);
-
-        var calcSubHtml =
-          '<div class="guard-calc-formula">' +
-          '<span class="guard-calc-pill pill-run">相手の走破数 <b>' + cpuRun + '</b></span>' +
-          '<span class="guard-calc-op">−</span>' +
-          '<span class="guard-calc-pill pill-guard">自分のガード数 <b>' + myGuard + '</b></span>' +
-          '<span class="guard-calc-op">＝</span>' +
-          (isFullyDefended ?
-            '<span class="guard-calc-pill pill-result-win">完全防御 (0)</span>' :
-            '<span class="guard-calc-pill pill-result-lose">相手ドロー <b>' + actualDraw + '枚</b></span>'
-          ) +
-          '</div>';
-
-        var guardTitle = isFullyDefended ?
-          '自分がガード！ 走破を完全に防いだ！' :
-          ('自分がガード！ 相手のドローを' + myGuard + '枚減少！');
-
-        setNarrator(iconImg('shield', 'img-icon-inline') + '<b>【' + card.name + '】でガード！</b> 相手の走破数 <b>' + cpuRun + '</b> − 自分のガード数 <b>' + myGuard + '</b> ＝ ' + (isFullyDefended ? '相手の走破を完全に阻止！' : '相手のドローが <b>' + actualDraw + '枚</b> に減少。'));
-        showBanner(guardTitle, 3200, card, calcSubHtml).then(function () {
-          executeCpuDraw(cpuRunValue - guardVal);
-        });
-      });
+      flyGhost(el, farmRect);
     }
+    hand = hand.filter(function (c) { return c.id !== card.id; });
+    farm.push(card);
+    phase = 'idle';
+    renderAll();
+
+    var baseGuard = card.guard || 0;
+    var myGuard = baseGuard + itemGuardBonus;
+    var currentItemBonus = itemGuardBonus;
+    itemGuardBonus = 0;
+
+    // --- 相手（CPU）もガードに対してアイテム（口輪: 相手のガード値-1）を持っていれば使用する！ ---
+    var cpuDebuff = cpuHand.find(function (c) {
+      return (c.type === 'item' || c.type === 'jockey') &&
+        c.effectType === 'guard_bonus' && (c.effectValue || 0) < 0;
+    });
+    if (cpuDebuff) {
+      var cdIdx = cpuHand.findIndex(function (c) { return c.id === cpuDebuff.id; });
+      if (cdIdx >= 0) cpuHand.splice(cdIdx, 1);
+      opponentHandCount = cpuHand.length;
+      updateOpponentHandDisplay();
+
+      showOpponentBubble('アイテム「' + cpuDebuff.name + '」発動！');
+      setNarrator(iconImg('bolt', 'img-icon-inline') + '相手が手札からアイテム「<b>' + cpuDebuff.name + '</b>」を使用！（効果: あなたの馬のガード値 ' + cpuDebuff.effectValue + '）');
+      showToast('相手が【' + cpuDebuff.name + '】を発動！ あなたのガード値 ' + cpuDebuff.effectValue, 'info', 2200);
+
+      var oppFarmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+      var oppFarmRect = oppFarmZone ? oppFarmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+      await flyCpuCard(cpuDebuff, oppFarmRect, 0.75);
+      oppFarm.push(cpuDebuff);
+      renderOppFarm();
+
+      myGuard = Math.max(0, myGuard + cpuDebuff.effectValue);
+      await sleep(600);
+    }
+
+    guardValue = myGuard;
+    var cpuRun = cpuRunValue;
+    var actualDraw = Math.max(0, cpuRun - myGuard);
+    var isFullyDefended = (actualDraw === 0);
+
+    var calcSubHtml =
+      '<div class="guard-calc-formula">' +
+      '<span class="guard-calc-pill pill-run">相手の走破数 <b>' + cpuRun + '</b></span>' +
+      '<span class="guard-calc-op">−</span>' +
+      '<span class="guard-calc-pill pill-guard">自分のガード数 <b>' + myGuard + '</b>' +
+      (currentItemBonus ? ' (アイテム補正含む)' : '') + '</span>' +
+      '<span class="guard-calc-op">＝</span>' +
+      (isFullyDefended ?
+        '<span class="guard-calc-pill pill-result-win">完全防御 (0)</span>' :
+        '<span class="guard-calc-pill pill-result-lose">相手ドロー <b>' + actualDraw + '枚</b></span>'
+      ) +
+      '</div>';
+
+    var guardTitle = isFullyDefended ?
+      '自分がガード！ 走破を完全に防いだ！' :
+      ('自分がガード！ 相手のドローを' + myGuard + '枚減少！');
+
+    setNarrator(iconImg('shield', 'img-icon-inline') + '<b>【' + card.name + '】でガード！</b> 相手の走破数 <b>' + cpuRun + '</b> − 自分のガード数 <b>' + myGuard + '</b> ＝ ' + (isFullyDefended ? '相手の走破を完全に阻止！' : '相手のドローが <b>' + actualDraw + '枚</b> に減少。'));
+    showBanner(guardTitle, 3200, card, calcSubHtml).then(function () {
+      executeCpuDraw(cpuRunValue - myGuard);
+    });
   }
 
   function executeCpuDraw(drawCount) {
@@ -2426,43 +2615,83 @@
             opponentHandCount = cpuHand.length;
             updateOpponentHandDisplay();
 
-            showOpponentBubble('「' + guardHorse.name + '」でガード！');
+            // 相手（CPU）も手札にガード強化アイテム（エリートジョッキーなど）があれば使用する！
+            var cpuGuardBuff = cpuHand.find(function (c) {
+              return (c.type === 'item' || c.type === 'jockey') &&
+                (c.effectType === 'elite_jockey' || (c.guardBonus && c.guardBonus > 0));
+            });
+            var cpuBuffPromise = Promise.resolve();
+            if (cpuGuardBuff) {
+              var cgbIdx = cpuHand.findIndex(function (c) { return c.id === cpuGuardBuff.id; });
+              if (cgbIdx >= 0) cpuHand.splice(cgbIdx, 1);
+              opponentHandCount = cpuHand.length;
+              updateOpponentHandDisplay();
 
-            // 相手手札からフィールドへガード馬が飛ぶ演出
-            var oppFieldEl = $('field-body-opp') || $('zone-field');
-            var fieldRect = oppFieldEl ? oppFieldEl.getBoundingClientRect() : { left: 240, top: 140, width: 70, height: 100 };
-            return flyCpuCard(guardHorse, fieldRect, 0.85).then(function () {
-              fieldGuard = guardHorse;
-              renderField();
-              var guardVal = (guardHorse.guard || 0) + cpuItemGuardBonus;
-              cpuItemGuardBonus = 0;
-              var isBreached = (totalRun > guardVal);
-              var runDistance = isBreached ? (totalRun - guardVal) : 0;
+              var buffVal = cpuGuardBuff.guardBonus || 1;
+              cpuItemGuardBonus += buffVal;
 
-              // 「自分の走破数 − 相手のガード数」を視覚的に明示する計算式パネル
-              var calcSubHtml =
-                '<div class="guard-calc-formula">' +
-                '<span class="guard-calc-pill pill-run">自分の走破数 <b>' + totalRun + '</b></span>' +
-                '<span class="guard-calc-op">−</span>' +
-                '<span class="guard-calc-pill pill-guard">相手のガード数 <b>' + guardVal + '</b></span>' +
-                '<span class="guard-calc-op">＝</span>' +
-                (isBreached ?
-                  '<span class="guard-calc-pill pill-result-win">走破 <b>' + runDistance + '</b></span>' :
-                  '<span class="guard-calc-pill pill-result-lose">防がれた (0)</span>'
-                ) +
-                '</div>';
+              showOpponentBubble('「' + cpuGuardBuff.name + '」でガード強化！');
+              setNarrator(iconImg('bolt', 'img-icon-inline') + '相手が手札からアイテム「<b>' + cpuGuardBuff.name + '</b>」を使用！ ガード値 <b>+' + buffVal + '</b>！');
+              showToast('相手が【' + cpuGuardBuff.name + '】でガード値 +' + buffVal + '！', 'info', 2200);
 
-              var bannerTitle = (isBreached ? '相手のガードを突破！' : '相手がガード！') +
-                '<br><span style="white-space:nowrap;">' + guardHorse.name + ' / ガード ' + guardVal + '</span>';
+              var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
+              var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
+              cpuBuffPromise = flyCpuCard(cpuGuardBuff, farmRect, 0.75).then(function () {
+                oppFarm.push(cpuGuardBuff);
+                renderOppFarm();
+                return sleep(500);
+              });
+            }
 
-              return showBanner(bannerTitle, 3500, guardHorse, calcSubHtml).then(function () {
-                if (!isBreached) {
-                  setNarrator(iconImg('cross', 'img-icon-inline') + '<b>走破失敗。</b> 自分の走破数 <b>' + totalRun + '</b> − 相手のガード数 <b>' + guardVal + '</b> ≦ 0 のため防がれました。走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
-                  return sendHorseToFarmAndReset();
-                } else {
-                  setNarrator(iconImg('shield', 'img-icon-inline') + '<b>ガード突破！</b> 自分の走破数 <b>' + totalRun + '</b> − 相手のガード数 <b>' + guardVal + '</b> ＝ <b>実効走破 ' + runDistance + '</b>。ガードを突破しました！');
-                  return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
-                }
+            return cpuBuffPromise.then(function () {
+              showOpponentBubble('「' + guardHorse.name + '」でガード！');
+
+              // 相手手札からフィールドへガード馬が飛ぶ演出
+              var oppFieldEl = $('field-body-opp') || $('zone-field');
+              var fieldRect = oppFieldEl ? oppFieldEl.getBoundingClientRect() : { left: 240, top: 140, width: 70, height: 100 };
+              return flyCpuCard(guardHorse, fieldRect, 0.85).then(function () {
+                fieldGuard = guardHorse;
+                renderField();
+                var currentGuardVal = (guardHorse.guard || 0) + cpuItemGuardBonus;
+                cpuItemGuardBonus = 0;
+
+                // 相手のガードに対し、プレイヤーが相手のガード値を減らすアイテム（口輪など）を使えるようにする
+                var debuffCards = opponentGuardDebuffCards();
+                var debuffPromise = debuffCards.length > 0 ?
+                  promptOpponentGuardDebuff(guardHorse, currentGuardVal, totalRun, debuffCards) :
+                  Promise.resolve(currentGuardVal);
+
+                return debuffPromise.then(function (finalGuardVal) {
+                  var guardVal = finalGuardVal;
+                  var isBreached = (totalRun > guardVal);
+                  var runDistance = isBreached ? (totalRun - guardVal) : 0;
+
+                  // 「自分の走破数 − 相手のガード数」を視覚的に明示する計算式パネル
+                  var calcSubHtml =
+                    '<div class="guard-calc-formula">' +
+                    '<span class="guard-calc-pill pill-run">自分の走破数 <b>' + totalRun + '</b></span>' +
+                    '<span class="guard-calc-op">−</span>' +
+                    '<span class="guard-calc-pill pill-guard">相手のガード数 <b>' + guardVal + '</b></span>' +
+                    '<span class="guard-calc-op">＝</span>' +
+                    (isBreached ?
+                      '<span class="guard-calc-pill pill-result-win">走破 <b>' + runDistance + '</b></span>' :
+                      '<span class="guard-calc-pill pill-result-lose">防がれた (0)</span>'
+                    ) +
+                    '</div>';
+
+                  var bannerTitle = (isBreached ? '相手のガードを突破！' : '相手がガード！') +
+                    '<br><span style="white-space:nowrap;">' + guardHorse.name + ' / ガード ' + guardVal + '</span>';
+
+                  return showBanner(bannerTitle, 3500, guardHorse, calcSubHtml).then(function () {
+                    if (!isBreached) {
+                      setNarrator(iconImg('cross', 'img-icon-inline') + '<b>走破失敗。</b> 自分の走破数 <b>' + totalRun + '</b> − 相手のガード数 <b>' + guardVal + '</b> ≦ 0 のため防がれました。走破した<b>【' + horseInPlay.name + '】</b>はファームへ送られます。');
+                      return sendHorseToFarmAndReset();
+                    } else {
+                      setNarrator(iconImg('shield', 'img-icon-inline') + '<b>ガード突破！</b> 自分の走破数 <b>' + totalRun + '</b> − 相手のガード数 <b>' + guardVal + '</b> ＝ <b>実効走破 ' + runDistance + '</b>。ガードを突破しました！');
+                      return sleep(900).then(function () { return continueRunLogic(runDistance, true, guardVal); });
+                    }
+                  });
+                });
               });
             });
           }
@@ -2766,9 +2995,12 @@
     if (phase === 'guard_select') {
       if (card.type === 'horse') {
         selectGuard(card);
+      } else if ((card.type === 'item' || card.type === 'jockey') &&
+        (card.effectType === 'guard_bonus' || card.effectType === 'elite_jockey' || (card.guardBonus != null && card.guardBonus !== 0))) {
+        playGuardItemDirectly(card);
       } else {
         shakeCard(id);
-        setNarrator(iconImg('shield', 'img-icon-inline') + 'ガードには<b>馬カード</b>を選んでください。（フォースカードやアイテムではガードできません）');
+        setNarrator(iconImg('shield', 'img-icon-inline') + 'ガードには<b>馬カード</b>、または<b>ガード値を増減できるアイテム</b>を選んでください。');
       }
       return;
     }
@@ -4268,6 +4500,18 @@
     Haptics.tap();
     closeRunSupportChoice(false);
   });
+  if ($('guard-support-yes')) {
+    $('guard-support-yes').addEventListener('click', function () {
+      Haptics.tap();
+      closeGuardSupportChoice(true);
+    });
+  }
+  if ($('guard-support-no')) {
+    $('guard-support-no').addEventListener('click', function () {
+      Haptics.tap();
+      closeGuardSupportChoice(false);
+    });
+  }
 
   var handPrevBtn = $('hand-prev');
   var handNextBtn = $('hand-next');

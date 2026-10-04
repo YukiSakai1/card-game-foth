@@ -4649,6 +4649,7 @@
 
   #opponent-thinking-popup,
   #run-support-popup,
+  #guard-support-popup,
   #run-select-horse-popup,
   #situation-hint-popup,
   #farm-confirm-popup,
@@ -4665,6 +4666,7 @@
 
   #opponent-thinking-popup .popup-box,
   #run-support-popup .popup-box,
+  #guard-support-popup .popup-box,
   #run-select-horse-popup .popup-box,
   #situation-hint-popup .popup-box,
   #farm-confirm-popup .popup-box,
@@ -4681,6 +4683,7 @@
 
   #opponent-thinking-popup .popup-title,
   #run-support-popup .popup-title,
+  #guard-support-popup .popup-title,
   #run-select-horse-popup .popup-title,
   #situation-hint-popup .popup-title,
   #farm-confirm-popup .popup-title,
@@ -4693,6 +4696,7 @@
 
   #opponent-thinking-popup .popup-desc,
   #run-support-popup .popup-desc,
+  #guard-support-popup .popup-desc,
   #run-select-horse-popup .popup-desc,
   #situation-hint-popup .popup-desc,
   #farm-confirm-popup .popup-desc,
@@ -4704,6 +4708,7 @@
   }
 
   #run-support-popup .popup-btns,
+  #guard-support-popup .popup-btns,
   #run-select-horse-popup .popup-btns,
   #situation-hint-popup .popup-btns,
   #farm-confirm-popup .popup-btns,
@@ -4715,6 +4720,7 @@
   }
 
   #run-support-popup .popup-btns button,
+  #guard-support-popup .popup-btns button,
   #run-select-horse-popup .popup-btns button,
   #situation-hint-popup .popup-btns button,
   #farm-confirm-popup .popup-btns button {
@@ -4728,6 +4734,7 @@
   }
 
   #run-support-popup .popup-btns button:active,
+  #guard-support-popup .popup-btns button:active,
   #run-select-horse-popup .popup-btns button:active,
   #situation-hint-popup .popup-btns button:active,
   #farm-confirm-popup .popup-btns button:active {
@@ -4735,6 +4742,7 @@
   }
 
   #run-support-popup .btn-guard,
+  #guard-support-popup .btn-guard,
   #run-select-horse-popup .btn-guard,
   #situation-hint-popup .btn-guard,
   #farm-confirm-popup .btn-guard {
@@ -4743,6 +4751,7 @@
   }
 
   #run-support-popup .btn-skip,
+  #guard-support-popup .btn-skip,
   #run-select-horse-popup .btn-skip,
   #situation-hint-popup .btn-skip,
   #farm-confirm-popup .btn-skip {
@@ -8875,8 +8884,11 @@ body #guard-popup .guard-horse-slot .card {
 
 /* 白ベースの清潔感あふれるモーダル外観（参考画像デザイン） */
 body #guard-popup .popup-box,
+body #guard-support-popup .popup-box,
 body.field-cyber #guard-popup .popup-box,
-body.field-white #guard-popup .popup-box {
+body.field-cyber #guard-support-popup .popup-box,
+body.field-white #guard-popup .popup-box,
+body.field-white #guard-support-popup .popup-box {
   position: relative !important;
   top: auto !important;
   left: auto !important;
@@ -8893,14 +8905,18 @@ body.field-white #guard-popup .popup-box {
   -webkit-backdrop-filter: none !important;
 }
 
-body #guard-popup .popup-box::before {
+body #guard-popup .popup-box::before,
+body #guard-support-popup .popup-box::before {
   display: none !important;
 }
 
 /* タイトル：力強いゴシック黒文字 */
 body #guard-popup .popup-title,
+body #guard-support-popup .popup-title,
 body.field-cyber #guard-popup .popup-title,
-body.field-white #guard-popup .popup-title {
+body.field-cyber #guard-support-popup .popup-title,
+body.field-white #guard-popup .popup-title,
+body.field-white #guard-support-popup .popup-title {
   font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Noto Sans JP', sans-serif !important;
   font-weight: 800 !important;
   font-size: 18px !important;
@@ -8915,14 +8931,18 @@ body.field-white #guard-popup .popup-title {
   padding-bottom: 0 !important;
 }
 
-body #guard-popup .popup-title::after {
+body #guard-popup .popup-title::after,
+body #guard-support-popup .popup-title::after {
   display: none !important;
 }
 
 /* 説明文：読みやすいハイコントラストグレー */
 body #guard-popup .popup-desc,
+body #guard-support-popup .popup-desc,
 body.field-cyber #guard-popup .popup-desc,
-body.field-white #guard-popup .popup-desc {
+body.field-cyber #guard-support-popup .popup-desc,
+body.field-white #guard-popup .popup-desc,
+body.field-white #guard-support-popup .popup-desc {
   font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Noto Sans JP', sans-serif !important;
   font-weight: 500 !important;
   font-size: 13.5px !important;
@@ -8933,41 +8953,48 @@ body.field-white #guard-popup .popup-desc {
 }
 
 body #guard-popup .popup-desc b,
-body #guard-popup .popup-desc strong {
+body #guard-popup .popup-desc strong,
+body #guard-support-popup .popup-desc b,
+body #guard-support-popup .popup-desc strong {
   color: #0f172a !important;
   font-weight: 800 !important;
   text-shadow: none !important;
 }
 
-body #guard-popup .popup-lead {
+body #guard-popup .popup-lead,
+body #guard-support-popup .popup-lead {
   font-size: 14px !important;
   font-weight: 700 !important;
   color: #0f172a !important;
   margin-bottom: 6px !important;
 }
 
-body #guard-popup .popup-subtext {
+body #guard-popup .popup-subtext,
+body #guard-support-popup .popup-subtext {
   font-size: 12px !important;
   color: #64748b !important;
   margin-top: 6px !important;
   line-height: 1.5 !important;
 }
 
-body #guard-popup .popup-stat-row {
+body #guard-popup .popup-stat-row,
+body #guard-support-popup .popup-stat-row {
   font-size: 13.5px !important;
   font-weight: 700 !important;
   color: #1e293b !important;
   margin: 8px 0 !important;
 }
 
-body #guard-popup .popup-highlight-value {
+body #guard-popup .popup-highlight-value,
+body #guard-support-popup .popup-highlight-value {
   color: #e11d48 !important;
   font-weight: 900 !important;
   font-size: 1.15em !important;
   text-shadow: none !important;
 }
 
-body #guard-popup .popup-breakdown {
+body #guard-popup .popup-breakdown,
+body #guard-support-popup .popup-breakdown {
   background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
   border-radius: 8px !important;
@@ -8979,17 +9006,21 @@ body #guard-popup .popup-breakdown {
 }
 
 /* ボタン群レイアウト */
-body #guard-popup .popup-btns {
+body #guard-popup .popup-btns,
+body #guard-support-popup .popup-btns {
   display: flex !important;
   gap: 10px !important;
   margin-top: 18px !important;
   width: 100% !important;
 }
 
-/* 主ボタン（ガードする）：鮮烈なコーラルレッド */
+/* 主ボタン（ガードする／使う）：鮮烈なコーラルレッド */
 body #guard-popup .btn-guard,
+body #guard-support-popup .btn-guard,
 body.field-cyber #guard-popup .btn-guard,
-body.field-white #guard-popup .btn-guard {
+body.field-cyber #guard-support-popup .btn-guard,
+body.field-white #guard-popup .btn-guard,
+body.field-white #guard-support-popup .btn-guard {
   flex: 1 !important;
   background: #ff3b30 !important;
   color: #ffffff !important;
@@ -9004,20 +9035,25 @@ body.field-white #guard-popup .btn-guard {
   transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-body #guard-popup .btn-guard:hover {
+body #guard-popup .btn-guard:hover,
+body #guard-support-popup .btn-guard:hover {
   filter: brightness(1.06) !important;
   box-shadow: 0 6px 18px rgba(255, 59, 48, 0.42) !important;
   transform: translateY(-1px) !important;
 }
 
-body #guard-popup .btn-guard:active {
+body #guard-popup .btn-guard:active,
+body #guard-support-popup .btn-guard:active {
   transform: scale(0.97) !important;
 }
 
-/* 副ボタン（ガードしない）：ライトグレー＋控えめな枠 */
+/* 副ボタン（ガードしない／使わない）：ライトグレー＋控えめな枠 */
 body #guard-popup .btn-skip,
+body #guard-support-popup .btn-skip,
 body.field-cyber #guard-popup .btn-skip,
-body.field-white #guard-popup .btn-skip {
+body.field-cyber #guard-support-popup .btn-skip,
+body.field-white #guard-popup .btn-skip,
+body.field-white #guard-support-popup .btn-skip {
   flex: 1 !important;
   background: #f1f5f9 !important;
   color: #475569 !important;
@@ -9032,14 +9068,16 @@ body.field-white #guard-popup .btn-skip {
   transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease !important;
 }
 
-body #guard-popup .btn-skip:hover {
+body #guard-popup .btn-skip:hover,
+body #guard-support-popup .btn-skip:hover {
   background: #e2e8f0 !important;
   color: #0f172a !important;
   border-color: #94a3b8 !important;
   transform: translateY(-1px) !important;
 }
 
-body #guard-popup .btn-skip:active {
+body #guard-popup .btn-skip:active,
+body #guard-support-popup .btn-skip:active {
   transform: scale(0.97) !important;
 }
 
