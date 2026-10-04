@@ -4645,6 +4645,7 @@
   #run-support-popup,
   #run-select-horse-popup,
   #situation-hint-popup,
+  #farm-confirm-popup,
   #notice-action-popup {
     position: fixed;
     inset: 0;
@@ -4660,6 +4661,7 @@
   #run-support-popup .popup-box,
   #run-select-horse-popup .popup-box,
   #situation-hint-popup .popup-box,
+  #farm-confirm-popup .popup-box,
   #notice-action-popup .popup-box {
     background: linear-gradient(180deg, #1a2f22, #0c1710);
     border: 3px solid var(--gold-2);
@@ -4675,6 +4677,7 @@
   #run-support-popup .popup-title,
   #run-select-horse-popup .popup-title,
   #situation-hint-popup .popup-title,
+  #farm-confirm-popup .popup-title,
   #notice-action-popup .popup-title {
     font-size: 18px;
     font-weight: 700;
@@ -4686,6 +4689,7 @@
   #run-support-popup .popup-desc,
   #run-select-horse-popup .popup-desc,
   #situation-hint-popup .popup-desc,
+  #farm-confirm-popup .popup-desc,
   #notice-action-popup .popup-desc {
     font-size: 13px;
     color: var(--rail);
@@ -4696,6 +4700,7 @@
   #run-support-popup .popup-btns,
   #run-select-horse-popup .popup-btns,
   #situation-hint-popup .popup-btns,
+  #farm-confirm-popup .popup-btns,
   #notice-action-popup .popup-btns {
     display: flex;
     gap: 12px;
@@ -4705,7 +4710,8 @@
 
   #run-support-popup .popup-btns button,
   #run-select-horse-popup .popup-btns button,
-  #situation-hint-popup .popup-btns button {
+  #situation-hint-popup .popup-btns button,
+  #farm-confirm-popup .popup-btns button {
     padding: 8px 20px;
     border-radius: 10px;
     font-weight: 700;
@@ -4717,20 +4723,23 @@
 
   #run-support-popup .popup-btns button:active,
   #run-select-horse-popup .popup-btns button:active,
-  #situation-hint-popup .popup-btns button:active {
+  #situation-hint-popup .popup-btns button:active,
+  #farm-confirm-popup .popup-btns button:active {
     transform: scale(0.95);
   }
 
   #run-support-popup .btn-guard,
   #run-select-horse-popup .btn-guard,
-  #situation-hint-popup .btn-guard {
+  #situation-hint-popup .btn-guard,
+  #farm-confirm-popup .btn-guard {
     background: var(--guard);
     color: #fff;
   }
 
   #run-support-popup .btn-skip,
   #run-select-horse-popup .btn-skip,
-  #situation-hint-popup .btn-skip {
+  #situation-hint-popup .btn-skip,
+  #farm-confirm-popup .btn-skip {
     background: rgba(244, 240, 230, 0.15);
     color: var(--rail);
     border: 1px solid var(--line);
@@ -7460,6 +7469,7 @@ body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
 body #run-select-horse-popup .popup-box,
 body #situation-hint-popup .popup-box,
+body #farm-confirm-popup .popup-box,
 body #opponent-thinking-popup .popup-box,
 body #notice-action-popup .popup-box,
 body.field-white #guard-popup .popup-box,
@@ -7485,6 +7495,7 @@ body #guard-popup .popup-box::before,
 body #run-support-popup .popup-box::before,
 body #run-select-horse-popup .popup-box::before,
 body #situation-hint-popup .popup-box::before,
+body #farm-confirm-popup .popup-box::before,
 body #opponent-thinking-popup .popup-box::before,
 body #notice-action-popup .popup-box::before {
   content: '' !important;
@@ -7501,6 +7512,7 @@ body #guard-popup .popup-title,
 body #run-support-popup .popup-title,
 body #run-select-horse-popup .popup-title,
 body #situation-hint-popup .popup-title,
+body #farm-confirm-popup .popup-title,
 body #opponent-thinking-popup .popup-title,
 body #notice-action-popup .popup-title,
 body.field-white #guard-popup .popup-title {
@@ -7523,6 +7535,7 @@ body #guard-popup .popup-title::after,
 body #run-support-popup .popup-title::after,
 body #run-select-horse-popup .popup-title::after,
 body #situation-hint-popup .popup-title::after,
+body #farm-confirm-popup .popup-title::after,
 body #opponent-thinking-popup .popup-title::after,
 body #notice-action-popup .popup-title::after {
   content: '';
@@ -7539,6 +7552,7 @@ body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
 body #run-select-horse-popup .popup-desc,
 body #situation-hint-popup .popup-desc,
+body #farm-confirm-popup .popup-desc,
 body #opponent-thinking-popup .popup-desc,
 body #notice-action-popup .popup-desc,
 body.field-white #guard-popup .popup-desc {
@@ -7667,6 +7681,7 @@ body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #run-select-horse-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
+body #farm-confirm-popup .btn-guard,
 body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
   background: linear-gradient(180deg, #fff2cc 0%, #ffd859 35%, #f59e0b 70%, #d97706 100%) !important;
@@ -7689,6 +7704,7 @@ body #guard-popup .btn-guard:hover,
 body #run-support-popup .btn-guard:hover,
 body #run-select-horse-popup .btn-guard:hover,
 body #situation-hint-popup .btn-guard:hover,
+body #farm-confirm-popup .btn-guard:hover,
 body #notice-action-popup .btn-guard:hover {
   transform: translateY(-2px) scale(1.02);
   filter: brightness(1.08);
@@ -7702,6 +7718,7 @@ body #guard-popup .btn-guard:active,
 body #run-support-popup .btn-guard:active,
 body #run-select-horse-popup .btn-guard:active,
 body #situation-hint-popup .btn-guard:active,
+body #farm-confirm-popup .btn-guard:active,
 body #notice-action-popup .btn-guard:active {
   transform: translateY(1px) scale(0.98);
 }
@@ -7710,7 +7727,8 @@ body #notice-action-popup .btn-guard:active {
 body #guard-popup .btn-skip,
 body #run-support-popup .btn-skip,
 body #run-select-horse-popup .btn-skip,
-body #situation-hint-popup .btn-skip {
+body #situation-hint-popup .btn-skip,
+body #farm-confirm-popup .btn-skip {
   background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.96) 100%) !important;
   color: #cbd5e1 !important;
   border: 1.5px solid rgba(148, 163, 184, 0.5) !important;
@@ -7729,7 +7747,8 @@ body #situation-hint-popup .btn-skip {
 body #guard-popup .btn-skip:hover,
 body #run-support-popup .btn-skip:hover,
 body #run-select-horse-popup .btn-skip:hover,
-body #situation-hint-popup .btn-skip:hover {
+body #situation-hint-popup .btn-skip:hover,
+body #farm-confirm-popup .btn-skip:hover {
   background: linear-gradient(180deg, rgba(45, 60, 85, 0.95) 0%, rgba(20, 32, 54, 0.98) 100%) !important;
   color: #ffffff !important;
   border-color: rgba(203, 213, 225, 0.75) !important;
@@ -7740,6 +7759,7 @@ body #guard-popup .popup-btns,
 body #run-support-popup .popup-btns,
 body #run-select-horse-popup .popup-btns,
 body #situation-hint-popup .popup-btns,
+body #farm-confirm-popup .popup-btns,
 body #notice-action-popup .popup-btns {
   display: flex !important;
   justify-content: center !important;
@@ -7751,6 +7771,7 @@ body #guard-popup .popup-btns button,
 body #run-support-popup .popup-btns button,
 body #run-select-horse-popup .popup-btns button,
 body #situation-hint-popup .popup-btns button,
+body #farm-confirm-popup .popup-btns button,
 body #notice-action-popup .popup-btns button {
   white-space: nowrap;
 }
@@ -8474,6 +8495,7 @@ body #guard-popup .popup-box,
 body #run-support-popup .popup-box,
 body #run-select-horse-popup .popup-box,
 body #situation-hint-popup .popup-box,
+body #farm-confirm-popup .popup-box,
 body #opponent-thinking-popup .popup-box,
 body #notice-action-popup .popup-box,
 body.field-white #guard-popup .popup-box,
@@ -8499,6 +8521,7 @@ body #guard-popup .btn-guard,
 body #run-support-popup .btn-guard,
 body #run-select-horse-popup .btn-guard,
 body #situation-hint-popup .btn-guard,
+body #farm-confirm-popup .btn-guard,
 body #notice-action-popup .btn-guard,
 body .closeup-action-btn.btn-guard {
   border-radius: 10px !important;
@@ -8521,7 +8544,8 @@ body .closeup-action-btn.btn-guard {
 body #guard-popup .btn-skip,
 body #run-support-popup .btn-skip,
 body #run-select-horse-popup .btn-skip,
-body #situation-hint-popup .btn-skip {
+body #situation-hint-popup .btn-skip,
+body #farm-confirm-popup .btn-skip {
   border-radius: 10px !important;
   background: linear-gradient(180deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
   color: #cbd5e1 !important;
@@ -8541,6 +8565,7 @@ body #guard-popup .btn-guard:hover,
 body #run-support-popup .btn-guard:hover,
 body #run-select-horse-popup .btn-guard:hover,
 body #situation-hint-popup .btn-guard:hover,
+body #farm-confirm-popup .btn-guard:hover,
 body #notice-action-popup .btn-guard:hover {
   transform: translateY(-2px) scale(1.02);
   filter: brightness(1.08);
@@ -8553,7 +8578,8 @@ body #notice-action-popup .btn-guard:hover {
 body #guard-popup .btn-skip:hover,
 body #run-support-popup .btn-skip:hover,
 body #run-select-horse-popup .btn-skip:hover,
-body #situation-hint-popup .btn-skip:hover {
+body #situation-hint-popup .btn-skip:hover,
+body #farm-confirm-popup .btn-skip:hover {
   background: linear-gradient(180deg, rgba(45, 60, 85, 0.96) 0%, rgba(20, 32, 54, 0.98) 100%) !important;
   color: #ffffff !important;
   border-color: rgba(203, 213, 225, 0.8) !important;
@@ -8731,6 +8757,7 @@ body #guard-popup .popup-desc,
 body #run-support-popup .popup-desc,
 body #run-select-horse-popup .popup-desc,
 body #situation-hint-popup .popup-desc,
+body #farm-confirm-popup .popup-desc,
 body #notice-action-popup .popup-desc,
 body .banner-box .banner-box-text,
 body .narrator-text {

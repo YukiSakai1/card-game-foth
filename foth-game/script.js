@@ -4638,13 +4638,57 @@
     };
   })();
 
+  function showFarmConfirmPopup(type) {
+    hideToast();
+    var popup = $('farm-confirm-popup');
+    if (!popup) {
+      FarmViewer.open(type);
+      return;
+    }
+    var isPlayer = (type !== 'opp');
+    var titleEl = $('farm-confirm-title');
+    var descEl = $('farm-confirm-desc');
+    if (titleEl) titleEl.textContent = isPlayer ? '自分のファーム' : '相手のファーム';
+    if (descEl) descEl.textContent = 'ファームを確認しますか？';
+
+    popup.style.display = 'flex';
+
+    var yesBtn = $('farm-confirm-yes');
+    var noBtn = $('farm-confirm-no');
+    var newYes = yesBtn.cloneNode(true);
+    var newNo = noBtn.cloneNode(true);
+    yesBtn.parentNode.replaceChild(newYes, yesBtn);
+    noBtn.parentNode.replaceChild(newNo, noBtn);
+
+    function closePopup() {
+      popup.style.display = 'none';
+    }
+
+    newYes.addEventListener('click', function (e) {
+      e.stopPropagation();
+      closePopup();
+      FarmViewer.open(type);
+    });
+
+    newNo.addEventListener('click', function (e) {
+      e.stopPropagation();
+      closePopup();
+    });
+
+    popup.onclick = function (e) {
+      if (e.target === popup) {
+        closePopup();
+      }
+    };
+  }
+
   // 自分のファームをクリックしたときの処理
   var farmZoneEl = $('zone-farm');
   if (farmZoneEl) {
     farmZoneEl.addEventListener('click', function (e) {
       if (suppressNextHandClick) { suppressNextHandClick = false; return; }
       if (phase === 'select_force' || phase === 'discard_select') return; // 手札から送るフェーズ中は干渉しない
-      FarmViewer.open('player');
+      showFarmConfirmPopup('player');
     });
   }
 
@@ -4653,7 +4697,7 @@
   if (oppFarmZoneEl) {
     oppFarmZoneEl.addEventListener('click', function (e) {
       if (suppressNextHandClick) { suppressNextHandClick = false; return; }
-      FarmViewer.open('opp');
+      showFarmConfirmPopup('opp');
     });
   }
 
