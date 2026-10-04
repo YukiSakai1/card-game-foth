@@ -2883,8 +2883,9 @@
         // コストを支払いました。：まずトーストをしっかり表示し、消去完了後に走破ポップアップ（サポート確認等）へ進む
         phase = 'cost_paid';
         updateCommandButtons();
-        showToast('コストを支払いました。走破します', 1400);
-        sleep(1400).then(function () {
+        var horseName = (currentRunHorse && currentRunHorse.name) ? currentRunHorse.name : '馬カード';
+        showToast('コストを支払いました。' + horseName + 'で走破します。', 1500);
+        sleep(1500).then(function () {
           hideToast();
           executeRun();
         });
