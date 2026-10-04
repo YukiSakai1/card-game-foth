@@ -8854,7 +8854,7 @@ body #guard-popup {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 12px !important;
+  gap: 14px !important;
   padding: 16px !important;
   box-sizing: border-box !important;
 }
@@ -8869,16 +8869,178 @@ body #guard-popup .guard-horse-slot {
 
 body #guard-popup .guard-horse-slot .card {
   width: min(280px, 74vw) !important;
-  max-height: 48vh !important;
+  max-height: 46vh !important;
   border-radius: 12px !important;
 }
 
-body #guard-popup .popup-box {
+/* 白ベースの清潔感あふれるモーダル外観（参考画像デザイン） */
+body #guard-popup .popup-box,
+body.field-cyber #guard-popup .popup-box,
+body.field-white #guard-popup .popup-box {
   position: relative !important;
   top: auto !important;
   left: auto !important;
   margin: 0 !important;
   width: min(340px, 88vw) !important;
+  background: #ffffff !important;
+  border: none !important;
+  border-radius: 18px !important;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  padding: 24px 22px 20px !important;
+  color: #1e293b !important;
+  text-align: center !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body #guard-popup .popup-box::before {
+  display: none !important;
+}
+
+/* タイトル：力強いゴシック黒文字 */
+body #guard-popup .popup-title,
+body.field-cyber #guard-popup .popup-title,
+body.field-white #guard-popup .popup-title {
+  font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Noto Sans JP', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 18px !important;
+  color: #0f172a !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  filter: none !important;
+  text-shadow: none !important;
+  letter-spacing: 0.02em !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 0 !important;
+}
+
+body #guard-popup .popup-title::after {
+  display: none !important;
+}
+
+/* 説明文：読みやすいハイコントラストグレー */
+body #guard-popup .popup-desc,
+body.field-cyber #guard-popup .popup-desc,
+body.field-white #guard-popup .popup-desc {
+  font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Noto Sans JP', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 13.5px !important;
+  color: #334155 !important;
+  line-height: 1.65 !important;
+  text-shadow: none !important;
+  margin-bottom: 14px !important;
+}
+
+body #guard-popup .popup-desc b,
+body #guard-popup .popup-desc strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+body #guard-popup .popup-lead {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 6px !important;
+}
+
+body #guard-popup .popup-subtext {
+  font-size: 12px !important;
+  color: #64748b !important;
+  margin-top: 6px !important;
+  line-height: 1.5 !important;
+}
+
+body #guard-popup .popup-stat-row {
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin: 8px 0 !important;
+}
+
+body #guard-popup .popup-highlight-value {
+  color: #e11d48 !important;
+  font-weight: 900 !important;
+  font-size: 1.15em !important;
+  text-shadow: none !important;
+}
+
+body #guard-popup .popup-breakdown {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  margin-top: 8px !important;
+  text-shadow: none !important;
+}
+
+/* ボタン群レイアウト */
+body #guard-popup .popup-btns {
+  display: flex !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+  width: 100% !important;
+}
+
+/* 主ボタン（ガードする）：鮮烈なコーラルレッド */
+body #guard-popup .btn-guard,
+body.field-cyber #guard-popup .btn-guard,
+body.field-white #guard-popup .btn-guard {
+  flex: 1 !important;
+  background: #ff3b30 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  padding: 12px 16px !important;
+  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.32) !important;
+  text-shadow: none !important;
+  letter-spacing: 0.03em !important;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+body #guard-popup .btn-guard:hover {
+  filter: brightness(1.06) !important;
+  box-shadow: 0 6px 18px rgba(255, 59, 48, 0.42) !important;
+  transform: translateY(-1px) !important;
+}
+
+body #guard-popup .btn-guard:active {
+  transform: scale(0.97) !important;
+}
+
+/* 副ボタン（ガードしない）：ライトグレー＋控えめな枠 */
+body #guard-popup .btn-skip,
+body.field-cyber #guard-popup .btn-skip,
+body.field-white #guard-popup .btn-skip {
+  flex: 1 !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  font-size: 14.5px !important;
+  padding: 12px 16px !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  letter-spacing: 0.02em !important;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease !important;
+}
+
+body #guard-popup .btn-skip:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+  transform: translateY(-1px) !important;
+}
+
+body #guard-popup .btn-skip:active {
+  transform: scale(0.97) !important;
 }
 
 /* 3. カード拡大・詳細レイヤー（カードが上、詳細吹き出し・アクションボタンが下） */
