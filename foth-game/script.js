@@ -2354,7 +2354,7 @@
 
           if (!shouldGuard) {
             cpuConsecutiveGuardCount = 0; // ガードしなかった場合は連続カウントをリセット
-            showOpponentBubble('ガードしません');
+            showOpponentBubble('ガードしません', 2500);
             setNarrator('相手プレイヤーはガードを選択しませんでした。');
 
             var noticePromise = Promise.resolve();
@@ -3578,7 +3578,7 @@
     await waitNext();
     if (myRunId !== tutorialRunId) return;
     setNarrator('相手：「<b>ガードしません</b>」');
-    await showOpponentBubble('ガードしません');
+    await showOpponentBubble('ガードしません', 2500);
     showNextButton(true);
     await waitNext();
     if (myRunId !== tutorialRunId) return;
