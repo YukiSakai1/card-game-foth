@@ -1283,7 +1283,7 @@
     cardExplainOpen = true;
   }
   function cardExplainRing(ringId) {
-    ['ring-cost', 'ring-stats'].forEach(function (id) {
+    ['ring-cost', 'ring-stats', 'ring-run', 'ring-guard'].forEach(function (id) {
       var r = $(id);
       if (r) r.classList.toggle('on', id === ringId);
     });
@@ -3568,15 +3568,24 @@
     await waitNext();
     if (myRunId !== tutorialRunId) return;
 
-    // STEP 11: 走破成功 → 報酬ドロー（背景に馬カードを大きく映す）
+    // STEP 11: 走破成功 → 報酬ドロー（馬カードを大きく表示＋走破数をハイライト）
     setProgress(12);
-    var runCount = field ? (field.run || 3) : 3;
+    var runCard = field || targetHorse || goldShip();
+    var runCount = runCard ? (runCard.run || 3) : 3;
     setNarrator('やった、<b>走破成功だ！</b> 走破に成功したら、馬カードの走破数ぶんだけ山札からカードを引くよ。');
-    await showBanner('走破成功！', 3200, field, '走破に成功しました<br>馬の走破数 ' + runCount);
+    await showBanner('走破成功！', 2600, runCard, '走破に成功しました<br>馬の走破数 ' + runCount);
+    if (myRunId !== tutorialRunId) return;
+
+    // 馬カードを大きく表示し、走破数部分をハイライト
+    cardExplainShow(runCard);
+    cardExplainRing('ring-run');
+
     showNextButton(true);
     await waitNext();
-    if (myRunId !== tutorialRunId) return;
-    setNarrator('走破数は ' + runCount + '。山札から ' + runCount + ' 枚引くよ。');
+    if (myRunId !== tutorialRunId) { cardExplainHide(); return; }
+
+    setNarrator('走破数は <b>' + runCount + '</b>。山札から ' + runCount + ' 枚引くよ。');
+    cardExplainHide();
     hideArrow();
     await rewardDraw(runCount);
     if (myRunId !== tutorialRunId) return;

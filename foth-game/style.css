@@ -8870,6 +8870,22 @@ body #closeup-layer .closeup-toast {
   height: 13.2%;
   border-radius: 12px;
 }
+/* 走破数のみ：下部左側の走破バッジをピンポイントで囲む */
+.card-explain-ring.ring-run {
+  left: 47.0%;
+  top: 84.0%;
+  width: 25.0%;
+  height: 13.2%;
+  border-radius: 10px;
+}
+/* ガード値のみ：下部右側のガードバッジをピンポイントで囲む */
+.card-explain-ring.ring-guard {
+  left: 72.5%;
+  top: 84.0%;
+  width: 25.0%;
+  height: 13.2%;
+  border-radius: 10px;
+}
 
 /* ==================== BACKGROUND & FIELD DIM (薄くする設定) ==================== */
 :root {
