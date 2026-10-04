@@ -2452,9 +2452,8 @@
                 ) +
                 '</div>';
 
-              var bannerTitle = isBreached ?
-                ('相手のガードを突破！ 実効走破 <b>' + runDistance + '</b>') :
-                ('相手がガード！ 走破を防がれました');
+              var bannerTitle = (isBreached ? '相手のガードを突破！' : '相手がガード！') +
+                '<br><span style="white-space:nowrap;">' + guardHorse.name + ' / ガード ' + guardVal + '</span>';
 
               return showBanner(bannerTitle, 3500, guardHorse, calcSubHtml).then(function () {
                 if (!isBreached) {
