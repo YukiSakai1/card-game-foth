@@ -661,7 +661,7 @@
     }
     if (field) {
       var selCls = isHorseSelect ? ' selectable is-field-selectable' : '';
-      var badgeHtml = isHorseSelect ? '<div class="field-reuse-badge">' + iconImg('reload', 'img-icon-inline') + 'タップで再走破</div>' : '';
+      var badgeHtml = isHorseSelect ? '<div class="field-reuse-badge">' + iconImg('reload', 'img-icon-inline') + 'タップで続けて走破</div>' : '';
       if (field.img) {
         body.innerHTML =
           '<div class="field-mini-wrap">' + badgeHtml +
@@ -1487,7 +1487,7 @@
 
     if (descEl) {
       if (field) {
-        descEl.innerHTML = '<div class="popup-lead">走破させる馬カードを選んでください。</div><div class="popup-subtext">場にいる「<b>' + field.name + '</b>」で再走破するか、手札の馬カードを選んで入れ替えます。</div>';
+        descEl.innerHTML = '<div class="popup-lead">走破させる馬カードを選んでください。</div><div class="popup-subtext">場にいる「<b>' + field.name + '</b>」で続けて走破するか、手札の馬カードを選んで入れ替えます。</div>';
       } else {
         descEl.innerHTML = '<div class="popup-lead">走破させる<b>馬カード</b>を手札から選んでください。</div><div class="popup-subtext">（選んだ馬のコスト分のフォースカードを支払って走破します）</div>';
       }
@@ -1877,7 +1877,7 @@
     await sleep(500);
   }
 
-  // CPUが手札からフォースカードを支払って馬カードを走破させるロジック（場の馬の再走破・入れ替えに対応）
+  // CPUが手札からフォースカードを支払って馬カードを走破させるロジック（場の馬の続けて走破・入れ替えに対応）
   async function cpuPlayHorseIfApplicable() {
     var farmZone = $('opp-farm-pile') || $('zone-opp-farm') || $('zone-farm');
     var farmRect = farmZone ? farmZone.getBoundingClientRect() : { left: 350, top: 200, width: 80, height: 110 };
@@ -1900,7 +1900,7 @@
         chosenHorse = handHorse;
         isReusingField = false;
       } else if (canReuseField) {
-        // 場の馬でそのまま再走破（コスト分のフォースがある場合のみ）
+        // 場の馬でそのまま続けて走破（コスト分のフォースがある場合のみ）
         chosenHorse = cpuHorseCard;
         isReusingField = true;
       } else if (handHorse) {
@@ -1928,9 +1928,9 @@
     var cost = chosenHorse.cost || 2;
 
     if (isReusingField) {
-      showOpponentBubble('「' + chosenHorse.name + '」で再走破！');
+      showOpponentBubble('「' + chosenHorse.name + '」で続けて走破！');
       setNarrator(iconImg('brain', 'img-icon-inline') + '相手が手札から<b>フォースカード ' + cost + '枚</b> を支払い、場にいる「<b>' + chosenHorse.name + '</b>」で再び走破を宣言！');
-      showToast('相手がフォース ' + cost + '枚を支払い【' + chosenHorse.name + '】で再走破！', 'info', 2600);
+      showToast('相手がフォース ' + cost + '枚を支払い【' + chosenHorse.name + '】で続けて走破！', 'info', 2600);
 
       // コスト分のフォースカードを手札から消費し、1枚ずつ相手ファームへ送る演出
       for (var i = 0; i < cost; i++) {
@@ -4275,7 +4275,7 @@
     updateFabDisplay();
   });
 
-  // フィールドの馬をタップしたときの処理（再走破選択や詳細表示）
+  // フィールドの馬をタップしたときの処理（続けて走破選択や詳細表示）
   var fieldBodyEl = $('field-body');
   if (fieldBodyEl) {
     fieldBodyEl.addEventListener('click', function (e) {
@@ -4286,7 +4286,7 @@
         var forces = hand.filter(function (c) { return c.type === 'force'; });
         if (forces.length < cost) {
           showToast('フォースカードが不足しています（必要: ' + cost + '枚）');
-          setNarrator(iconImg('warning', 'img-icon-inline') + '【' + field.name + '】の再走破に必要な<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
+          setNarrator(iconImg('warning', 'img-icon-inline') + '【' + field.name + '】の続けて走破に必要な<b>フォースカードが不足しています</b>（必要: ' + cost + '枚 / 手札: ' + forces.length + '枚）');
           Haptics.warn();
           return;
         }
@@ -4296,7 +4296,7 @@
         renderAll();
         Haptics.place();
         setNarrator('場にいる<b>【' + field.name + '】</b>で再び走破します！ コストとして手札から<b>フォースカードを' + cost + '枚</b>選んでファームに送ってください。（残り ' + cost + ' 枚）');
-        showToast('【' + field.name + '】で再走破！ フォースカードを' + cost + '枚選んでください');
+        showToast('【' + field.name + '】で続けて走破！ フォースカードを' + cost + '枚選んでください');
       } else if (phase === 'idle') {
         CardCloseup.show(field, { label: 'フィールドの馬' });
       }
