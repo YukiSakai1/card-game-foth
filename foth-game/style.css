@@ -9125,7 +9125,7 @@ body[data-theme="nature"] .bg-dimmer {
 }
 
 .farm-viewer-icon {
-  font-size: 20px;
+  display: none !important;
 }
 
 .farm-viewer-title {

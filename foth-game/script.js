@@ -4377,7 +4377,6 @@
         '<div class="farm-viewer-panel">' +
         '  <div class="farm-viewer-head">' +
         '    <div class="farm-viewer-title-wrap">' +
-        '      <span class="farm-viewer-icon" id="farm-viewer-icon">' + iconImg('sprout') + '</span>' +
         '      <div class="farm-viewer-title" id="farm-viewer-title">ファーム一覧</div>' +
         '    </div>' +
         '    <button class="farm-viewer-close" id="farm-viewer-close" type="button" aria-label="閉じる">' + iconImg('close') + '</button>' +
@@ -4420,12 +4419,10 @@
       var isPlayer = (type !== 'opp');
       var cardList = isPlayer ? farm.slice() : oppFarm.slice();
       var modal = getOrCreateModal();
-      var iconEl = modal.querySelector('#farm-viewer-icon');
       var titleEl = modal.querySelector('#farm-viewer-title');
       var statsEl = modal.querySelector('#farm-viewer-stats');
       var cardsEl = modal.querySelector('#farm-viewer-cards');
 
-      if (iconEl) iconEl.innerHTML = isPlayer ? iconImg('sprout') : iconImg('farm');
       if (titleEl) titleEl.textContent = (isPlayer ? '自分のファーム' : '相手のファーム') + '（全 ' + cardList.length + ' 枚）';
 
       // 種類別カウントのサマリーバッジ
@@ -4520,7 +4517,6 @@
         '<div class="farm-viewer-panel">' +
         '  <div class="farm-viewer-head">' +
         '    <div class="farm-viewer-title-wrap">' +
-        '      <span class="farm-viewer-icon" id="hand-viewer-icon">' + iconImg('card') + '</span>' +
         '      <div class="farm-viewer-title" id="hand-viewer-title">自分の手札</div>' +
         '    </div>' +
         '    <button class="farm-viewer-close" id="hand-viewer-close" type="button" aria-label="閉じる">' + iconImg('close') + '</button>' +
@@ -4562,12 +4558,10 @@
     function open() {
       var cardList = hand.slice();
       var modal = getOrCreateModal();
-      var iconEl = modal.querySelector('#hand-viewer-icon');
       var titleEl = modal.querySelector('#hand-viewer-title');
       var statsEl = modal.querySelector('#hand-viewer-stats');
       var cardsEl = modal.querySelector('#hand-viewer-cards');
 
-      if (iconEl) iconEl.innerHTML = iconImg('card');
       if (titleEl) titleEl.textContent = '自分の手札（全 ' + cardList.length + ' 枚）';
 
       // 種類別カウントのサマリーバッジ
