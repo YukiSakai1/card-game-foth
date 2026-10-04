@@ -2150,7 +2150,7 @@
     }
 
     // バナー表示後、プレイヤーのガード選択ポップアップを表示
-    await showBanner('相手が走破宣言！', 2400, chosenHorse, '「' + chosenHorse.name + '」 馬の走破数 ' + cpuRunValue);
+    await showBanner('相手が走破宣言！', 2400, chosenHorse, '「' + chosenHorse.name + '」の走破数 ' + cpuRunValue);
     showGuardPopup(cpuRunValue, chosenHorse);
   }
 
@@ -2598,7 +2598,7 @@
                   return sendHorseToFarmAndReset();
                 });
               }
-              return showBanner('走破成功！', 3200, horseInPlay, '走破に成功しました<br>馬の走破数 ' + totalRun).then(function () {
+              return showBanner('走破成功！', 3200, horseInPlay, '走破に成功しました<br>' + horseInPlay.name + 'の走破数 ' + totalRun).then(function () {
                 setNarrator('相手はガードをしませんでした。走破成功です！');
                 return continueRunLogic(totalRun, false, 0);
               });
@@ -3882,7 +3882,7 @@
     var runCard = field || targetHorse || goldShip();
     var runCount = runCard ? (runCard.run || 3) : 3;
     setNarrator('やった、<b>走破成功だ！</b> 走破に成功したら、馬カードの走破数ぶんだけ山札からカードを引くよ。');
-    await showBanner('走破成功！', 2600, runCard, '走破に成功しました<br>馬の走破数 ' + runCount);
+    await showBanner('走破成功！', 2600, runCard, '走破に成功しました<br>' + (runCard && runCard.name ? runCard.name : '馬') + 'の走破数 ' + runCount);
     if (myRunId !== tutorialRunId) return;
 
     // 馬カードを大きく表示し、走破数部分をハイライト
