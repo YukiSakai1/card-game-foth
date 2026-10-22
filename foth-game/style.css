@@ -1,3 +1,40 @@
+  .lesson-complete {
+    width: min(480px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 30px 24px;
+    border: 1px solid #e3b23c;
+    border-radius: 18px;
+    background: radial-gradient(ellipse at top, #15364a, #07131e 75%);
+    color: #f4f0e6;
+    text-align: center;
+    box-shadow: 0 0 40px #3ee0ff22;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+  }
+  .lesson-complete::backdrop { background: #020711cc; backdrop-filter: blur(5px); }
+  .lesson-complete-kicker { color: #ffe082; font: 500 13px 'Oswald', sans-serif; letter-spacing: .12em; }
+  .lesson-complete h2 { font-size: clamp(18px, 5vw, 24px); }
+  .lesson-complete > p:not(.lesson-complete-kicker) { font-size: 14px; line-height: 1.9; }
+  .lesson-complete-link {
+    display: block;
+    margin-top: 24px;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffe082, #e3b23c);
+    color: #211704;
+    font-weight: 900;
+    text-decoration: none;
+  }
+  .lesson-complete-back { display: inline-block; margin-top: 18px; color: #b8dbe5; text-underline-offset: 4px; font-size: 13px; }
+  .lesson-complete-back[hidden] { display: none; }
+  .lesson-complete a:focus-visible { outline: 3px solid #3ee0ff; outline-offset: 4px; }
+
+  .race-info.highlighted {
+    border-color: var(--gold);
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    box-shadow: 0 0 20px rgba(227, 178, 60, .4);
+  }
+
   :root {
     --bg: #0a0d20;
     --felt: #10142c;
@@ -41,7 +78,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Three.js 3D Space Background (Active in Classic and Nature mode) */
+  /* Three.js 3D Space Background (Active in Classic mode) */
   #three-bg {
     display: block;
     position: fixed;
@@ -68,31 +105,6 @@
       repeating-linear-gradient(90deg, rgba(62, 224, 255, .035) 0 1px, transparent 1px 28px),
       linear-gradient(180deg, #050c18 0%, #081426 50%, #0d223a 100%);
     background-attachment: fixed;
-  }
-
-  /* Nature mode: Full-screen panoramic nature course background */
-  body.field-nature,
-  body[data-theme="nature"],
-  body.field-classic,
-  body[data-theme="classic"] {
-    background-color: #0d2012;
-    background-image:
-      radial-gradient(ellipse 100% 50% at 50% 0%, rgba(255, 245, 190, 0.20) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(8, 24, 12, 0.15) 0%, rgba(8, 24, 12, 0.28) 50%, rgba(4, 14, 6, 0.60) 100%),
-      url("images/nature-course-bg.jpg");
-    background-size: cover;
-    background-position: center 25%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-  }
-
-  body.field-nature #three-bg,
-  body[data-theme="nature"] #three-bg,
-  body.field-classic #three-bg {
-    display: block !important;
-    opacity: 0.9;
-    z-index: 0;
-    pointer-events: none;
   }
 
   body.space-bg #three-bg {
@@ -253,17 +265,48 @@
 
   .race-info {
     flex: none;
-    font-size: 10px;
-    color: var(--gold-2);
+    display: inline-flex;
+    align-items: stretch;
+    gap: 4px;
     white-space: nowrap;
-    padding: 4px 8px;
-    border: 1px solid rgba(227, 178, 60, .3);
-    border-radius: 999px;
-    background: rgba(10, 18, 13, .48);
+    padding: 3px 5px;
+    border: 1px solid rgba(84, 207, 229, .3);
+    border-radius: 9px;
+    background: linear-gradient(180deg, rgba(12, 31, 43, .86), rgba(6, 17, 27, .82));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 0 12px rgba(30, 190, 216, .08);
   }
 
-  .race-info:empty {
-    display: none;
+  .race-info-title {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 5px 0 3px;
+    color: #65e7f5;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    border-right: 1px solid rgba(84, 207, 229, .22);
+  }
+
+  .race-condition {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, .035);
+  }
+
+  .race-condition-label {
+    color: rgba(164, 195, 213, .88);
+    font-size: 7.5px;
+    font-weight: 500;
+  }
+
+  .race-condition-value {
+    color: #fff1c9;
+    font-size: 10px;
+    font-weight: 700;
   }
 
   /* ---------- Modern Cyber Game Track & HUD Progress ---------- */
@@ -272,8 +315,9 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     padding: 0 2px;
+    opacity: .9;
   }
 
   .track-meta {
@@ -291,36 +335,26 @@
     font-size: 8.5px;
     font-weight: 700;
     letter-spacing: .12em;
-    color: #38ef7d;
+    color: rgba(177, 232, 201, .95);
     text-transform: uppercase;
-    background: rgba(56, 239, 125, .12);
-    border: 1px solid rgba(56, 239, 125, .35);
+    background: rgba(56, 239, 125, .05);
+    border: 1px solid rgba(122, 185, 151, .22);
     padding: 2px 6px;
     border-radius: 4px;
-    box-shadow: 0 0 8px rgba(56, 239, 125, .18);
+    box-shadow: none;
   }
 
   .badge-dot {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: #38ef7d;
-    box-shadow: 0 0 6px #38ef7d;
-    animation: badgePulse 1.8s ease-in-out infinite;
+    background: rgba(142, 210, 174, .8);
+    box-shadow: none;
   }
 
   @keyframes badgePulse {
-
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    50% {
-      opacity: .4;
-      transform: scale(.75);
-    }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .4; transform: scale(.75); }
   }
 
   .step-label {
@@ -337,14 +371,14 @@
     font-size: 9px;
     font-weight: 600;
     letter-spacing: .12em;
-    color: rgba(160, 190, 220, .8);
+    color: rgba(201, 221, 238, .92);
   }
 
   .step-current {
-    font-size: 12.5px;
+    font-size: 11px;
     font-weight: 700;
-    color: #00f0ff;
-    text-shadow: 0 0 8px rgba(0, 240, 255, .75);
+    color: rgba(220, 242, 247, .98);
+    text-shadow: none;
   }
 
   .step-slash {
@@ -355,34 +389,23 @@
 
   .step-total {
     font-size: 10.5px;
-    color: rgba(255, 255, 255, .65);
+    color: rgba(255, 255, 255, .82);
   }
 
   /* サイバートラック（高精細HUDバー） */
   .track {
     position: relative;
-    height: 8px;
+    height: 4px;
     border-radius: 999px;
     background: linear-gradient(180deg, rgba(5, 12, 24, .95) 0%, rgba(10, 22, 40, .85) 100%);
-    border: 1px solid rgba(62, 224, 255, .35);
-    box-shadow:
-      inset 0 1px 3px rgba(0, 0, 0, .8),
-      0 0 8px rgba(62, 224, 255, .15),
-      0 1px 0 rgba(255, 255, 255, .08);
-    overflow: visible;
+    border: 1px solid rgba(120, 178, 190, .2);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .65);
+    overflow: hidden;
   }
 
   /* HUDグリッド目盛り（16分割） */
   .track-grid {
-    position: absolute;
-    inset: 0;
-    border-radius: 999px;
-    background-image: repeating-linear-gradient(90deg,
-        transparent 0,
-        transparent calc(6.25% - 1px),
-        rgba(62, 224, 255, .2) calc(6.25% - 1px),
-        rgba(62, 224, 255, .2) 6.25%);
-    pointer-events: none;
+    display: none;
   }
 
   /* エナジープログレスフィル */
@@ -393,70 +416,30 @@
     bottom: 0;
     width: 0%;
     border-radius: 999px;
-    background: linear-gradient(90deg,
-        #0284c7 0%,
-        #00f0ff 40%,
-        #10b981 85%,
-        #34d399 100%);
-    box-shadow:
-      0 0 12px rgba(0, 240, 255, .7),
-      0 0 4px rgba(52, 211, 153, .9);
+    background: linear-gradient(90deg, #3a91a8, #55aa87);
+    box-shadow: none;
     transition: width .45s cubic-bezier(.25, .8, .25, 1);
     overflow: visible;
   }
 
   /* フィル内の流れる光彩シマー */
   .track-fill::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 999px;
-    background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(255, 255, 255, .45) 50%,
-        transparent 100%);
-    background-size: 40px 100%;
-    animation: cyberEnergyShine 1.8s linear infinite;
+    display: none;
   }
 
   @keyframes cyberEnergyShine {
-    0% {
-      background-position: -40px 0;
-    }
-
-    100% {
-      background-position: 160px 0;
-    }
+    0% { background-position: -40px 0; }
+    100% { background-position: 160px 0; }
   }
 
   /* 先端の発光ノード */
   .track-head-glow {
-    position: absolute;
-    right: -2px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow:
-      0 0 6px #ffffff,
-      0 0 10px #00f0ff,
-      0 0 16px #34d399;
+    display: none;
   }
 
   /* サイバーホースピン（インジケーター） */
   .track-horse {
-    position: absolute;
-    top: 50%;
-    left: 0%;
-    transform: translate(-50%, -64%);
-    z-index: 5;
-    transition: left .45s cubic-bezier(.25, .8, .25, 1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    pointer-events: none;
+    display: none;
   }
 
   .horse-pin-body {
@@ -468,7 +451,7 @@
     border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #0d223a 0%, #06101e 100%);
     border: 1.5px solid #00f0ff;
-    box-shadow:
+    box-shadow: 
       0 0 10px rgba(0, 240, 255, .65),
       0 2px 6px rgba(0, 0, 0, .75);
     animation: horseGlide 2s ease-in-out infinite alternate;
@@ -493,34 +476,13 @@
   }
 
   @keyframes horseGlide {
-    0% {
-      transform: translateY(0) rotate(-1deg);
-    }
-
-    100% {
-      transform: translateY(-2px) rotate(2deg);
-    }
+    0% { transform: translateY(0) rotate(-1deg); }
+    100% { transform: translateY(-2px) rotate(2deg); }
   }
 
   /* ゴールフラッグゲート */
   .track-flag {
-    position: absolute;
-    right: -7px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    background: rgba(10, 18, 32, .88);
-    border: 1px solid rgba(227, 178, 60, .6);
-    box-shadow:
-      0 0 8px rgba(227, 178, 60, .3),
-      0 2px 4px rgba(0, 0, 0, .6);
-    transition: transform .3s ease, border-color .3s, box-shadow .3s;
+    display: none;
   }
 
   .track-flag .flag-icon {
@@ -530,7 +492,7 @@
 
   .track-flag.goal-reached {
     border-color: #ffd700;
-    box-shadow:
+    box-shadow: 
       0 0 16px rgba(255, 215, 0, .8),
       0 0 24px rgba(255, 170, 0, .5);
     transform: translateY(-50%) scale(1.15);
@@ -538,18 +500,13 @@
   }
 
   @keyframes goalCelebrate {
-    0% {
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    100% {
-      transform: translateY(-50%) scale(1.22);
-    }
+    0% { transform: translateY(-50%) scale(1.1); }
+    100% { transform: translateY(-50%) scale(1.22); }
   }
 
   @media (max-width: 760px) {
     .race-info {
-      display: none;
+      display: inline-flex;
     }
   }
 
@@ -557,7 +514,6 @@
   .mode-switch {
     flex: none;
     display: flex;
-    flex-wrap: wrap;
     gap: 3px;
     border: 1px solid rgba(227, 178, 60, .4);
     background: rgba(20, 16, 10, .65);
@@ -585,34 +541,17 @@
     color: var(--rail);
   }
 
-  .theme-opt.active,
-  .theme-opt[data-theme="cyber"].active {
-    background: linear-gradient(135deg, #00f0ff, #0284c7);
-    color: #03202e;
+  .theme-opt.active {
+    background: linear-gradient(135deg, #3ee0ff, #0ab8e0);
+    color: #032530;
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(0, 240, 255, .65);
+    box-shadow: 0 0 10px rgba(62, 224, 255, .6);
   }
 
-  .theme-opt[data-theme="dark"].active {
-    background: linear-gradient(135deg, #38bdf8, #0369a1);
-    color: #ffffff;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(56, 189, 248, .6);
-  }
-
-  .theme-opt[data-theme="white"].active {
-    background: linear-gradient(135deg, #00d2ff, #0284c7);
-    color: #ffffff;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(0, 210, 255, .65);
-  }
-
-  .theme-opt[data-theme="classic"].active,
-  .theme-opt[data-theme="nature"].active {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #ffffff;
-    font-weight: 700;
-    box-shadow: 0 0 12px rgba(16, 185, 129, .65);
+  .theme-opt[data-theme="classic"].active {
+    background: linear-gradient(135deg, #4ade80, #10b981);
+    color: #042512;
+    box-shadow: 0 0 10px rgba(74, 222, 128, .6);
   }
 
   .mode-opt.active {
@@ -745,28 +684,43 @@
 
   /* settings panel & gear: 表示設定 */
   .settings-gear {
-    background: rgba(20, 16, 10, .6);
-    border: 1px solid rgba(227, 178, 60, .4);
-    border-radius: 999px;
-    color: var(--rail-dim);
-    font-size: 11px;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-weight: 500;
-    padding: 3px 10px;
+    box-sizing: border-box;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    color: #bdeff5;
     cursor: pointer;
     touch-action: manipulation;
-    transition: background .15s, color .15s, border-color .15s, transform .15s;
+    transition: background .18s, color .18s, border-color .18s, box-shadow .18s, transform .18s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
     user-select: none;
+    box-shadow: none;
+  }
+
+  .settings-gear-icon {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform .28s ease;
   }
 
   .settings-gear:hover {
-    background: var(--gold);
-    color: var(--ink);
-    border-color: var(--gold);
+    background: rgba(62, 224, 255, .1);
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  .settings-gear:hover .settings-gear-icon {
+    transform: rotate(28deg);
   }
 
   .settings-gear:active {
@@ -838,103 +792,31 @@
     color: var(--rail);
   }
 
-  /* settings tabs */
-  .settings-tabs {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 14px;
-    border-bottom: 1px solid rgba(227, 178, 60, .25);
-    padding-bottom: 10px;
-  }
-
-  .settings-tab-btn {
-    flex: 1;
-    background: rgba(20, 16, 10, .6);
-    border: 1px solid rgba(227, 178, 60, .35);
-    border-radius: 8px;
-    color: var(--rail-dim);
-    font-size: 11.5px;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-weight: 500;
-    padding: 7px 6px;
-    cursor: pointer;
-    text-align: center;
-    user-select: none;
-    transition: background .18s, color .18s, border-color .18s, box-shadow .18s;
-  }
-
-  .settings-tab-btn:hover {
-    color: var(--rail);
-    border-color: rgba(227, 178, 60, .6);
-  }
-
-  .settings-tab-btn.active {
-    background: var(--gold);
-    color: var(--ink);
-    border-color: var(--gold);
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(227, 178, 60, .45);
-  }
-
-  .settings-tab-content {
-    display: none;
-  }
-
-  .settings-tab-content.active {
-    display: block;
-    animation: settingsTabIn .2s ease-out;
-  }
-
-  @keyframes settingsTabIn {
-    from {
-      opacity: 0;
-      transform: translateY(3px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .settings-desc {
-    font-size: 10.5px;
-    color: var(--rail-dim);
-    opacity: .8;
-    margin-top: 6px;
-    line-height: 1.45;
-  }
-
-  .settings-panel .mode-switch,
-  .settings-panel .theme-switch {
-    width: 100%;
-    display: flex;
-    box-sizing: border-box;
-  }
-
-  .settings-panel .mode-opt,
-  .settings-panel .theme-opt {
-    flex: 1;
-    text-align: center;
-    padding: 7px 10px;
-    font-size: 11.5px;
-  }
-
-  .settings-bgm-toggle {
-    width: 100%;
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border-radius: 8px;
-    box-sizing: border-box;
-  }
-
   .settings-group {
     margin-bottom: 16px;
+  }
+
+
+  .settings-panel .theme-switch,
+  .settings-panel .mode-switch,
+  .settings-panel .tilt-select {
+    display: flex;
+    width: 100%;
+  }
+
+  .settings-panel .theme-opt,
+  .settings-panel .mode-opt,
+  .settings-panel .tilt-opt {
+    flex: 1;
+    text-align: center;
+  }
+
+  .settings-panel .bgm-toggle {
+    width: 100%;
+  }
+
+  body.manual-mode .track-wrap {
+    display: none;
   }
 
   .settings-label {
@@ -948,14 +830,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 6px;
-  }
-
-  .preset-grid#tilt-select {
-    display: grid !important;
-    border: none;
-    background: transparent;
-    border-radius: 0;
-    padding: 0;
   }
 
   .preset-grid.effect-grid {
@@ -1085,19 +959,14 @@
 
   .opponent-strip {
     flex: none;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    align-self: flex-start;
-    width: fit-content;
-    max-width: 100%;
-    gap: 7px;
+    gap: 8px;
     background: linear-gradient(180deg, rgba(18, 35, 24, .9), rgba(18, 35, 24, .55));
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 3px 10px 3px 3px;
+    border-radius: 12px;
+    padding: 6px 10px;
     position: relative;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
   }
 
   /* ---------- Field frame (pure CSS, no photo) ---------- */
@@ -1109,9 +978,9 @@
   }
 
   body.field-3d .field-tilt {
-    transform: perspective(var(--field-perspective, 1300px)) rotateX(var(--tilt-angle, 25deg));
+    transform: perspective(var(--field-perspective, 1300px)) rotateX(var(--tilt-angle, 10deg));
     transform-origin: 50% 100%;
-    margin: var(--field-tilt-shift-y, -34px) 0 14px;
+    margin: -10px 0 14px;
   }
 
   /* radiating "floor" lines that share the field's own tilt and vanishing
@@ -1185,80 +1054,6 @@
     height: 100%;
     display: block;
     mix-blend-mode: screen;
-  }
-
-  /* ---------- 状況カード背景（field-image-wrapの背景として透明度を薄くして設置） ---------- */
-  .field-situation-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    opacity: 0;
-    transform: scale(0.96);
-    transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .3, 1);
-  }
-
-  .field-situation-bg.active {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .field-situation-card {
-    position: relative;
-    width: clamp(310px, 56vw, 500px);
-    aspect-ratio: 1.22 / 1;
-    border-radius: 22px;
-    opacity: 0.50; /* イラスト部分のみを背景として綺麗に透過表示 */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow: 0 0 55px rgba(56, 189, 248, 0.42), 0 0 100px rgba(14, 165, 233, 0.24);
-    border: 2px solid rgba(125, 211, 252, 0.68);
-    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.72));
-    overflow: hidden;
-    cursor: pointer;
-    pointer-events: auto; /* タップで詳細確認可能 */
-    touch-action: manipulation;
-    transition: opacity .25s ease, transform .25s ease, filter .25s ease;
-  }
-
-  .field-situation-card:hover {
-    opacity: 0.72;
-    transform: scale(1.02);
-    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.8)) brightness(1.1);
-  }
-
-  .field-situation-card:active {
-    transform: scale(0.98);
-  }
-
-  .field-situation-card .card-shine {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 60%);
-    pointer-events: none;
-  }
-
-  .field-situation-badge {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(10, 16, 26, 0.84);
-    border: 1px solid rgba(246, 210, 122, 0.65);
-    color: var(--gold-light, #fbe288);
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 999px;
-    letter-spacing: .04em;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-    pointer-events: none;
   }
 
   body.field-3d .field-image-wrap {
@@ -1339,15 +1134,11 @@
     justify-content: center;
   }
 
-  .ov-opp-farm {
+  .ov-situation {
     grid-row: 2;
     grid-column: 4/5;
     align-items: center;
     justify-content: center;
-  }
-
-  .farm-pile-opp {
-    border-color: rgba(255, 140, 150, .6);
   }
 
   .ov-deck {
@@ -1356,72 +1147,36 @@
   }
 
   .opp-lanes {
-    width: 82%;
+    width: 90%;
     margin: 0 auto;
     display: flex;
-    gap: 2.2%;
+    gap: 2.5%;
     align-items: stretch;
     justify-content: center;
   }
 
   .opp-lane {
     position: relative;
-    flex: 0 0 18.5%;
+    flex: 0 0 20.5%;
     min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     aspect-ratio: 5/7;
-    border-radius: 9px;
-    border: 1.5px solid rgba(255, 140, 150, .6);
-    box-shadow: inset 0 0 14px rgba(255, 100, 120, .20), 0 0 10px rgba(255, 80, 100, .25);
-    background: radial-gradient(120% 140% at 50% 0%, rgba(255, 100, 120, .18), transparent 65%), rgba(30, 14, 26, .75);
+    border-radius: 10px;
+    border: 1.5px solid rgba(227, 178, 60, .65);
+    box-shadow: inset 0 0 14px rgba(227, 178, 60, .20), 0 0 10px rgba(227, 178, 60, .25);
+    background: radial-gradient(120% 140% at 50% 0%, rgba(227, 178, 60, .18), transparent 65%), rgba(16, 24, 40, .65);
   }
 
   .opp-lane .lane-stack {
-    width: 84%;
+    width: 90%;
     opacity: .92;
     transform: rotate(180deg);
   }
 
-  /* 相手の山札：重なり・厚みが見える方向を逆向き（プレイヤー側／フィールド側）に反転 */
   .opp-lane .lane-back-0 {
-    --t: var(--stack-t, 1);
-    transform: translateY(calc(4.5px * var(--t)));
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, .4), 0 calc(-1px * var(--t)) 0 0 rgba(235, 225, 200, 0.85);
     border-color: #8a6f36;
-  }
-
-  .opp-lane .lane-back-1 {
-    --t: var(--stack-t, 1);
-    transform: translateY(calc(2px * var(--t)));
-    box-shadow: 0 -1.5px 3px rgba(0, 0, 0, .35), 0 calc(-1px * var(--t)) 0 0 rgba(220, 205, 175, 0.7);
-  }
-
-  .opp-lane .lane-back-2 {
-    --t: var(--stack-t, 1);
-    transform: translateY(0);
-    box-shadow:
-      0 -2px 4px rgba(0, 0, 0, .45),
-      0 calc(-1px * var(--t)) 0 0 #1c160f,
-      0 calc(-2px * var(--t)) 0 0 #eae3cf,
-      0 calc(-2.8px * var(--t)) 0 0 #231c14,
-      0 calc(-3.8px * var(--t)) 0 0 #dfd6bf,
-      0 calc(-4.6px * var(--t)) 0 0 #1c160f,
-      0 calc(-5.6px * var(--t)) 0 0 #e6dfcb,
-      0 calc(-6.4px * var(--t)) 0 0 #231c14,
-      0 calc(-7.4px * var(--t)) 0 0 #d9cfb5,
-      0 calc(-8.2px * var(--t)) 0 0 #1c160f,
-      0 calc(-9.2px * var(--t)) 0 0 #e2dac4,
-      0 calc(-10px * var(--t)) 0 0 #231c14,
-      0 calc(-11px * var(--t)) 0 0 #cfc3a5,
-      0 calc(-11.8px * var(--t)) 0 0 #16110a,
-      0 calc(-12.8px * var(--t)) 0 0 #bfae8b,
-      0 calc(-15px * var(--t)) 6px 0 rgba(0, 0, 0, .65);
-  }
-
-  .opp-lane .lane-badge {
-    transform: rotate(180deg);
   }
 
   .opp-lane.active {
@@ -1447,82 +1202,67 @@
   }
 
   .opponent-avatar {
-    width: 28px;
-    height: 28px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #274a33, #16261b);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid var(--line);
+    font-size: 19px;
+    border: 1px solid var(--line);
     flex: none;
-    overflow: hidden;
-  }
-
-  .opponent-avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 50%;
   }
 
   .opponent-meta {
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    line-height: 1.15;
   }
 
   .opponent-name {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--rail);
-    letter-spacing: .02em;
-    white-space: nowrap;
   }
 
   .opponent-sub {
-    font-size: 8px;
+    font-size: 9px;
     color: var(--rail-dim);
-    letter-spacing: .04em;
-    white-space: nowrap;
+    letter-spacing: .05em;
   }
 
   .opponent-bubble {
     position: absolute;
-    left: calc(100% + 8px);
+    left: 58px;
     top: 50%;
-    transform: translateY(-50%) scale(.92);
-    background: #ffffff;
-    color: #0f172a;
+    background: var(--rail);
+    color: var(--ink);
     font-weight: 700;
-    font-size: 11px;
-    padding: 4px 9px;
-    border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, .45);
+    font-size: 11.5px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .4);
     opacity: 0;
+    transform: translate(-4px, -50%) scale(.92);
     transition: opacity .25s, transform .25s;
     pointer-events: none;
     white-space: nowrap;
-    z-index: 25;
+    z-index: 5;
   }
 
   .opponent-bubble.show {
     opacity: 1;
-    transform: translateY(-50%) scale(1);
+    transform: translate(0, -50%) scale(1);
   }
 
   .opponent-bubble::after {
     content: '';
     position: absolute;
-    left: -5px;
+    left: -7px;
     top: 50%;
     transform: translateY(-50%);
-    border-width: 5px 6px 5px 0;
+    border-width: 6px 7px 6px 0;
     border-style: solid;
-    border-color: transparent #ffffff transparent transparent;
+    border-color: transparent var(--rail) transparent transparent;
   }
 
   .zone-body {
@@ -1538,20 +1278,10 @@
     background: radial-gradient(120% 140% at 50% 0%, rgba(227, 178, 60, .18), transparent 65%), rgba(16, 24, 40, .65);
   }
 
-  #zone-opp-farm .farm-pile {
+  #zone-situation .zone-body {
     width: 70%;
     aspect-ratio: 5/7;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 1.5px solid rgba(255, 140, 150, .6);
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .22), 0 0 12px rgba(255, 80, 100, .28);
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 100, 120, .18), transparent 65%),
-      rgba(30, 14, 26, .75);
+    padding: 2px;
   }
 
   .ov-deck.tappable {
@@ -1559,10 +1289,10 @@
   }
 
   .lanes {
-    width: 74%;
+    width: 82%;
     margin: 0 auto;
     display: flex;
-    gap: 1.8%;
+    gap: 2%;
     align-items: stretch;
     justify-content: space-between;
   }
@@ -1577,7 +1307,7 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
-    border-radius: 9px;
+    border-radius: 10px;
     border: 1.5px solid rgba(227, 178, 60, .65);
     box-shadow: inset 0 0 14px rgba(227, 178, 60, .20), 0 0 10px rgba(227, 178, 60, .25);
     background: radial-gradient(120% 140% at 50% 0%, rgba(227, 178, 60, .18), transparent 65%), rgba(16, 24, 40, .65);
@@ -1586,10 +1316,11 @@
 
   .lane.active {
     border-style: solid;
-    border-color: var(--gold);
+    border-color: #fff0a8;
     box-shadow:
-      inset 0 0 12px rgba(227, 178, 60, .25),
-      0 0 14px rgba(227, 178, 60, .55);
+      inset 0 0 18px rgba(255, 224, 112, .34),
+      0 0 0 3px rgba(255, 224, 112, .26),
+      0 0 24px rgba(255, 216, 92, .82);
   }
 
   .lane.empty {
@@ -1598,7 +1329,7 @@
 
   .lane-stack {
     position: relative;
-    width: 84%;
+    width: 92%;
     aspect-ratio: 5/7;
   }
 
@@ -1615,49 +1346,46 @@
 
   .lane-back-2 {
     --t: var(--stack-t, 1);
-    transform: translateY(0);
+    transform: translate(calc(2px*var(--t)), calc(2px*var(--t))) rotate(calc(1.5deg*var(--t)));
     z-index: 1;
-    opacity: calc(.8 + .2*var(--t));
+    opacity: calc(.5 + .35*var(--t));
     transition: transform .35s ease, opacity .35s ease, box-shadow .35s ease;
-    /* 山札の断面の厚み：スケッチのように整然とカードが重なり、下方向へ水平ラインの厚みが出るよう調整 */
+    /* stack of many thin card edges behind the visible faces, to read as a
+       tall deck of dozens of cards rather than 2-3 sheets. Each layer's
+       offset scales with --stack-t (1 = full ~10-card pile, 0 = empty),
+       so the pile visibly gets thinner as cards are drawn. */
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, .45),
-      0 calc(1px*var(--t)) 0 0 #1c160f,
-      0 calc(2px*var(--t)) 0 0 #eae3cf,
-      0 calc(2.8px*var(--t)) 0 0 #231c14,
-      0 calc(3.8px*var(--t)) 0 0 #dfd6bf,
-      0 calc(4.6px*var(--t)) 0 0 #1c160f,
-      0 calc(5.6px*var(--t)) 0 0 #e6dfcb,
-      0 calc(6.4px*var(--t)) 0 0 #231c14,
-      0 calc(7.4px*var(--t)) 0 0 #d9cfb5,
-      0 calc(8.2px*var(--t)) 0 0 #1c160f,
-      0 calc(9.2px*var(--t)) 0 0 #e2dac4,
-      0 calc(10px*var(--t)) 0 0 #231c14,
-      0 calc(11px*var(--t)) 0 0 #cfc3a5,
-      0 calc(11.8px*var(--t)) 0 0 #16110a,
-      0 calc(12.8px*var(--t)) 0 0 #bfae8b,
-      0 calc(15px*var(--t)) 6px 0 rgba(0, 0, 0, .65);
+      0 3px 7px rgba(0, 0, 0, .5),
+      calc(1px*var(--t))  calc(1px*var(--t))  0 0 #cbb050,
+      calc(2px*var(--t))  calc(2px*var(--t))  0 0 #c4a949,
+      calc(3px*var(--t))  calc(3px*var(--t))  0 0 #bda042,
+      calc(4px*var(--t))  calc(4px*var(--t))  0 0 #b3963e,
+      calc(5px*var(--t))  calc(5px*var(--t))  0 0 #a88c38,
+      calc(6px*var(--t))  calc(6px*var(--t))  0 0 #9d8132,
+      calc(7px*var(--t))  calc(7px*var(--t))  0 0 #92772c,
+      calc(8px*var(--t))  calc(8px*var(--t))  0 0 #876d27,
+      calc(9px*var(--t))  calc(9px*var(--t))  0 0 #7c6321,
+      calc(10px*var(--t)) calc(10px*var(--t)) 0 0 #71591c,
+      calc(11px*var(--t)) calc(11px*var(--t)) 0 0 #664f18,
+      calc(12px*var(--t)) calc(12px*var(--t)) 0 0 #5b4614,
+      calc(13px*var(--t)) calc(13px*var(--t)) 0 0 #503d10,
+      calc(14px*var(--t)) calc(14px*var(--t)) 1px 0 rgba(0, 0, 0, .5);
   }
 
   .lane-back-1 {
     --t: var(--stack-t, 1);
-    transform: translateY(calc(-2px*var(--t)));
+    transform: translate(calc(1.5px*var(--t)), calc(1.5px*var(--t))) rotate(calc(0.8deg*var(--t)));
     z-index: 2;
-    opacity: calc(.82 + .18*var(--t));
-    transition: transform .35s ease, opacity .35s ease, box-shadow .35s ease;
-    box-shadow: 0 1.5px 3px rgba(0, 0, 0, .35), 0 calc(1px*var(--t)) 0 0 rgba(220, 205, 175, 0.7);
+    opacity: calc(.68 + .24*var(--t));
+    transition: transform .35s ease, opacity .35s ease;
   }
 
   .lane-back-0 {
-    --t: var(--stack-t, 1);
-    transform: translateY(calc(-4.5px*var(--t)));
     z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
     border-width: 2px;
-    transition: transform .35s ease, box-shadow .35s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .4), 0 calc(1px*var(--t)) 0 0 rgba(235, 225, 200, 0.85);
   }
 
   .lane[data-lane="nige"] .lane-back-0 {
@@ -1680,85 +1408,43 @@
     position: absolute;
     right: -6px;
     bottom: -6px;
-    background: var(--gold);
-    color: var(--ink);
-    font-weight: 700;
-    font-size: 11px;
-    min-width: 18px;
+    z-index: 6;
+    background: #07131e;
+    color: #fff;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1;
+    min-width: 28px;
     text-align: center;
-    padding: 1px 4px;
-    border-radius: 8px;
-    border: 2px solid var(--ink);
+    padding: 4px 6px;
+    border-radius: 10px;
+    border: 2px solid #ffe070;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .8), 0 0 10px rgba(255, 224, 112, .5);
+    text-shadow: 0 1px 2px #000;
+  }
+
+  .opp-lane .lane-badge {
+    transform: rotate(180deg);
   }
 
   .lane-label {
-    position: absolute;
-    top: -9px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 15;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: .06em;
-    line-height: 1.2;
-    padding: 1.5px 7px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: #fff;
+    background: rgba(3, 8, 14, .88);
+    border: 1px solid rgba(255, 255, 255, .28);
     border-radius: 999px;
-    background: rgba(8, 14, 24, .92);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(227, 178, 60, .65);
-    color: #e8dcc4;
-    white-space: nowrap;
-    pointer-events: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .8), 0 0 4px rgba(0, 0, 0, .4);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, .9);
-    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    padding: 2px 7px;
+    text-shadow: 0 1px 3px #000;
   }
 
-  /* 相手側山札のラベル（中央フィールド向きに枠下端に配置） */
-  .opp-lane .lane-label {
-    top: auto;
-    bottom: -9px;
-  }
-
-  /* 脚質ごとの枠色・文字色アクセント */
-  .lane[data-lane="nige"] .lane-label,
-  .opp-lane[data-lane="nige"] .lane-label {
-    color: #aed0ff;
-    border-color: rgba(126, 163, 217, .85);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .75), 0 0 6px rgba(126, 163, 217, .25);
-  }
-
-  .lane[data-lane="senko"] .lane-label,
-  .opp-lane[data-lane="senko"] .lane-label {
-    color: #ffb8c7;
-    border-color: rgba(224, 143, 160, .85);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .75), 0 0 6px rgba(224, 143, 160, .25);
-  }
-
-  .lane[data-lane="sashi"] .lane-label,
-  .opp-lane[data-lane="sashi"] .lane-label {
-    color: #aeffc5;
-    border-color: rgba(127, 211, 150, .85);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .75), 0 0 6px rgba(127, 211, 150, .25);
-  }
-
-  .lane[data-lane="oikomi"] .lane-label,
-  .opp-lane[data-lane="oikomi"] .lane-label {
-    color: #ffe082;
-    border-color: rgba(227, 178, 60, .85);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .75), 0 0 6px rgba(227, 178, 60, .25);
-  }
-
-  /* 現在引く対象のアクティブ山札を強調 */
-  .lane.active .lane-label,
-  .opp-lane.active .lane-label {
-    background: rgba(16, 24, 40, .98);
-    font-weight: 900;
-    border-width: 1.5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .85), 0 0 10px rgba(227, 178, 60, .65);
-    transform: translateX(-50%) scale(1.06);
+  .lane.active .lane-label {
+    color: #211704;
+    background: #fff0a8;
+    border-color: #fff7cf;
+    text-shadow: none;
   }
 
   .deck-card {
@@ -1771,15 +1457,15 @@
     border: 2.5px solid #d7b25a;
     box-shadow:
       0 4px 10px rgba(0, 0, 0, .55),
-      1px 1px 0 0 #cbb050,
-      2px 2px 0 0 #c4a949,
-      3px 3px 0 0 #bda042,
-      4px 4px 0 0 #b3963e,
-      5px 5px 0 0 #a88c38,
-      6px 6px 0 0 #9d8132,
-      7px 7px 0 0 #92772c,
-      8px 8px 0 0 #876d27,
-      9px 9px 0 0 #7c6321,
+      1px  1px  0 0 #cbb050,
+      2px  2px  0 0 #c4a949,
+      3px  3px  0 0 #bda042,
+      4px  4px  0 0 #b3963e,
+      5px  5px  0 0 #a88c38,
+      6px  6px  0 0 #9d8132,
+      7px  7px  0 0 #92772c,
+      8px  8px  0 0 #876d27,
+      9px  9px  0 0 #7c6321,
       10px 10px 0 0 #71591c,
       11px 11px 0 0 #664f18,
       12px 12px 0 0 #5b4614,
@@ -1833,40 +1519,34 @@
   }
 
   .field-body {
-    width: 44%;
+    width: 40%;
     aspect-ratio: 5/7;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-radius: 11px;
+    border-radius: 10px;
     border: 1.5px solid rgba(227, 178, 60, .65);
-    box-shadow: inset 0 0 15px rgba(227, 178, 60, .20), 0 0 11px rgba(227, 178, 60, .25);
+    box-shadow: inset 0 0 14px rgba(227, 178, 60, .20), 0 0 10px rgba(227, 178, 60, .25);
     background: radial-gradient(120% 140% at 50% 0%, rgba(227, 178, 60, .18), transparent 65%), rgba(16, 24, 40, .65);
     /* フィールドと相手側の位置を均等に配置（相手の山札〜相手馬、自分山札〜自分馬の距離を対称に揃える） */
-    transform: translateY(47%) translateX(-55%) translateY(var(--field-extra-shift, 0px));
+    transform: translateY(48%) translateX(-55%) translateY(var(--field-extra-shift, 0px));
   }
 
   /* 相手の馬カード置き場：自分のフィールド枠（.field-body）と同じ大きさで、
-     行の外側（上のすき間）に対称に配置する。相手ファームと同様に赤い枠と赤背景に設定 */
+     行の外側（上のすき間）に対称に配置する */
   .field-body-opp {
     position: absolute;
-    width: 44%;
-    aspect-ratio: 5/7;
+    width: 40%;
     top: 0;
     left: 50%;
     right: auto;
     bottom: auto;
     margin: 0;
-    transform: translateY(-47%) translateX(9%) translateY(var(--field-opp-extra-shift, 0px));
+    transform: translateY(-48%) translateX(10%) translateY(var(--field-opp-extra-shift, 0px));
     z-index: 3;
-    border-radius: 10px;
-    border: 1.5px solid rgba(255, 140, 150, .6);
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 100, 120, .18), transparent 65%),
-      rgba(30, 14, 26, .75);
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .22), 0 0 12px rgba(255, 80, 100, .28);
+    border-color: rgba(255, 150, 150, .4);
   }
 
   .field-placeholder-opp {
@@ -1883,16 +1563,16 @@
 
   .field-mini {
     position: relative;
-    height: 96%;
+    height: 95%;
     width: auto;
     aspect-ratio: 5/7;
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, .55);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, .5);
     border: 1.5px solid rgba(0, 0, 0, .35);
     padding: 2px;
     overflow: hidden;
@@ -1909,12 +1589,12 @@
   }
 
   .field-mini .fm-icon {
-    font-size: clamp(16px, 4.8vw, 28px);
+    font-size: clamp(14px, 4.2vw, 24px);
     line-height: 1;
   }
 
   .field-mini .fm-name {
-    font-size: 7.5px;
+    font-size: 6.6px;
     font-weight: 700;
     text-align: center;
     color: #141414;
@@ -2090,9 +1770,10 @@
   }
 
   .hand-zone {
-    flex: 1;
+    flex: none;
     display: flex;
     flex-direction: column;
+    position: relative;
     min-height: 120px;
     min-width: 0;
     padding-bottom: 2px;
@@ -2108,9 +1789,132 @@
     padding-left: 2px;
   }
 
+  .selection-cancel-btn {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    z-index: 420;
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 224, 112, .82);
+    border-radius: 999px;
+    background: rgba(8, 18, 28, .94);
+    color: #fff0a8;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.2;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .6);
+    cursor: pointer;
+  }
+
+  .selection-confirm-btn {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    z-index: 421;
+    padding: 6px 10px;
+    border: 1px solid rgba(94, 239, 182, .9);
+    border-radius: 999px;
+    background: rgba(9, 50, 40, .96);
+    color: #caffeb;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.2;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .6), 0 0 12px rgba(52, 235, 172, .25);
+    cursor: pointer;
+  }
+
+  .selection-confirm-btn:disabled {
+    opacity: .45;
+    cursor: default;
+  }
+
+  .selection-confirm-btn[hidden] {
+    display: none !important;
+  }
+
+  .selection-cancel-btn[hidden] {
+    display: none !important;
+  }
+
+  .manual-selection-guide {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 430;
+    max-width: calc(100% - 24px);
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 224, 112, .9);
+    border-radius: 999px;
+    background: rgba(8, 18, 28, .96);
+    color: #fff0a8;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .68);
+  }
+
+  .manual-selection-guide[hidden],
+  .selected-horse-preview[hidden] {
+    display: none !important;
+  }
+
+  .selected-horse-preview {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    z-index: 410;
+    width: 95px;
+    height: 133px;
+    transform: translateX(-50%);
+    border: 3px solid #fff0a8;
+    border-radius: 10px;
+    background-color: #fff;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .78), 0 0 24px rgba(255, 216, 92, .82);
+    pointer-events: none;
+  }
+
+  .selected-horse-preview::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 50%;
+    bottom: -24px;
+    transform: translateX(-50%);
+    min-width: 84px;
+    padding: 4px 8px;
+    border: 1px solid rgba(255, 224, 112, .9);
+    border-radius: 999px;
+    background: rgba(8, 18, 28, .96);
+    color: #fff0a8;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .7);
+  }
+
+  /* アイテム選択中は、走破に使う馬を手札の外へ固定して全体を見せる。 */
+  .hand-zone.item-selecting .selected-horse-preview {
+    top: -158px;
+  }
+
+  /* フォース／アイテム選択中は馬を手札の外へ出し、残りのカード操作を妨げない。 */
+  .hand-zone.run-selecting .selected-horse-preview {
+    top: -158px;
+  }
+
+  .card.run-horse-source {
+    visibility: hidden;
+  }
+
   .hand-nav-btn {
-    display: none;
-    /* デスクトップでは手札の矢印を非表示 */
+    display: none; /* デスクトップでは手札の矢印を非表示 */
     position: absolute;
     top: calc(50% + 8px);
     transform: translateY(-50%);
@@ -2176,121 +1980,51 @@
      デスクトップ幅（860px以上）はこれまで通り通常のレイアウトのまま。 */
   @media (max-width:859px) {
     .board {
-      padding-bottom: 24px;
+      padding-bottom: 202px;
       gap: 4px;
       transition: padding-bottom .35s cubic-bezier(.2, .7, .3, 1);
     }
 
-    body.has-hand-cards .board,
-    body:has(.hand-zone.has-cards) .board {
-      padding-bottom: 155px;
-    }
-
-    body.manual-mode .board {
-      padding-bottom: 20px;
-    }
-
     /* opponent-strip と盤面の間に適切な余白を確保（相手山札との重なり防止） */
     .opponent-strip {
-      margin-bottom: 2px;
-      padding: 2.5px 8px 2.5px 3px;
-      z-index: 15;
+      margin-bottom: 6px;
     }
 
-    /* フィールドのグリッド行間をモバイルで広げて縦スペースを有効活用し、
-       相手デッキ〜自分デッキの距離を広げて上下の大きな空きを解消する */
+    /* フィールドのグリッド上パディングをモバイルで縮小 */
     .field-image-wrap {
-      gap: clamp(75px, 22vw, 115px) clamp(4px, 2vw, 12px);
       padding-top: 1.5vw;
-      padding-bottom: 2.5vw;
     }
 
-    /* 3Dモード時のfield-tiltの引き上げ量をモバイルで角度に応じて動的に適用（相手デッキと相手バーの隙間を解消） */
+    /* 3Dモード時のfield-tiltの引き上げ量をモバイルで強化 */
     body.field-3d .field-tilt {
-      margin-top: var(--field-tilt-shift-y, -75px);
+      margin-top: -12px;
     }
 
-    /* ナレーター：手札枠に隠れないようz-indexを50にし、コンパクトなサイズで表示 */
-    .narrator {
-      position: relative;
-      z-index: 50;
-      width: 96%;
-      max-width: 520px;
-      margin: 0px auto 4px;
-      gap: 8px;
-    }
-
-    /* 3D傾き時はナレーターもモバイルで角度に応じて動的に引き上げる */
-    body.field-3d .narrator {
-      margin-top: var(--narrator-margin-top, 0px);
-      margin-bottom: var(--narrator-margin-bottom, 4px);
-    }
-
-    .narrator-portrait {
-      flex: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-    }
-
-    .narrator-bubble {
-      min-height: 40px;
-      padding: 6px 14px 6px 14px;
-      border-radius: 20px;
-      gap: 3px;
-    }
-
-    .narrator-text {
-      font-size: 11.5px;
-      line-height: 1.4;
-    }
-
-    .narrator-tap-hint {
-      font-size: 9.5px;
-      margin-top: 0px;
-    }
-
-    /* 手札ゾーン：囲う枠（ボーダー、暗い背景、影、ラベル）をすべて完全に撤廃 */
     .hand-zone {
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+      left: 6px;
+      right: 6px;
+      bottom: calc(2px + env(safe-area-inset-bottom, 0px));
       z-index: 40;
-      height: 145px;
-      min-height: 0;
-      padding: 0 4px;
-      border: none !important;
-      border-radius: 0 !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      pointer-events: none;
-      transition: bottom .35s cubic-bezier(.2, .7, .3, 1), transform .35s cubic-bezier(.2, .7, .3, 1), opacity .3s ease;
+      height: 150px;
+      min-height: 150px;
+      padding: 2px 5px 2px;
+      border: 1px solid rgba(227, 178, 60, .45);
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(180deg, rgba(10, 18, 32, .97), rgba(5, 10, 20, .98));
+      box-shadow: 0 -10px 24px rgba(0, 0, 0, .5);
+      transition: bottom .35s cubic-bezier(.2, .7, .3, 1), transform .35s cubic-bezier(.2, .7, .3, 1);
     }
 
-    /* 手札ラベルの完全非表示 */
-    .hand-zone .zone-label {
-      display: none !important;
-    }
-
-    /* 手札カードが存在しない時（初期状態など）は完全非表示で画面を遮らない */
-    .hand-zone:not(.has-cards) {
-      display: none !important;
-    }
-
-    .hand-zone .card,
-    .hand-zone .hand-nav-btn {
-      pointer-events: auto;
-    }
-
-    /* manual-modeの時はナレーターが無いぶん手札を自然に引き上げてデッキとの間隔を詰める */
+    /* manual-modeの時はモバイルでもスペースを詰める */
     body.manual-mode .hand-zone {
-      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      /* 扇状に傾いた左右端のカードまで画面内へ収める。 */
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
     }
 
     .hand-row {
       flex: none;
-      height: 140px;
+      height: 130px;
       padding: 0 2px;
       overflow-x: auto;
       overflow-y: hidden;
@@ -2300,6 +2034,11 @@
 
     .hand-row::-webkit-scrollbar {
       display: none;
+    }
+
+    .hand-zone .zone-label {
+      font-size: 11px;
+      line-height: 14px;
     }
 
     .hand-nav-btn {
@@ -2312,18 +2051,33 @@
       display: flex;
     }
 
-    /* 3Dモード時の手札位置を角度に応じて動的に引き上げてデッキとの隙間を防止 */
     body.field-3d .hand-zone {
-      transform: translateY(var(--hand-shift-y, 0px));
+      transform: none;
     }
 
-    /* モバイル用トップバー：ブランド非表示・トラックバーと設定ボタンをすっきり1行配置 */
+    body.manual-mode .hand-zone.run-selecting {
+      height: 190px;
+      min-height: 190px;
+    }
+
+    body.manual-mode .hand-zone.run-selecting .hand-row {
+      height: 170px;
+    }
+
+    body.manual-mode .hand-zone.run-selecting .selected-horse-preview {
+      top: -158px;
+    }
+
+    body.manual-mode .hand-zone.run-selecting.item-selecting .selected-horse-preview {
+      top: -158px;
+    }
+
+    /* モバイル用トップバー：進行表示と設定、その下にレース条件 */
     .topbar {
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px calc(4px + env(safe-area-inset-top, 0px));
-      padding-top: calc(6px + env(safe-area-inset-top, 0px));
+      flex-wrap: wrap;
+      gap: 4px 7px;
+      padding: 5px 7px calc(5px + env(safe-area-inset-top, 0px));
+      padding-top: calc(5px + env(safe-area-inset-top, 0px));
     }
 
     .topbar .brand {
@@ -2331,33 +2085,102 @@
     }
 
     .track-wrap {
-      order: unset;
+      order: 0;
+      flex-basis: auto;
       flex: 1;
+    }
+
+    .race-info {
+      order: 3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       min-width: 0;
+      flex-basis: 100%;
+      max-width: none;
+      overflow: hidden;
+      line-height: 1;
+      gap: 3px;
+      padding: 4px 5px;
+      border-color: rgba(84, 207, 229, .28);
+      background: linear-gradient(180deg, rgba(11, 28, 40, .8), rgba(5, 15, 24, .78));
+    }
+
+    .race-info-title {
+      padding-left: 4px;
+      padding-right: 6px;
+    }
+
+    .race-condition {
+      flex: 1;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px 3px;
+    }
+
+    .race-condition-label {
+      font-size: 7px;
+    }
+
+    .race-condition-value {
+      font-size: 9.5px;
     }
 
     .topbar-menu {
+      order: 2;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
+      justify-content: flex-start;
+      gap: 3px;
       flex-wrap: nowrap;
       width: auto;
+      margin-left: auto;
       overflow: visible;
-      flex: none;
     }
 
-    .full-label {
-      display: inline;
-    }
-
-    .short-label {
+    .topbar-menu::-webkit-scrollbar {
       display: none;
     }
 
+    .full-label {
+      display: none;
+    }
+
+    .short-label {
+      display: inline;
+    }
+
+    .bgm-toggle {
+      padding: 2.5px 5px;
+      font-size: 8.5px;
+      flex-shrink: 0;
+    }
+
+    .tilt-opt {
+      padding: 2.5px 5px;
+      font-size: 8px;
+      flex-shrink: 0;
+    }
+
     .settings-gear {
-      padding: 4px 10px;
-      font-size: 11px;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .theme-opt,
+    .mode-opt {
+      padding: 2.5px 5.5px;
+      font-size: 8.5px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .theme-switch,
+    .mode-switch {
+      gap: 1.5px;
+      padding: 1.5px;
       flex-shrink: 0;
     }
 
@@ -2372,46 +2195,30 @@
     }
   }
 
-  /* スモールモバイル（480px以下） */
+  /* スモールモバイル（480px以下）では手札枠の高さを150pxに調整し、カード上部の見切れを完全防止 */
   @media (max-width:480px) {
     .board {
-      padding-bottom: 16px;
-    }
-
-    body.has-hand-cards .board,
-    body:has(.hand-zone.has-cards) .board {
-      padding-bottom: 145px;
-    }
-
-    body.manual-mode .board {
-      padding-bottom: 16px;
-    }
-
-    .narrator-portrait {
-      width: 44px;
-      height: 44px;
-    }
-
-    .narrator-bubble {
-      min-height: 38px;
-      padding: 5px 12px 5px 12px;
-    }
-
-    .narrator-text {
-      font-size: 11px;
-      line-height: 1.35;
+      padding-bottom: 180px;
     }
 
     .hand-zone {
-      height: 140px;
-      min-height: 0;
-      border: none !important;
-      background: transparent !important;
-      box-shadow: none !important;
+      height: 150px;
+      min-height: 150px;
+      padding: 2px 5px 2px;
+    }
+
+    .hand-zone .zone-label {
+      font-size: 11px;
+      line-height: 13px;
+      margin-bottom: 2px;
     }
 
     .hand-row {
-      height: 136px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      height: 126px;
     }
   }
 
@@ -2455,24 +2262,27 @@
     }
   }
 
-  /* 中くらいのモバイル（481px-760px） */
-  @media (min-width:481px) and (max-width:760px) {
+  /* 中くらい〜横幅の広いモバイル（481px-859px） */
+  @media (min-width:481px) and (max-width:859px) {
     .hand-zone {
       height: 170px;
       min-height: 170px;
     }
-
     .hand-row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12px;
       height: 146px;
     }
-
     .card {
       width: 95px;
       height: 133px;
     }
   }
 
-  @media (min-width:760px) {
+  /* 860px未満はSP用サイズを維持し、PC用の大きなカードを混ぜない。 */
+  @media (min-width:860px) {
     .hand-row {
       height: 190px;
     }
@@ -2549,10 +2359,10 @@
 
     /* デスクトップ：フィールドが重なっても opponent-strip が上に来るよう z-index を設定 */
     .opponent-strip {
-      padding: 3px 10px 3px 3px;
+      padding: 5px 12px;
       margin-bottom: 0;
       position: relative;
-      z-index: 15;
+      z-index: 5;
     }
 
     /* デスクトップ: max-width固定なのでgapも固定pxに切り替えてビューポート変動の影響をゼロにする */
@@ -2560,39 +2370,59 @@
       gap: 30px 8px;
     }
 
-    /* 3D傾き（0°〜60°全域）およびズーム倍率に応じてフィールド余白を動的に詰める */
+    /* 3D傾き（10°または20°）およびズーム倍率に応じてフィールド余白を動的に詰める */
     body.field-3d .field-tilt {
-      margin-top: var(--field-tilt-shift-y, -285px);
+      margin-top: var(--field-tilt-shift-y, -50px);
       margin-bottom: var(--field-scale-shift-y, 0px);
       transition: margin-top .45s cubic-bezier(.2, .7, .3, 1), margin-bottom .22s ease;
     }
 
-    /* ナレーターは手札とデッキの間に固定配置（デッキのすぐ下に間隔を詰めて配置、角度に応じて動的引き上げ） */
+    body.field-3d[data-tilt="0"] .field-tilt {
+      margin-top: 0;
+    }
+
+    body.field-3d[data-tilt="10"] .field-tilt {
+      margin-top: -100px;
+    }
+
+    body.field-3d[data-tilt="25"] .field-tilt {
+      margin-top: -100px;
+    }
+
+    /* ナレーターは手札とデッキの間に固定配置（デッキのすぐ下に間隔を詰めて配置） */
     .narrator {
       position: relative;
       width: 90%;
       max-width: 660px;
       margin: -10px auto 14px;
       z-index: 30;
-      transition: margin .45s cubic-bezier(.2, .7, .3, 1), transform .45s cubic-bezier(.2, .7, .3, 1);
     }
 
-    body.field-3d .narrator {
-      margin-top: var(--narrator-margin-top, -24px);
-      margin-bottom: var(--narrator-margin-bottom, 8px);
-    }
-
-    /* 手札ゾーン（ナレーターの下に自然に配置、角度に応じて動的引き上げ） */
+    /* 手札ゾーン（ナレーターの下に自然に配置） */
     .hand-zone {
       margin-top: 6px;
       min-height: 210px;
       padding-top: 0;
-      transition: transform .45s cubic-bezier(.2, .7, .3, 1), margin-top .45s cubic-bezier(.2, .7, .3, 1);
+      transition: transform .45s cubic-bezier(.2, .7, .3, 1);
     }
 
     /* manual-modeの時はナレーターのスペースを詰める */
     body.manual-mode .hand-zone {
-      margin-top: calc(var(--hand-margin-top, 6px) - 22px);
+      width: min(calc(100% - 24px), 900px);
+      height: 158px;
+      min-height: 158px;
+      margin: 0 auto 4px;
+      padding-top: 0;
+      overflow: visible;
+    }
+
+    body.manual-mode .hand-row {
+      height: 154px;
+    }
+
+    body.manual-mode .card {
+      width: 106px;
+      height: 148px;
     }
 
     .hand-row {
@@ -2602,14 +2432,13 @@
     body.field-3d .hand-zone {
       transform: perspective(1000px) rotateX(-2deg) scale(var(--hand-tilt-scale, 1.01)) translateY(var(--hand-shift-y, 0px));
       transform-origin: 50% 100%;
-      margin-top: var(--hand-margin-top, 6px);
-      transition: transform .45s cubic-bezier(.2, .7, .3, 1), margin-top .45s cubic-bezier(.2, .7, .3, 1);
+      transition: transform .45s cubic-bezier(.2, .7, .3, 1);
     }
 
 
 
     .narrator-bubble {
-      padding: 12px 36px 12px 28px;
+      padding: 12px 52px 12px 18px;
     }
 
     .narrator-text {
@@ -2647,14 +2476,7 @@
     }
 
     .lane-label {
-      font-size: 12px;
-      padding: 2px 8px;
-      top: -10px;
-    }
-
-    .opp-lane .lane-label {
-      top: auto;
-      bottom: -10px;
+      font-size: 10px;
     }
 
     /* トップバー・各種操作ボタン */
@@ -2687,7 +2509,11 @@
     }
 
     .settings-gear {
-      padding: 6px 10px;
+      box-sizing: border-box;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 0;
     }
 
     .zone-label {
@@ -2969,6 +2795,7 @@
       --fan-scale: 1.2;
       z-index: 80;
     }
+
   }
 
   .card.highlighted {
@@ -2984,6 +2811,59 @@
     z-index: 50;
   }
 
+  .card.run-item-selected {
+    --fan-lift: -22px;
+    --fan-scale: 1.08;
+    z-index: 95 !important;
+    opacity: 1 !important;
+    filter: brightness(1.12) saturate(1.18);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .7), 0 0 0 5px #61efba, 0 0 28px rgba(63, 231, 169, .95);
+  }
+
+  .field-total-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    z-index: 12;
+    min-width: 34px;
+    padding: 2px 4px;
+    border: 1.5px solid #fff;
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .65);
+  }
+
+  .field-total-run {
+    background: linear-gradient(160deg, #ff6f6f, #b92335);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .65), 0 0 9px rgba(255, 92, 92, .45);
+  }
+
+  .field-total-guard {
+    background: linear-gradient(160deg, #26d88e, #087e5b);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .65), 0 0 9px rgba(43, 238, 166, .45);
+  }
+
+  .field-total-label {
+    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    font-size: 8px;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .field-total-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.05;
+  }
+
   .card.disabled {
     opacity: .4;
   }
@@ -2993,9 +2873,29 @@
     .card.highlighted {
       --fan-lift: -4px;
     }
-
     .card.selected {
       --fan-lift: -4px;
+    }
+
+    .card.run-item-selected {
+      --fan-lift: -12px;
+      --fan-scale: 1.08;
+    }
+  }
+
+  /* 走破に使う馬は、マウスのホバー有無に関係なく選択状態を大きく表示する。 */
+  .card.run-horse-selected {
+    --fan-lift: -24px;
+    --fan-scale: 1.16;
+    z-index: 90 !important;
+    opacity: 1;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .72), 0 0 0 3px #fff0a8, 0 0 24px rgba(255, 216, 92, .8);
+  }
+
+  @media (max-width:859px) {
+    .card.run-horse-selected {
+      --fan-lift: -8px;
+      --fan-scale: 1.14;
     }
   }
 
@@ -3075,7 +2975,7 @@
   .banner-overlay {
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: 500;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3104,6 +3004,8 @@
 
   .banner-stage.has-card {
     position: relative;
+    flex-direction: column;
+    gap: 14px;
     animation: bannerStagePop .4s cubic-bezier(.16, 1, .3, 1) both;
   }
 
@@ -3112,7 +3014,6 @@
       opacity: 0;
       transform: scale(.8) translateY(20px);
     }
-
     100% {
       opacity: 1;
       transform: scale(1) translateY(0);
@@ -3226,7 +3127,7 @@
     width: min(300px, 76vw) !important;
     height: auto !important;
     aspect-ratio: 5 / 7.1 !important;
-    max-height: 64vh !important;
+    max-height: 52vh !important;
     border-radius: 14px;
     box-shadow:
       0 20px 60px rgba(0, 0, 0, .95),
@@ -3241,14 +3142,14 @@
     margin: 0 auto;
   }
 
-  /* 走破成功時：カード中央に「走破成功！」バッジを美しく重ねて表示 */
+  /* 走破成功時：カード画像を隠さないよう、結果をカードの下に分けて表示 */
   .banner-stage.has-card:not(.is-guard) .banner-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 80%;
-    max-width: 250px;
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: scale(0.9);
+    width: min(82vw, 300px);
+    max-width: none;
     padding: 13px 14px;
     background: linear-gradient(180deg, #181d24 0%, #0d1217 100%);
     border: 2px solid #e5c07b;
@@ -3264,6 +3165,7 @@
     gap: 3px;
     z-index: 10;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   .banner-stage.has-card:not(.is-guard) .banner-box::before {
@@ -3293,7 +3195,11 @@
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     position: relative;
     z-index: 2;
-    white-space: nowrap;
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
   }
 
   .banner-stage.has-card:not(.is-guard) .banner-box .banner-box-text {
@@ -3305,14 +3211,18 @@
     text-shadow:
       0 0 14px rgba(255, 235, 160, 0.9),
       0 2px 6px rgba(0, 0, 0, 0.95);
-    white-space: nowrap;
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.3;
     position: relative;
     z-index: 2;
   }
 
   .banner-stage.has-card:not(.is-guard) .banner-box.show {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 
   /* ガード時：カードの下に「相手（自分）がガード！ 馬名 / ガード X」バナーを表示 */
@@ -3416,7 +3326,11 @@
     text-shadow:
       0 0 12px rgba(255, 230, 150, 0.6),
       0 2px 4px rgba(0, 0, 0, 0.9) !important;
-    white-space: nowrap !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.45 !important;
     position: relative !important;
     z-index: 2 !important;
   }
@@ -3424,145 +3338,6 @@
   .banner-stage.has-card.is-guard .banner-box.show {
     opacity: 1 !important;
     transform: scale(1) translateY(0) !important;
-  }
-
-  /* ---------- Turn Change Overlay (Duel Links Style) ---------- */
-  .turn-change-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1500;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .15s ease, visibility .15s ease;
-  }
-
-  .turn-change-overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .turn-change-backdrop {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(2, 6, 16, 0.72) 0%, rgba(2, 6, 16, 0.4) 60%, transparent 88%);
-    opacity: 0;
-    transition: opacity .2s ease;
-  }
-
-  .turn-change-overlay.show .turn-change-backdrop {
-    opacity: 1;
-  }
-
-  .turn-change-wrap {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform: skewX(-14deg);
-    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95));
-  }
-
-  .turn-change-overlay.show .turn-change-wrap {
-    animation: turnChangeAnim 2s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  @keyframes turnChangeAnim {
-    0% {
-      opacity: 0;
-      transform: scale(1.5) skewX(-14deg);
-      filter: brightness(2.4) drop-shadow(0 0 40px #ffffff);
-    }
-    12% {
-      opacity: 1;
-      transform: scale(0.96) skewX(-14deg);
-      filter: brightness(1.25) drop-shadow(0 0 28px rgba(0, 210, 255, 0.9));
-    }
-    18% {
-      transform: scale(1) skewX(-14deg);
-      filter: brightness(1) drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95));
-    }
-    85% {
-      opacity: 1;
-      transform: scale(1) skewX(-14deg);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(0.92) skewX(-14deg) translateY(-20px);
-      filter: brightness(0.8);
-    }
-  }
-
-  .turn-change-top,
-  .turn-change-bottom {
-    font-family: 'Orbitron', 'Impact', sans-serif;
-    font-size: clamp(56px, 14vw, 98px);
-    font-weight: 900;
-    font-style: italic;
-    line-height: 0.88;
-    letter-spacing: 0.06em;
-    color: #ffffff;
-    -webkit-text-stroke: 4px #000000;
-    paint-order: stroke fill;
-    text-shadow:
-      0 0 24px rgba(0, 210, 255, 0.7),
-      3px 3px 0 #000000,
-      -3px -3px 0 #000000,
-      3px -3px 0 #000000,
-      -3px 3px 0 #000000,
-      0 10px 28px rgba(0, 0, 0, 0.95);
-  }
-
-  .turn-change-middle {
-    width: 100vw;
-    max-width: 560px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 6px 0;
-  }
-
-  .turn-change-banner {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 24px;
-    background: linear-gradient(90deg, transparent 0%, rgba(220, 20, 40, 0.95) 12%, #eb0a2b 50%, rgba(220, 20, 40, 0.95) 88%, transparent 100%);
-    box-shadow: 0 0 32px rgba(235, 10, 43, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.4);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.75);
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.55);
-  }
-
-  /* プレイヤーのターン時はシアン〜ブルーのバナー */
-  .turn-change-overlay.is-player .turn-change-banner {
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 136, 255, 0.95) 12%, #0091ff 50%, rgba(0, 136, 255, 0.95) 88%, transparent 100%);
-    box-shadow: 0 0 32px rgba(0, 145, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.4);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.75);
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.55);
-  }
-
-  .turn-change-label {
-    font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
-    font-size: clamp(22px, 5.2vw, 36px);
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: 0.1em;
-    color: #ffffff;
-    -webkit-text-stroke: 2px #000000;
-    paint-order: stroke fill;
-    text-shadow:
-      0 0 12px rgba(0, 0, 0, 0.95),
-      2px 2px 0 #000,
-      -2px -2px 0 #000,
-      2px -2px 0 #000,
-      -2px 2px 0 #000;
-    white-space: nowrap;
   }
 
   /* ---------- Game Toast Notification ---------- */
@@ -3589,7 +3364,13 @@
     z-index: 9999;
     opacity: 0;
     transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    white-space: nowrap;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    box-sizing: border-box;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+    line-height: 1.5;
     text-shadow: 0 0 10px rgba(227, 178, 60, 0.6), 0 2px 4px rgba(0, 0, 0, 0.9);
   }
 
@@ -3604,7 +3385,6 @@
       opacity: 0;
       transform: translateX(-50%) translateY(-18px) scale(0.9);
     }
-
     100% {
       opacity: 1;
       transform: translateX(-50%) translateY(0) scale(1);
@@ -3612,21 +3392,9 @@
   }
 
   @keyframes toastShake {
-
-    0%,
-    100% {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    20%,
-    60% {
-      transform: translateX(calc(-50% - 4px)) translateY(0);
-    }
-
-    40%,
-    80% {
-      transform: translateX(calc(-50% + 4px)) translateY(0);
-    }
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    20%, 60% { transform: translateX(calc(-50% - 4px)) translateY(0); }
+    40%, 80% { transform: translateX(calc(-50% + 4px)) translateY(0); }
   }
 
   /* ---------- Arrow coach mark ---------- */
@@ -3743,154 +3511,279 @@
     display: block;
   }
 
-  /* 吹き出し本体：カプセル形状・白背景・鮮やかなシアンの発光枠 */
+  /* 吹き出し本体。背景・枠線・影・ぼかしはここに集約 */
   .narrator-bubble {
     position: relative;
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: stretch;
     gap: 6px;
-    min-height: 64px;
-    border-radius: 9999px;
-    padding: 12px 32px 12px 28px;
-    background: rgba(255, 255, 255, 0.97);
-    border: 2px solid #00d2ff;
-    box-shadow: 0 0 12px rgba(0, 210, 255, 0.55), 0 0 24px rgba(0, 210, 255, 0.25), 0 4px 16px rgba(0, 0, 0, 0.12);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    min-height: 62px;
+    border-radius: 10px;
+    padding: 12px 18px 10px 18px;
+    border: 1px solid rgba(246, 210, 122, .72);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .1);
+    background: linear-gradient(110deg, rgba(14, 31, 25, .98), rgba(8, 16, 18, .97));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: box-shadow 0.2s ease;
   }
 
   .narrator.dragging .narrator-bubble {
-    box-shadow: 0 0 0 2px #00f0ff, 0 0 35px rgba(0, 229, 255, 0.75), 0 18px 45px rgba(0, 0, 0, 0.25);
-    border-color: #00f0ff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .55), 0 0 45px rgba(227, 178, 60, 0.6), 0 20px 60px rgba(0, 0, 0, 0.95);
+    border-color: #ffffff;
   }
 
-  /* 参考画像に合わせて吹き出しのしっぽ（三角）は非表示 */
+  /* 吹き出しのしっぽ：人物（左側）を指す三角形。
+     ::before = 枠線色の外側三角形、::after = 背景色の内側三角形（縁取り表現） */
   .narrator-bubble::before,
   .narrator-bubble::after {
-    display: none !important;
+    content: '';
+    position: absolute;
+    top: 50%;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+  /* 外側（枠線色）の三角形 */
+  .narrator-bubble::before {
+    left: -13px;
+    transform: translateY(-50%);
+    border-width: 10px 13px 10px 0;
+    border-color: transparent rgba(246, 210, 122, .72) transparent transparent;
+  }
+
+  /* 内側（背景色）の三角形：枠線を1pxだけ残して内側を塗りつぶす */
+  .narrator-bubble::after {
+    display: block;
+    left: -10px;
+    transform: translateY(-50%);
+    border-width: 8px 10px 8px 0;
+    border-color: transparent rgba(14, 31, 25, .98) transparent transparent;
   }
 
   .narrator-text {
     flex: 1;
-    font-size: 14.5px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 1.55;
-    color: #2b323b;
-    text-shadow: none;
-    letter-spacing: 0.01em;
+    color: #fffdf5;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
   }
 
   .narrator-text b {
-    color: #0284c7;
-    font-weight: 700;
+    color: var(--gold-2);
   }
 
-  /* 吹き出しの進むインジケーター（次へ・戻るコマンドを廃止しタップ／クリック進行に統一） */
-  .narrator.can-advance {
-    cursor: pointer;
-  }
-
-  .narrator.can-advance .narrator-bubble {
-    cursor: pointer;
-  }
-
-  .narrator.can-advance:hover .narrator-bubble {
-    box-shadow: 0 0 16px rgba(0, 210, 255, 0.7), 0 0 28px rgba(0, 210, 255, 0.35), 0 6px 20px rgba(0, 0, 0, 0.15);
-    border-color: #00f0ff;
-  }
-
-  .narrator.can-advance:active .narrator-bubble {
-    transform: scale(0.985);
-  }
-
-  .narrator-tap-hint {
-    display: none;
-    align-self: flex-end;
-    font-size: 11px;
-    font-weight: 700;
-    color: #0284c7;
-    letter-spacing: 0.04em;
-    user-select: none;
-    pointer-events: none;
-    margin-top: 1px;
-    margin-right: 2px;
-    line-height: 1;
-  }
-
-  .narrator-tap-hint.show {
-    display: inline-flex;
+  .narrator-actions {
+    display: flex;
     align-items: center;
-    gap: 4px;
-    animation: tapHintFadeIn 0.25s ease forwards;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+    margin-top: 2px;
   }
 
-  .narrator-tap-hint .tap-arrow {
-    display: inline-block;
-    font-size: 9px;
-    animation: tapArrowBounce 0.9s infinite alternate ease-in-out;
+  .selection-progress {
+    margin-right: auto;
+    padding: 6px 10px;
+    border: 1px solid rgba(94, 234, 212, .72);
+    border-radius: 999px;
+    background: rgba(6, 78, 92, .72);
+    color: #d8fffb;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: 0 0 14px rgba(45, 212, 191, .2);
   }
 
-  @keyframes tapArrowBounce {
-    0% { transform: translateY(0); opacity: 0.6; }
-    100% { transform: translateY(3px); opacity: 1; color: #00d2ff; }
+  .selection-progress.complete {
+    border-color: rgba(246, 210, 122, .9);
+    background: rgba(113, 76, 15, .82);
+    color: #fff3c4;
   }
 
-  @keyframes tapHintFadeIn {
-    from { opacity: 0; transform: translateY(2px); }
-    to { opacity: 1; transform: translateY(0); }
+  .narrator-next {
+    flex: none;
+    background: linear-gradient(160deg, var(--gold-2), var(--gold));
+    color: var(--ink);
+    border: none;
+    border-radius: 9px;
+    padding: 7px 14px;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: .02em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .4);
   }
 
-  .narrator-actions,
-  .narrator-next,
+  .narrator-next:active {
+    transform: translateY(1px);
+  }
+
+  /* 過去のメッセージを見返すための「戻る／進む」ボタン */
+  .narrator-nav {
+    flex: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
   .narrator-back,
   .narrator-forward {
-    display: none !important;
+    display: none;
+    flex: none;
+    background: rgba(255, 255, 255, .08);
+    color: var(--rail);
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 7px;
+    padding: 4px 7px;
+    font-weight: 600;
+    font-size: 9px;
+    cursor: pointer;
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+
+  .narrator-back:hover,
+  .narrator-forward:hover {
+    background: rgba(255, 255, 255, .16);
+  }
+
+  .narrator-back:active,
+  .narrator-forward:active {
+    transform: translateY(1px);
   }
 
   /* 過去のメッセージを閲覧中は、吹き出しの縁を少し変えて「これは過去のログです」と分かるようにする */
   .narrator.viewing-history .narrator-bubble {
-    border-color: #94a3b8;
-    box-shadow: 0 0 10px rgba(148, 163, 184, 0.4), 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left-color: var(--rail-dim);
+    opacity: .92;
+  }
+
+  .narrator.viewing-history .narrator-bubble::before {
+    border-color: transparent rgba(180, 180, 180, .5) transparent transparent;
   }
 
   @media (max-width:639px) {
     .narrator {
       gap: 7px;
-      width: 96%;
-      max-width: 500px;
-      margin: 0 auto 4px;
     }
 
     .narrator-portrait {
-      width: 44px;
-      height: 44px;
+      width: 66px;
+      height: 66px;
       border-radius: 50%;
-      border-width: 1.5px;
     }
 
     .narrator-bubble {
-      min-height: 38px;
-      padding: 5px 14px 5px 14px;
-      border-radius: 18px;
-      gap: 2px;
+      min-height: 54px;
+      padding: 10px 14px 8px 14px;
     }
 
     .narrator-text {
-      font-size: 11px;
-      line-height: 1.36;
+      font-size: 12px;
+      line-height: 1.45;
     }
 
-    .narrator-actions {
-      margin-top: 1px;
-      gap: 5px;
+    .narrator-next {
+      padding: 7px 8px;
+      font-size: 10px;
     }
 
-    .narrator-tap-hint {
-      font-size: 8.5px;
+    .narrator-back,
+    .narrator-forward {
+      padding: 3px 6px;
+      font-size: 8px;
+    }
+
+    .selection-progress {
+      padding: 5px 7px;
+      font-size: 9px;
+    }
+  }
+
+  /* チュートリアルの案内を盤面とは別の領域に置き、カードとの重なりを防ぐ。 */
+  body:not(.manual-mode) .narrator {
+    position: relative;
+    flex: none;
+    z-index: 120;
+    margin: 4px auto 6px;
+  }
+
+  body:not(.manual-mode) .board {
+    scroll-padding-top: 18px;
+    scroll-padding-bottom: 18px;
+  }
+
+  body:not(.manual-mode) .hand-zone {
+    flex: none;
+    width: min(calc(100% - 16px), 900px);
+    margin: 0 auto 4px;
+    border-color: rgba(74, 190, 255, .58);
+    background: linear-gradient(180deg, rgba(9, 35, 58, .82), rgba(5, 18, 34, .9));
+    box-shadow: 0 -7px 22px rgba(35, 154, 230, .18);
+  }
+
+  body:not(.manual-mode) .hand-zone > .zone-label {
+    display: none;
+  }
+
+  body:not(.manual-mode) .hand-zone:not(.has-cards) {
+    display: none;
+  }
+
+  body:not(.manual-mode) .opponent-strip {
+    border-color: rgba(255, 112, 112, .58);
+    background: linear-gradient(180deg, rgba(61, 20, 27, .9), rgba(35, 13, 20, .7));
+    box-shadow: 0 0 18px rgba(225, 67, 82, .14);
+  }
+
+  @media (max-width:859px) {
+    body:not(.manual-mode) .narrator {
+      width: min(96%, 660px);
+      margin-bottom: 4px;
+    }
+
+    body:not(.manual-mode) .board {
+      padding-bottom: 8px;
+      scroll-padding-bottom: 18px;
+    }
+
+    body:not(.manual-mode) .hand-zone {
+      position: relative;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      width: calc(100% - 12px);
+      margin: 0 6px calc(2px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* SPのチュートリアルでは、説明文の高さにかかわらず手札を画面内へ固定する。 */
+    body:not(.manual-mode) .hand-zone.has-cards {
+      position: fixed;
+      left: 6px;
+      right: 6px;
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      width: auto;
+      margin: 0;
+      z-index: 90;
+    }
+
+    body:not(.manual-mode):has(.hand-zone.has-cards) .narrator {
+      position: fixed;
+      left: 6px;
+      right: 6px;
+      bottom: calc(178px + env(safe-area-inset-bottom, 0px));
+      width: auto;
+      margin: 0;
+      z-index: 120;
     }
   }
 
@@ -4076,15 +3969,18 @@
   .opponent-hand-area {
     display: flex;
     align-items: center;
-    gap: 3px;
-    margin-left: 3px;
-    padding: 2px 7px;
+    flex: none;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin-left: 6px;
+    padding: 2px 8px;
     background: rgba(255, 255, 255, .06);
-    border-radius: 999px;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, .08);
-    font-size: 9.5px;
+    font-size: 10px;
     color: var(--rail-dim);
     white-space: nowrap;
+    writing-mode: horizontal-tb;
   }
 
   .opponent-hand-area .count {
@@ -4439,7 +4335,6 @@
       opacity: 0;
       transform: scale(0.85) translateY(-14px);
     }
-
     100% {
       opacity: 1;
       transform: scale(1) translateY(0);
@@ -4476,7 +4371,6 @@
       opacity: 0;
       transform: scale(0.9) translateY(14px);
     }
-
     100% {
       opacity: 1;
       transform: scale(1) translateY(0);
@@ -4509,6 +4403,7 @@
 
   #guard-popup .popup-btns {
     display: flex;
+    flex-wrap: wrap;
     gap: 14px;
     justify-content: center;
     align-items: center;
@@ -4746,12 +4641,11 @@
     box-shadow: 0 0 10px rgba(0, 240, 255, .65);
   }
 
-  .theme-opt[data-theme="classic"].active,
-  .theme-opt[data-theme="nature"].active {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #ffffff;
+  .theme-opt[data-theme="classic"].active {
+    background: var(--gold);
+    color: var(--ink);
     font-weight: 700;
-    box-shadow: 0 0 12px rgba(16, 185, 129, .65);
+    box-shadow: 0 0 10px rgba(227, 178, 60, .65);
   }
 
   /* ---------- Mode Switch (チュートリアル / 自分で操作) ---------- */
@@ -4889,6 +4783,7 @@
 
   /* base slot look: clear luminous border + radial fill + glow */
   body.field-cyber .lane,
+  body.field-cyber .opp-lane,
   body.field-cyber .field-body,
   body.field-cyber .farm-pile,
   body.field-cyber .zone-body {
@@ -4901,26 +4796,10 @@
     transition: border-color .2s, box-shadow .2s;
   }
 
-  /* 相手の山札：相手ファーム（#zone-opp-farm）と同様に赤い枠と赤系背景 */
-  .opp-lane,
-  body.field-cyber .opp-lane {
-    border-radius: 10px;
-    border: 1.5px solid rgba(255, 140, 150, .6);
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 100, 120, .18), transparent 65%),
-      rgba(30, 14, 26, .75);
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .22), 0 0 12px rgba(255, 80, 100, .28);
-    transition: border-color .2s, box-shadow .2s;
-  }
-
-  body.field-cyber .lane.active {
+  body.field-cyber .lane.active,
+  body.field-cyber .opp-lane.active {
     border-color: var(--cyber-cyan);
     box-shadow: inset 0 0 14px rgba(62, 224, 255, .35), 0 0 18px rgba(62, 224, 255, .7);
-  }
-
-  body.field-cyber .opp-lane.active {
-    border-color: #ff6478;
-    box-shadow: inset 0 0 14px rgba(255, 100, 120, .35), 0 0 18px rgba(255, 80, 100, .7);
   }
 
   @keyframes pulseRingCyan {
@@ -4985,14 +4864,10 @@
     border-bottom-right-radius: 4px;
   }
 
-  body.field-cyber .lane.active .slot-bracket {
-    border-color: #ffffff;
-    filter: drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 14px #00f0ff);
-  }
-
+  body.field-cyber .lane.active .slot-bracket,
   body.field-cyber .opp-lane.active .slot-bracket {
     border-color: #ffffff;
-    filter: drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 14px #ff5064);
+    filter: drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 14px #00f0ff);
   }
 
   .slot-frame {
@@ -5007,57 +4882,22 @@
 
   /* フィールド（自分・相手）の枠だけ、サイズと縦位置の微調整をここに限定する。 */
   #zone-field .slot-frame {
-    width: 44%;
-    transform: translateY(47%) translateX(-55%) translateY(var(--field-extra-shift, 0px));
+    width: 40%;
+    transform: translateY(48%) translateX(-55%) translateY(var(--field-extra-shift, 0px));
   }
 
   #zone-field .slot-frame-opp {
     inset: auto;
     margin: 0;
-    width: 44%;
-    aspect-ratio: 5/7;
+    width: 40%;
     top: 0;
     left: 50%;
     right: auto;
     bottom: auto;
-    transform: translateY(-47%) translateX(9%) translateY(var(--field-opp-extra-shift, 0px));
-    z-index: 5;
-    pointer-events: none;
+    transform: translateY(-48%) translateX(10%) translateY(var(--field-opp-extra-shift, 0px));
   }
 
-  #zone-field .slot-frame-opp .slot-bracket,
-  body.field-cyber #zone-field .slot-frame-opp .slot-bracket {
-    border-color: #00f0ff;
-    filter: drop-shadow(0 0 5px #00f0ff) drop-shadow(0 0 11px rgba(0, 240, 255, .9));
-  }
-
-  /* 相手のカードゾーン（相手の馬カード置き場）：相手ファーム（#zone-opp-farm .farm-pile）と同様に赤い枠と青い四隅 */
-  #zone-field .field-body-opp,
-  #field-body-opp,
-  body.field-cyber #zone-field .field-body-opp,
-  body.field-cyber #field-body-opp,
-  body.field-cyber .field-body-opp {
-    border-radius: 10px;
-    border: 1.5px solid rgba(255, 140, 150, .6);
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 100, 120, .18), transparent 65%),
-      rgba(30, 14, 26, .75);
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .22), 0 0 12px rgba(255, 80, 100, .28);
-    transition: border-color .2s, box-shadow .2s;
-  }
-
-  #zone-opp-farm .farm-pile,
-  body.field-cyber #zone-opp-farm .farm-pile {
-    border-radius: 10px;
-    border: 1.5px solid rgba(255, 140, 150, .6);
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 100, 120, .18), transparent 65%),
-      rgba(30, 14, 26, .75);
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .22), 0 0 12px rgba(255, 80, 100, .28);
-    transition: border-color .2s, box-shadow .2s;
-  }
-
-  #zone-opp-farm .slot-frame {
+  #zone-situation .slot-frame {
     width: 70%;
     aspect-ratio: 5/7;
   }
@@ -5067,21 +4907,28 @@
   }
 
   body.field-cyber .field-placeholder::before {
-    content: '馬カード置き場（自分）';
+    content: '自分の場';
     font-size: 8px;
     letter-spacing: .06em;
     font-family: 'Orbitron', sans-serif;
   }
 
   body.field-cyber .field-placeholder-opp {
-    color: rgba(62, 224, 255, .65);
+    color: rgba(255, 150, 150, .55);
   }
 
   body.field-cyber .field-placeholder-opp::before {
-    content: '馬カード置き場（相手）';
+    content: '相手の場';
     font-size: 7.5px;
     letter-spacing: .06em;
     font-family: 'Orbitron', sans-serif;
+  }
+
+  /* 相手の馬カードが表示されている間は、位置案内の文字を確実に隠す。 */
+  .field-body-opp.has-card .field-placeholder-opp,
+  .field-body-opp.has-card .field-placeholder-opp::before {
+    display: none !important;
+    content: none !important;
   }
 
   body.field-cyber .farm-pile:empty::before {
@@ -5100,15 +4947,12 @@
     font-family: 'Orbitron', sans-serif;
   }
 
-  body.field-cyber .lane-card-back {
+  body.field-cyber .lane-card-back,
+  body.field-cyber .opp-lane .lane-card-back {
     border-color: rgba(62, 224, 255, .55);
   }
 
-  body.field-cyber .opp-lane .lane-card-back {
-    border-color: rgba(255, 140, 150, .65);
-    box-shadow: 0 0 8px rgba(255, 80, 100, .25);
-  }
-
+  body.field-cyber .lane-label,
   body.field-cyber .lane-badge {
     color: var(--cyber-cyan);
     text-shadow: 0 0 6px rgba(62, 224, 255, .6);
@@ -5116,27 +4960,17 @@
     letter-spacing: .04em;
   }
 
-  body.field-cyber .opp-lane .lane-badge {
-    color: #ff8595;
-    text-shadow: 0 0 6px rgba(255, 100, 120, .8);
-    background: rgba(30, 10, 20, .85);
-    border-color: rgba(255, 140, 150, .6);
-    font-family: 'Orbitron', sans-serif;
-    letter-spacing: .04em;
-  }
-
-  body.field-cyber .lane-label {
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-  }
-
   body.field-cyber .lane.active .lane-label {
-    border-color: #3ee0ff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .85), 0 0 10px rgba(62, 224, 255, .75);
+    color: #211704;
+    text-shadow: none;
   }
 
-  body.field-cyber .opp-lane.active .lane-label {
-    border-color: #ff6478;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .85), 0 0 10px rgba(255, 100, 120, .75);
+  body.field-cyber .lane-badge {
+    color: #fff;
+    background: #07131e;
+    border-color: #69efff;
+    text-shadow: 0 1px 2px #000;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .8), 0 0 12px rgba(62, 224, 255, .72);
   }
 
   body.field-cyber .tilt-select {
@@ -5155,6 +4989,10 @@
   body.field-cyber .restart-btn,
   body.field-cyber .bgm-toggle {
     border-color: rgba(62, 224, 255, .4);
+  }
+
+  body.field-cyber .settings-gear {
+    border: 0;
   }
 
   body.field-cyber .settings-gear:hover,
@@ -5192,41 +5030,6 @@
     box-shadow: 0 0 8px rgba(62, 224, 255, .5);
   }
 
-  body.field-cyber .settings-tabs {
-    border-bottom-color: rgba(62, 224, 255, .25);
-  }
-
-  body.field-cyber .settings-tab-btn {
-    border-color: rgba(62, 224, 255, .35);
-    background: rgba(10, 22, 36, .6);
-    color: rgba(220, 240, 255, .7);
-  }
-
-  body.field-cyber .settings-tab-btn:hover {
-    color: #fff;
-    border-color: rgba(62, 224, 255, .6);
-  }
-
-  body.field-cyber .settings-tab-btn.active {
-    background: var(--cyber-cyan);
-    border-color: var(--cyber-cyan);
-    color: #032530;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(62, 224, 255, .5);
-  }
-
-  body.field-cyber .settings-bgm-toggle {
-    border-color: rgba(62, 224, 255, .35);
-    background: rgba(10, 22, 36, .6);
-    color: rgba(220, 240, 255, .85);
-  }
-
-  body.field-cyber .settings-bgm-toggle:hover {
-    color: var(--cyber-cyan);
-    border-color: var(--cyber-cyan);
-    box-shadow: 0 0 8px rgba(62, 224, 255, .35);
-  }
-
   body.field-cyber .settings-value {
     color: var(--cyber-cyan);
     font-family: 'Orbitron', sans-serif;
@@ -5248,538 +5051,6 @@
 
   body.field-cyber .settings-group input[type=range]::-moz-range-thumb {
     background: var(--cyber-cyan);
-  }
-
-  /* ===================== White-based Cyber Theme (白ベース電脳テーマ) ===================== */
-  body.field-cyber.field-white,
-  body.field-white {
-    --rail: #0f2942;
-    --rail-dim: #334e68;
-    --gold-2: #0284c7;
-    --line: rgba(0, 160, 235, 0.4);
-    background: #f0f5fa;
-    color: #0f2942;
-  }
-
-  body.field-cyber.field-white .app,
-  body.field-white .app {
-    color: #0f2942;
-  }
-
-  body.field-cyber.field-white .topbar,
-  body.field-white .topbar {
-    background: rgba(255, 255, 255, 0.92);
-    border-bottom: 1px solid rgba(0, 180, 235, 0.35);
-    box-shadow: 0 4px 18px rgba(0, 70, 140, 0.08);
-  }
-
-  body.field-cyber.field-white .brand,
-  body.field-white .brand {
-    color: #0c4a6e;
-    text-shadow: none;
-  }
-
-  body.field-cyber.field-white .brand span,
-  body.field-white .brand span {
-    color: #0284c7;
-    text-shadow: none;
-  }
-
-  body.field-cyber.field-white .track-wrap,
-  body.field-white .track-wrap {
-    background: rgba(235, 245, 255, 0.85);
-    border: 1px solid rgba(0, 180, 235, 0.35);
-  }
-
-  body.field-cyber.field-white .track,
-  body.field-white .track {
-    background: rgba(215, 235, 250, 0.6);
-  }
-
-  body.field-cyber.field-white .track-grid,
-  body.field-white .track-grid {
-    background-size: 8px 100%;
-    background-image: linear-gradient(90deg, rgba(0, 180, 235, 0.25) 1px, transparent 1px);
-  }
-
-  body.field-cyber.field-white .track-badge,
-  body.field-white .track-badge {
-    background: rgba(14, 165, 233, 0.15);
-    border: 1px solid rgba(2, 132, 199, 0.45);
-    color: #0284c7;
-    font-weight: 700;
-  }
-
-  body.field-cyber.field-white .badge-dot,
-  body.field-white .badge-dot {
-    background: #0284c7;
-    box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
-  }
-
-  body.field-cyber.field-white .step-label,
-  body.field-white .step-label {
-    color: #0c4a6e;
-  }
-
-  body.field-cyber.field-white .step-prefix,
-  body.field-white .step-prefix {
-    color: #475569;
-    font-weight: 600;
-  }
-
-  body.field-cyber.field-white .step-current,
-  body.field-white .step-current {
-    color: #0284c7;
-    font-weight: 800;
-  }
-
-  body.field-cyber.field-white .step-slash,
-  body.field-white .step-slash {
-    color: #94a3b8;
-  }
-
-  body.field-cyber.field-white .step-total,
-  body.field-white .step-total {
-    color: #475569;
-    font-weight: 600;
-  }
-
-  body.field-cyber.field-white .settings-gear,
-  body.field-white .settings-gear {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(0, 180, 235, 0.55);
-    color: #0369a1;
-  }
-
-  body.field-cyber.field-white .settings-gear:hover,
-  body.field-white .settings-gear:hover {
-    background: #00d2ff;
-    color: #022b3a;
-    border-color: #00d2ff;
-    box-shadow: 0 0 10px rgba(0, 210, 255, 0.45);
-  }
-
-  /* サイバーテーマ（ダーク）の opponent-strip */
-  body.field-cyber:not(.field-white) .opponent-strip {
-    background: linear-gradient(135deg, rgba(6, 18, 38, 0.90) 0%, rgba(10, 28, 56, 0.82) 100%);
-    border: 1px solid rgba(0, 210, 255, 0.38);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 210, 255, 0.2);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  body.field-cyber:not(.field-white) .opponent-avatar {
-    border-color: #00d2ff;
-    box-shadow: 0 0 8px rgba(0, 210, 255, 0.5);
-  }
-
-  body.field-cyber:not(.field-white) .opponent-name {
-    color: #e0f2fe;
-    text-shadow: 0 0 6px rgba(0, 210, 255, 0.35);
-  }
-
-  body.field-cyber:not(.field-white) .opponent-sub {
-    color: #38bdf8;
-  }
-
-  body.field-cyber:not(.field-white) .opponent-hand-area {
-    background: rgba(0, 180, 235, 0.15);
-    border-color: rgba(0, 210, 255, 0.35);
-    color: #bae6fd;
-  }
-
-  body.field-cyber:not(.field-white) .opponent-hand-area .count {
-    color: #38bdf8;
-    font-weight: 800;
-    text-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
-  }
-
-  /* サイバーテーマ（ホワイト）の opponent-strip */
-  body.field-cyber.field-white .opponent-strip {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(240, 246, 254, 0.94) 100%);
-    border: 1px solid rgba(0, 160, 235, 0.4);
-    box-shadow: 0 3px 12px rgba(0, 60, 120, 0.12);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  body.field-cyber.field-white .opponent-avatar {
-    border-color: #0284c7;
-    box-shadow: 0 0 6px rgba(0, 160, 235, 0.3);
-  }
-
-  body.field-cyber.field-white .opponent-name {
-    color: #0c4a6e;
-    text-shadow: none;
-  }
-
-  body.field-cyber.field-white .opponent-sub {
-    color: #0284c7;
-  }
-
-  body.field-cyber.field-white .opponent-hand-area {
-    background: rgba(224, 242, 254, 0.9);
-    border-color: rgba(0, 160, 235, 0.45);
-    color: #0369a1;
-  }
-
-  body.field-cyber.field-white .opponent-hand-area .count {
-    color: #0284c7;
-    font-weight: 800;
-    text-shadow: none;
-  }
-
-  body.field-cyber.field-white .settings-panel {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(242, 247, 253, 0.97));
-    border-left: 1px solid rgba(0, 180, 235, 0.35);
-    box-shadow: -10px 0 40px rgba(0, 40, 80, 0.15);
-  }
-
-  body.field-cyber.field-white .settings-title {
-    color: #0c4a6e;
-  }
-
-  body.field-cyber.field-white .settings-close {
-    color: #64748b;
-  }
-
-  body.field-cyber.field-white .settings-close:hover {
-    color: #0c4a6e;
-  }
-
-  body.field-cyber.field-white .settings-tabs {
-    border-bottom-color: rgba(0, 180, 235, 0.25);
-  }
-
-  body.field-cyber.field-white .settings-tab-btn {
-    border-color: rgba(0, 180, 235, 0.35);
-    background: rgba(240, 247, 255, 0.85);
-    color: #475569;
-  }
-
-  body.field-cyber.field-white .settings-tab-btn:hover {
-    color: #0c4a6e;
-    border-color: rgba(0, 180, 235, 0.6);
-  }
-
-  body.field-cyber.field-white .settings-tab-btn.active {
-    background: linear-gradient(135deg, #00d2ff, #0ab8e0);
-    border-color: #00d2ff;
-    color: #022b3a;
-    box-shadow: 0 0 10px rgba(0, 210, 255, 0.45);
-  }
-
-  body.field-cyber.field-white .settings-label {
-    color: #334155;
-  }
-
-  body.field-cyber.field-white .settings-desc {
-    color: #64748b;
-  }
-
-  body.field-cyber.field-white .settings-row {
-    color: #334155;
-  }
-
-  body.field-cyber.field-white .settings-value {
-    color: #0284c7;
-  }
-
-  body.field-cyber.field-white .theme-switch,
-  body.field-cyber.field-white .mode-switch {
-    background: rgba(235, 245, 255, 0.95);
-    border-color: rgba(0, 180, 235, 0.35);
-  }
-
-  body.field-cyber.field-white .theme-opt,
-  body.field-cyber.field-white .mode-opt {
-    color: #475569;
-  }
-
-  body.field-cyber.field-white .theme-opt:hover,
-  body.field-cyber.field-white .mode-opt:hover {
-    color: #0c4a6e;
-  }
-
-  body.field-cyber.field-white .preset-btn,
-  body.field-cyber.field-white .settings-reset,
-  body.field-cyber.field-white .settings-bgm-toggle {
-    border-color: rgba(0, 180, 235, 0.35);
-    background: rgba(240, 247, 255, 0.85);
-    color: #334155;
-  }
-
-  body.field-cyber.field-white .preset-btn:hover,
-  body.field-cyber.field-white .settings-reset:hover,
-  body.field-cyber.field-white .settings-bgm-toggle:hover {
-    color: #0284c7;
-    border-color: #00d2ff;
-  }
-
-  body.field-cyber.field-white .preset-btn.active {
-    background: linear-gradient(135deg, #00d2ff, #0ab8e0);
-    border-color: #00d2ff;
-    color: #022b3a;
-  }
-
-  body.field-cyber.field-white .settings-group input[type=range] {
-    background: rgba(0, 180, 235, 0.25);
-  }
-
-  body.field-cyber.field-white .settings-group input[type=range]::-webkit-slider-thumb {
-    background: #00d2ff;
-    box-shadow: 0 0 8px rgba(0, 210, 255, 0.7);
-  }
-
-  /* ボード盤面マット：白ベース電脳テクスチャ */
-  body.field-cyber.field-white .field-splash-bg {
-    background:
-      radial-gradient(ellipse at 50% 130%, rgba(0, 180, 255, .15) 0%, rgba(14, 165, 233, .08) 40%, transparent 75%),
-      repeating-linear-gradient(0deg, rgba(0, 160, 240, .05) 0 1px, transparent 1px 28px),
-      repeating-linear-gradient(90deg, rgba(0, 160, 240, .05) 0 1px, transparent 1px 28px),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(240, 248, 255, 0.90) 50%, rgba(230, 244, 255, 0.88) 100%);
-    box-shadow: inset 0 0 40px rgba(0, 140, 220, .10), 0 10px 30px rgba(0, 70, 140, 0.08);
-    border: 1.5px solid rgba(0, 180, 240, 0.35);
-  }
-
-  body.field-cyber.field-white .field-splash-bg::before {
-    background:
-      repeating-radial-gradient(circle at 50% 100%,
-        rgba(0, 180, 255, .04) 0px,
-        rgba(0, 180, 255, .04) 1.5px,
-        transparent 1.5px,
-        transparent 18px),
-      linear-gradient(0deg, rgba(0, 180, 255, .06) 0%, transparent 50%);
-    opacity: 0.85;
-  }
-
-  body.field-cyber.field-white .field-splash-canvas {
-    mix-blend-mode: multiply;
-    opacity: 0.6;
-  }
-
-  /* フィールド枠・スロット：白背景に合わせて透明度と光彩を最適化 */
-  body.field-cyber.field-white .lane,
-  body.field-cyber.field-white .opp-lane,
-  body.field-cyber.field-white .field-body,
-  body.field-cyber.field-white .farm-pile,
-  body.field-cyber.field-white .zone-body {
-    border-color: rgba(0, 180, 245, 0.7);
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(0, 200, 255, .18), transparent 65%),
-      rgba(240, 248, 255, .88);
-    box-shadow: inset 0 0 14px rgba(0, 190, 255, .18), 0 2px 10px rgba(0, 70, 140, .12);
-  }
-
-  body.field-cyber.field-white .lane-card-back,
-  body.field-cyber.field-white .opp-lane .lane-card-back {
-    border-color: rgba(0, 180, 245, 0.75);
-    background: rgba(235, 246, 255, 0.7);
-    box-shadow: inset 0 0 10px rgba(0, 190, 255, 0.2), 0 2px 8px rgba(0, 70, 140, 0.12);
-  }
-
-  body.field-cyber.field-white .lane-label,
-  body.field-cyber.field-white .opp-lane .lane-label,
-  body.field-white .lane-label,
-  body.field-white .opp-lane .lane-label {
-    background: rgba(255, 255, 255, 0.96);
-    color: #0f2942;
-    border-color: rgba(0, 160, 235, 0.8);
-    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.18);
-  }
-
-  /* 脚質ごとの枠色・文字色アクセントを白背景で鮮明・高コントラストに最適化 */
-  body.field-white .lane[data-lane="nige"] .lane-label,
-  body.field-white .opp-lane[data-lane="nige"] .lane-label {
-    color: #0369a1 !important;
-    border-color: #0284c7 !important;
-    background: #ffffff !important;
-  }
-
-  body.field-white .lane[data-lane="senko"] .lane-label,
-  body.field-white .opp-lane[data-lane="senko"] .lane-label {
-    color: #be123c !important;
-    border-color: #f43f5e !important;
-    background: #ffffff !important;
-  }
-
-  body.field-white .lane[data-lane="sashi"] .lane-label,
-  body.field-white .opp-lane[data-lane="sashi"] .lane-label {
-    color: #047857 !important;
-    border-color: #10b981 !important;
-    background: #ffffff !important;
-  }
-
-  body.field-white .lane[data-lane="oikomi"] .lane-label,
-  body.field-white .opp-lane[data-lane="oikomi"] .lane-label {
-    color: #b45309 !important;
-    border-color: #f59e0b !important;
-    background: #ffffff !important;
-  }
-
-  /* アクティブな山札ラベル（白テーマ） */
-  body.field-white .lane.active .lane-label,
-  body.field-white .opp-lane.active .lane-label {
-    background: #0f2942 !important;
-    color: #ffffff !important;
-    border-color: #0284c7 !important;
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.6) !important;
-  }
-
-  /* 山札枚数バッジ（白テーマ） */
-  body.field-white .lane-badge {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    border-color: #0369a1 !important;
-    box-shadow: 0 2px 6px rgba(0, 50, 120, 0.25) !important;
-  }
-
-  body.field-cyber.field-white #zone-opp-farm .farm-pile,
-  body.field-cyber.field-white #zone-field .field-body-opp,
-  body.field-cyber.field-white .opp-lane,
-  body.field-white #zone-opp-farm .farm-pile,
-  body.field-white #zone-field .field-body-opp,
-  body.field-white .opp-lane {
-    border: 1.5px solid rgba(244, 63, 94, .55) !important;
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(255, 120, 140, .18), transparent 65%),
-      rgba(255, 242, 245, .88) !important;
-    box-shadow: inset 0 0 16px rgba(255, 100, 120, .18), 0 2px 10px rgba(255, 80, 100, .2) !important;
-  }
-
-  body.field-white .opp-lane .lane-badge {
-    background: #e11d48 !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    border-color: #be123c !important;
-    box-shadow: 0 2px 6px rgba(190, 18, 60, 0.25) !important;
-  }
-
-  body.field-white .opp-lane .lane-card-back {
-    border-color: rgba(244, 63, 94, .65) !important;
-  }
-
-  body.field-cyber.field-white #zone-farm .farm-pile,
-  body.field-cyber.field-white #zone-field .field-body,
-  body.field-white #zone-farm .farm-pile,
-  body.field-white #zone-field .field-body {
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(0, 200, 255, .18), transparent 65%),
-      rgba(238, 248, 255, .88);
-    box-shadow: inset 0 0 16px rgba(0, 190, 255, .2), 0 2px 10px rgba(0, 160, 240, .22);
-  }
-
-  body.field-cyber.field-white .field-placeholder,
-  body.field-white .field-placeholder {
-    color: #0284c7 !important;
-    font-weight: 700;
-  }
-
-  body.field-cyber.field-white .field-placeholder-opp,
-  body.field-white .field-placeholder-opp {
-    color: #e11d48 !important;
-    font-weight: 700;
-  }
-
-  body.field-cyber.field-white .farm-pile:empty::before,
-  body.field-cyber.field-white .zone-body:empty::before,
-  body.field-white .farm-pile:empty::before,
-  body.field-white .zone-body:empty::before {
-    color: #0284c7 !important;
-    font-weight: 700;
-  }
-
-  /* 相手エリアの文字同化防止（白テーマ） */
-  body.field-white .opponent-strip,
-  body.field-cyber.field-white .opponent-strip {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 254, 0.96) 100%) !important;
-    border: 1px solid rgba(0, 160, 235, 0.5) !important;
-    box-shadow: 0 4px 14px rgba(0, 60, 120, 0.12) !important;
-  }
-
-  body.field-white .opponent-avatar,
-  body.field-cyber.field-white .opponent-avatar {
-    border-color: #0284c7 !important;
-    box-shadow: 0 0 6px rgba(0, 160, 235, 0.3) !important;
-  }
-
-  body.field-white .opponent-name,
-  body.field-cyber.field-white .opponent-name,
-  body.field-white #opponent-name,
-  body.field-cyber.field-white #opponent-name {
-    color: #0f2942 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-  }
-
-  body.field-white .opponent-sub,
-  body.field-cyber.field-white .opponent-sub,
-  body.field-white #opponent-sub,
-  body.field-cyber.field-white #opponent-sub {
-    color: #0369a1 !important;
-    font-weight: 600 !important;
-    text-shadow: none !important;
-  }
-
-  body.field-white .opponent-hand-area,
-  body.field-cyber.field-white .opponent-hand-area,
-  body.field-white #opponent-hand-display,
-  body.field-cyber.field-white #opponent-hand-display {
-    background: rgba(224, 242, 254, 0.95) !important;
-    border-color: rgba(0, 160, 235, 0.5) !important;
-    color: #0f2942 !important;
-    font-weight: 600 !important;
-  }
-
-  body.field-white #opponent-hand-count,
-  body.field-cyber.field-white #opponent-hand-count,
-  body.field-white .opponent-hand-area .count,
-  body.field-cyber.field-white .opponent-hand-area .count {
-    color: #0284c7 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-  }
-
-  /* 白テーマでのポップアップ・ヒント・トースト通知の視認性強化 */
-  body.field-white .free-hint {
-    background: rgba(255, 255, 255, 0.96) !important;
-    color: #0f2942 !important;
-    border: 1px solid rgba(0, 160, 235, 0.5) !important;
-  }
-
-  body.field-white .game-toast {
-    background: rgba(255, 255, 255, 0.98) !important;
-    color: #0f2942 !important;
-    border: 1.5px solid rgba(0, 160, 235, 0.6) !important;
-    box-shadow: 0 8px 24px rgba(0, 40, 90, 0.15) !important;
-  }
-
-  body.field-white #guard-popup .popup-box {
-    background: #ffffff !important;
-    color: #0f2942 !important;
-    border: 1.5px solid rgba(0, 160, 235, 0.6) !important;
-    box-shadow: 0 10px 30px rgba(0, 40, 90, 0.2) !important;
-  }
-
-  body.field-white #guard-popup .popup-title {
-    color: #0f2942 !important;
-  }
-
-  body.field-white #guard-popup .popup-desc {
-    color: #334e68 !important;
-  }
-
-  body.field-white #closeup-layer {
-    background: rgba(240, 245, 252, 0.94) !important;
-  }
-
-  body.field-white .closeup-label {
-    color: #0f2942 !important;
-  }
-
-  body.field-white .closeup-close-hint {
-    color: #475569 !important;
   }
 
   /* ===================== 初期50枚カード配布（ディール演出）スタイル ===================== */
@@ -6080,9 +5351,7 @@
   }
 
   @keyframes pulseFabGlow {
-
-    0%,
-    100% {
+    0%, 100% {
       transform: scale(1);
       opacity: 0.75;
     }
@@ -6363,6 +5632,456 @@
     }
   }
 
+  /* SPでもデッキ名をカードの手前へ出し、枚数とは上下にずらす。 */
+  @media (max-width: 1099px) {
+    .lane > .lane-stack {
+      transform: translateY(-4px);
+      z-index: 2;
+    }
+
+    .lane-label {
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      z-index: 5;
+      transform: translateX(-50%);
+      padding: 2px 5px;
+      line-height: 1.2;
+      white-space: nowrap;
+      background: rgba(3, 8, 14, .88);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .56);
+    }
+
+    .lane .lane-badge {
+      bottom: -3px;
+      min-width: 22px;
+      padding: 3px 4px;
+      font-size: 14px;
+    }
+  }
+
+  /* ========== 横長PC専用レイアウト ==========
+     縦に積み上げず、中央に盤面、左に案内、右に相手情報を配置する。 */
+  @media (min-width: 1100px) {
+    :root {
+      --pc-side-width: clamp(200px, 16vw, 230px);
+      --pc-stage-width: min(960px,
+          calc(100vw - var(--pc-side-width) - var(--pc-side-width) - 32px),
+          calc((100dvh - 235px) * 1.5));
+      --pc-slot-width: min(116px, calc((100dvh - 200px) * .1785));
+      --pc-slot-height: calc(var(--pc-slot-width) * 1.4);
+      /* SP版と同様に、カード本体の外側へ置き場の枠が見える大きさを確保する。 */
+      --pc-deck-width: calc(var(--pc-slot-width) * .92);
+      --pc-deck-height: calc(var(--pc-deck-width) * 1.4);
+      --pc-own-deck-height: var(--pc-deck-height);
+      --pc-opp-deck-width: var(--pc-deck-width);
+      --pc-opp-deck-height: calc(var(--pc-opp-deck-width) * 1.4);
+      --pc-side-zone-width: calc(var(--pc-slot-width) * .92);
+      --pc-side-zone-height: calc(var(--pc-side-zone-width) * 1.4);
+      --pc-slot-gap: clamp(10px, 1.2vw, 16px);
+      --pc-field-inset: clamp(44px, 4.5vw, 64px);
+    }
+
+    .topbar {
+      position: fixed;
+      inset: 0;
+      width: 0;
+      height: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      z-index: 130;
+    }
+
+    .brand {
+      position: fixed;
+      top: 14px;
+      left: 16px;
+    }
+
+    .track-wrap {
+      position: fixed;
+      top: 58px;
+      left: 16px;
+      width: calc(var(--pc-side-width) - 32px);
+      padding: 0;
+    }
+
+    .topbar-menu {
+      position: fixed;
+      top: 14px;
+      left: calc(100vw - 16px);
+      right: auto;
+      transform: translateX(-100%);
+    }
+
+    .board {
+      width: var(--pc-stage-width);
+      max-width: none;
+      height: 100dvh;
+      margin: 0 auto;
+      padding: 4px 8px 134px;
+      gap: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .opponent-strip,
+    body:not(.manual-mode) .opponent-strip {
+      position: fixed;
+      top: 62px;
+      right: 16px;
+      width: calc(var(--pc-side-width) - 32px);
+      margin: 0;
+      padding: 10px 12px;
+      z-index: 115;
+    }
+
+    /* PCではレース条件を左サイドへ移し、ヘッダーと盤面の縦幅を確保する。 */
+    .race-info {
+      position: fixed;
+      top: 105px;
+      left: 16px;
+      width: calc(var(--pc-side-width) - 32px);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+      padding: 7px;
+      white-space: normal;
+      z-index: 115;
+    }
+
+    .race-info-title {
+      grid-column: 1 / -1;
+      padding: 0 2px 4px;
+      border-right: 0;
+      border-bottom: 1px solid rgba(84, 207, 229, .22);
+    }
+
+    .race-condition {
+      min-width: 0;
+      justify-content: space-between;
+    }
+
+    .field-tilt {
+      transform: none;
+      margin-top: 0;
+      margin-bottom: var(--field-scale-shift-y, 0px);
+    }
+
+    body.field-3d .field-tilt,
+    body.field-3d[data-tilt="10"] .field-tilt,
+    body.field-3d[data-tilt="25"] .field-tilt {
+      transform: perspective(var(--field-perspective, 1300px)) rotateX(var(--tilt-angle, 0deg));
+      margin-top: 0;
+      margin-bottom: var(--field-scale-shift-y, 0px);
+    }
+
+    body.field-3d[data-tilt="0"] .field-tilt {
+      transform: none;
+    }
+
+    .field-image-wrap {
+      grid-template-rows:
+        var(--pc-opp-deck-height)
+        calc(var(--pc-slot-height) + var(--pc-slot-height))
+        var(--pc-own-deck-height);
+      row-gap: 20px;
+      column-gap: 12px;
+      padding: 14px 10px 18px;
+    }
+
+    .opp-lanes,
+    .lanes {
+      width: auto;
+      gap: var(--pc-slot-gap);
+      justify-content: center;
+    }
+
+    .lane {
+      width: var(--pc-deck-width);
+      height: var(--pc-own-deck-height);
+      aspect-ratio: auto;
+      box-sizing: border-box;
+      justify-content: center;
+      padding-top: 0;
+    }
+
+    #zone-farm .farm-pile,
+    #zone-situation .zone-body {
+      width: var(--pc-side-zone-width);
+      height: var(--pc-side-zone-height);
+      aspect-ratio: auto;
+      box-sizing: border-box;
+    }
+
+    .opp-lane {
+      width: var(--pc-opp-deck-width);
+      height: var(--pc-opp-deck-height);
+      flex: 0 0 var(--pc-opp-deck-width);
+      aspect-ratio: auto;
+      box-sizing: border-box;
+    }
+
+    .field-body,
+    .field-body-opp {
+      width: var(--pc-slot-width);
+      height: var(--pc-slot-height);
+      aspect-ratio: auto;
+      box-sizing: border-box;
+    }
+
+    .lane {
+      flex: 0 0 var(--pc-deck-width);
+    }
+
+    .opp-lane .lane-stack {
+      width: 92%;
+      height: auto;
+      aspect-ratio: 5 / 7;
+    }
+
+    .lane-stack {
+      width: 92%;
+      height: auto;
+      aspect-ratio: 5 / 7;
+      z-index: 2;
+    }
+
+    .lane > .lane-stack {
+      /* 上辺を外周フレームに寄せ、下側にラベル用の余白を残す。 */
+      transform: translateY(-4px);
+    }
+
+    .lane-label {
+      position: absolute;
+      left: 50%;
+      right: auto;
+      bottom: 5px;
+      z-index: 5;
+      transform: translateX(-50%);
+      min-width: 0;
+      padding: 2px 5px;
+      font-size: 9px;
+      line-height: 1.2;
+      text-align: center;
+      background: rgba(3, 8, 14, .84);
+      border-color: rgba(255, 255, 255, .22);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .56);
+      backdrop-filter: blur(2px);
+      white-space: nowrap;
+    }
+
+    /* 中央下のラベルに対し、枚数は右斜め上に配置する。 */
+    .lane .lane-badge {
+      bottom: 11px;
+      min-width: 22px;
+      padding: 3px 4px;
+      font-size: 14px;
+    }
+
+    /* PCの相手情報は横幅が狭いため、吹き出しを名前の上ではなくアイコンの左へ出す。 */
+    .opponent-bubble {
+      left: auto;
+      right: calc(100% - 8px);
+      transform: translate(4px, -50%) scale(.92);
+    }
+
+    .opponent-bubble.show {
+      transform: translate(0, -50%) scale(1);
+    }
+
+    .opponent-bubble::after {
+      left: auto;
+      right: -7px;
+      border-width: 6px 0 6px 7px;
+      border-color: transparent transparent transparent var(--rail);
+    }
+
+    .lane > .slot-bracket.bl,
+    .lane > .slot-bracket.br {
+      bottom: -2px;
+    }
+
+    .zone-body .mini-card {
+      width: 100%;
+      height: 100%;
+    }
+
+    .field-body,
+    .field-body-opp {
+      position: absolute;
+      margin: 0;
+      transform: none;
+    }
+
+    .ov-field {
+      position: relative;
+      height: 100%;
+      gap: 0;
+      padding: 0;
+    }
+
+    #field-body {
+      top: auto;
+      right: auto;
+      bottom: 0;
+      left: var(--pc-field-inset);
+      transform: none;
+    }
+
+    #field-body-opp {
+      top: 0;
+      right: var(--pc-field-inset);
+      bottom: auto;
+      left: auto;
+      transform: none;
+    }
+
+    #zone-field .slot-frame {
+      inset: auto;
+      top: auto;
+      right: auto;
+      bottom: 0;
+      left: var(--pc-field-inset);
+      width: var(--pc-slot-width);
+      height: var(--pc-slot-height);
+      aspect-ratio: auto;
+      margin: 0;
+      transform: none;
+    }
+
+    #zone-field .slot-frame-opp {
+      inset: auto;
+      top: 0;
+      right: var(--pc-field-inset);
+      bottom: auto;
+      left: auto;
+      width: var(--pc-slot-width);
+      height: var(--pc-slot-height);
+      aspect-ratio: auto;
+      margin: 0;
+      transform: none;
+    }
+
+    .field-body .field-mini {
+      height: 100%;
+    }
+
+    .farm-stack {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+    }
+
+    #zone-farm .slot-frame,
+    #zone-situation .slot-frame {
+      width: var(--pc-side-zone-width);
+      height: var(--pc-side-zone-height);
+      aspect-ratio: auto;
+    }
+
+    body:not(.manual-mode) .narrator {
+      position: fixed;
+      left: 16px;
+      bottom: 18px;
+      width: min(360px, calc(100vw - 32px));
+      max-width: 360px;
+      margin: 0;
+      transform: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      z-index: 120;
+    }
+
+    body:not(.manual-mode):has(.hand-zone.has-cards) .narrator {
+      bottom: 18px;
+    }
+
+    body:not(.manual-mode) .narrator-portrait {
+      width: 72px;
+      height: 72px;
+      align-self: flex-start;
+    }
+
+    body:not(.manual-mode) .narrator-bubble {
+      width: 100%;
+      min-height: 0;
+      padding: 16px;
+      gap: 12px;
+    }
+
+    body:not(.manual-mode) .narrator-bubble::before,
+    body:not(.manual-mode) .narrator-bubble::after {
+      display: none;
+    }
+
+    body:not(.manual-mode) .narrator-text {
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    body:not(.manual-mode) .narrator-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    body:not(.manual-mode) .selection-progress {
+      min-width: 0;
+      max-width: 100%;
+      margin-right: 0;
+      padding: 8px 12px;
+      font-size: 13px;
+      white-space: normal;
+    }
+
+    body:not(.manual-mode) .narrator-next {
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    body:not(.manual-mode) .narrator-back,
+    body:not(.manual-mode) .narrator-forward {
+      padding: 6px 9px;
+      font-size: 11px;
+    }
+
+    .hand-zone,
+    body:not(.manual-mode) .hand-zone,
+    body.manual-mode .hand-zone {
+      position: fixed;
+      left: 0;
+      right: 0;
+      /* 高さに余裕のあるPCでは手札を盤面へ寄せ、デッキ下の空白を減らす。 */
+      bottom: clamp(0px, calc((100dvh - 720px) * .07), 8px);
+      width: var(--pc-stage-width);
+      height: 144px;
+      min-height: 144px;
+      margin: 0 auto;
+      padding: 0;
+      z-index: 110;
+      overflow: visible;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .hand-row,
+    body.manual-mode .hand-row {
+      height: 140px;
+    }
+
+    .hand-zone .card,
+    body.manual-mode .card {
+      width: 96px;
+      height: 134px;
+    }
+  }
+
+
   @media (max-width: 859px) {
     #command-bar {
       right: 0;
@@ -6404,9 +6123,10 @@
       position: fixed;
       right: 0;
       padding-right: 5px;
-      bottom: calc(152px + env(safe-area-inset-bottom, 0px));
-      top: auto;
-      transform: none;
+      /* JSで状況カード置き場の中央へ正確に揃えるまでの初期位置。 */
+      top: calc(72px + 80vw);
+      bottom: auto;
+      transform: translateY(-50%);
       z-index: 50;
     }
   }
@@ -6418,8 +6138,8 @@
   @media (min-width: 860px) {
     body.manual-mode #command-bar {
       position: fixed;
-      right: 0;
-      padding-right: 8px;
+      right: 24px;
+      padding-right: 0;
       top: 50%;
       transform: translateY(-50%);
       bottom: auto;
@@ -6427,433 +6147,138 @@
     }
   }
 
-  /* ==================== NATURE THEME (自然・芝生コース画面全体テーマ) ==================== */
-  body.field-nature,
-  body[data-theme="nature"],
-  body.field-classic,
-  body[data-theme="classic"] {
-    --rail: #f4f0e6;
-    --rail-dim: rgba(244, 240, 230, 0.85);
+  /* 横長PCでは画面端ではなく、中央の盤面のすぐ右側へ寄せる。 */
+  @media (min-width: 1100px) {
+    body.manual-mode #command-bar {
+      right: max(24px, calc((100vw - var(--pc-stage-width)) / 2 - 72px));
+    }
   }
 
-  /* 画面全体の自然背景とフィールド枠の調和 */
-  body.field-nature .field-splash-bg,
-  body[data-theme="nature"] .field-splash-bg,
-  body.field-classic .field-splash-bg {
-    display: block !important;
-    background:
-      radial-gradient(ellipse at 50% 120%, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.12) 40%, transparent 75%),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0px, rgba(255, 255, 255, 0.04) 26px, transparent 26px, transparent 52px),
-      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 26px, transparent 26px, transparent 52px),
-      linear-gradient(180deg, rgba(14, 46, 22, 0.90) 0%, rgba(10, 36, 18, 0.94) 50%, rgba(6, 26, 12, 0.97) 100%) !important;
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 16px 40px rgba(0, 25, 10, 0.55) !important;
-    border: 1.5px solid rgba(227, 178, 60, 0.65) !important;
+  /* PCでは相手情報欄と相手の山札の間だけを詰める。 */
+  @media (min-width: 860px) {
+    .opponent-strip {
+      margin-bottom: -40px;
+    }
+
+    .hand-zone,
+    body:not(.manual-mode) .hand-zone {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    /* チュートリアルの手札を盤面上へ重ね、左右に別の背景帯を作らない。 */
+    body:not(.manual-mode) .hand-zone {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: clamp(0px, calc((100dvh - 720px) * .07), 8px);
+      z-index: 110;
+      margin: 0 auto;
+    }
+
+    .hand-zone > .zone-label {
+      display: none;
+    }
+
+    /* コメント枠の左右に専用の帯を作らず、盤面の上へ重ねて表示する。 */
+    body:not(.manual-mode) .narrator {
+      position: fixed;
+      left: 50%;
+      bottom: 6px;
+      transform: translateX(-50%);
+      margin: 0;
+    }
+
+    /* 手札がある場面では、コメントを手札の上へ逃がす。 */
+    body:not(.manual-mode):has(.hand-zone.has-cards) .narrator {
+      bottom: 220px;
+    }
+
   }
 
-  body.field-nature .field-splash-bg::before,
-  body[data-theme="nature"] .field-splash-bg::before,
-  body.field-classic .field-splash-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 50% 15%, rgba(255, 240, 180, 0.18) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(74, 222, 128, 0.09) 0%, transparent 45%);
-    opacity: 0.85;
-    pointer-events: none;
+  /* 横長PCでは案内を左サイドへ戻す（直前の共通PCルールより優先）。 */
+  @media (min-width: 1100px) {
+    body:not(.manual-mode) .narrator {
+      left: 16px;
+      bottom: 18px;
+      width: min(360px, calc(100vw - 32px));
+      max-width: 360px;
+      margin: 0;
+      transform: none;
+    }
+
+    body:not(.manual-mode):has(.hand-zone.has-cards) .narrator {
+      bottom: 18px;
+    }
   }
 
-  body.field-nature .field-splash-canvas,
-  body[data-theme="nature"] .field-splash-canvas,
-  body.field-classic .field-splash-canvas {
-    mix-blend-mode: screen;
-    opacity: 0.40;
+  /* 横幅の広いSPでは後続の760px以上向けカード指定だけが大きくなり、
+     150pxの手札枠から下へはみ出していたため、枠・カード列・カードを揃える。 */
+  @media (min-width: 760px) and (max-width: 859px) {
+    .hand-zone,
+    body.manual-mode .hand-zone,
+    body:not(.manual-mode) .hand-zone.has-cards {
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      height: 170px;
+      min-height: 170px;
+    }
+
+    .hand-row,
+    body.manual-mode .hand-row {
+      height: 146px;
+    }
+
+    .hand-zone .card,
+    body.manual-mode .card {
+      width: 95px;
+      height: 133px;
+    }
+
+    body:not(.manual-mode):has(.hand-zone.has-cards) .narrator {
+      bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+    }
   }
 
-  /* プレイヤー側スロット（自然・芝生コース調：エメラルドグラスとゴールド枠） */
-  body.field-nature #zone-farm .farm-pile,
-  body.field-nature #zone-field .field-body,
-  body.field-nature .lane,
-  body[data-theme="nature"] #zone-farm .farm-pile,
-  body[data-theme="nature"] #zone-field .field-body,
-  body[data-theme="nature"] .lane,
-  body.field-classic #zone-farm .farm-pile,
-  body.field-classic #zone-field .field-body,
-  body.field-classic .lane {
-    border: 1.5px solid rgba(227, 178, 60, 0.75) !important;
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(74, 222, 128, 0.22), transparent 70%),
-      rgba(10, 34, 18, 0.88) !important;
-    box-shadow: inset 0 0 14px rgba(74, 222, 128, 0.20), 0 3px 12px rgba(0, 0, 0, 0.45) !important;
-  }
+  /* 横向きスマホはCSS幅が860pxを超える機種もあるため、タッチ端末では同じ補正を適用する。 */
+  @media (min-width: 760px) and (hover: none) and (pointer: coarse) {
+    .hand-zone,
+    body.manual-mode .hand-zone,
+    body:not(.manual-mode) .hand-zone.has-cards {
+      position: fixed;
+      left: 6px;
+      right: 6px;
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      width: auto;
+      height: 170px;
+      min-height: 170px;
+      margin: 0;
+      z-index: 110;
+      transform: none;
+    }
 
-  body.field-nature .lane-card-back,
-  body[data-theme="nature"] .lane-card-back,
-  body.field-classic .lane-card-back {
-    border-color: rgba(227, 178, 60, 0.75) !important;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.25) 0%, transparent 75%),
-      linear-gradient(135deg, rgba(14, 46, 24, 0.90) 0%, rgba(8, 28, 14, 0.95) 100%) !important;
-    box-shadow: inset 0 0 10px rgba(74, 222, 128, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
-  }
+    .hand-row,
+    body.manual-mode .hand-row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      height: 146px;
+    }
 
-  /* プレイヤー側山札ラベル・バッジ */
-  body.field-nature .lane-label,
-  body[data-theme="nature"] .lane-label,
-  body.field-classic .lane-label {
-    background: rgba(6, 20, 10, 0.95) !important;
-    color: #ffe082 !important;
-    border: 1px solid rgba(227, 178, 60, 0.65) !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
-    font-weight: 700 !important;
-  }
+    .hand-zone .card,
+    body.manual-mode .card {
+      width: 95px;
+      height: 133px;
+    }
 
-  body.field-nature .lane.active .lane-label,
-  body[data-theme="nature"] .lane.active .lane-label,
-  body.field-classic .lane.active .lane-label {
-    background: linear-gradient(135deg, #15803d, #047857) !important;
-    color: #ffffff !important;
-    border-color: #4ade80 !important;
-    box-shadow: 0 0 12px rgba(74, 222, 128, 0.7) !important;
-  }
-
-  body.field-nature .lane-badge,
-  body.field-nature #farm-count,
-  body[data-theme="nature"] .lane-badge,
-  body[data-theme="nature"] #farm-count,
-  body.field-classic .lane-badge,
-  body.field-classic #farm-count {
-    background: linear-gradient(135deg, #d97706, #b45309) !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    border-color: #fde68a !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
-  }
-
-  body.field-nature .slot-bracket,
-  body[data-theme="nature"] .slot-bracket,
-  body.field-classic .slot-bracket {
-    border-color: #e3b23c !important;
-    box-shadow: 0 0 6px rgba(227, 178, 60, 0.6) !important;
-  }
-
-  /* 相手側スロット（要望9対応：ファームと同じく赤みを帯びたワインレッド／クリムゾン調） */
-  body.field-nature #zone-opp-farm .farm-pile,
-  body.field-nature #zone-field .field-body-opp,
-  body.field-nature .opp-lane,
-  body[data-theme="nature"] #zone-opp-farm .farm-pile,
-  body[data-theme="nature"] #zone-field .field-body-opp,
-  body[data-theme="nature"] .opp-lane,
-  body.field-classic #zone-opp-farm .farm-pile,
-  body.field-classic #zone-field .field-body-opp,
-  body.field-classic .opp-lane {
-    border: 1.5px solid rgba(248, 113, 113, 0.75) !important;
-    background:
-      radial-gradient(120% 140% at 50% 0%, rgba(239, 68, 68, 0.22), transparent 70%),
-      rgba(48, 14, 18, 0.88) !important;
-    box-shadow: inset 0 0 14px rgba(239, 68, 68, 0.22), 0 3px 12px rgba(0, 0, 0, 0.45) !important;
-  }
-
-  body.field-nature .opp-lane .lane-card-back,
-  body[data-theme="nature"] .opp-lane .lane-card-back,
-  body.field-classic .opp-lane .lane-card-back {
-    border-color: rgba(248, 113, 113, 0.8) !important;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.35) 0%, transparent 75%),
-      linear-gradient(135deg, rgba(62, 14, 20, 0.92) 0%, rgba(38, 8, 12, 0.95) 100%) !important;
-    box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.3), 0 2px 8px rgba(0, 0, 0, 0.45) !important;
-  }
-
-  body.field-nature .opp-lane .lane-label,
-  body[data-theme="nature"] .opp-lane .lane-label,
-  body.field-classic .opp-lane .lane-label {
-    background: rgba(42, 10, 14, 0.96) !important;
-    color: #fca5a5 !important;
-    border: 1px solid rgba(248, 113, 113, 0.65) !important;
-    font-weight: 700 !important;
-  }
-
-  body.field-nature .opp-lane.active .lane-label,
-  body[data-theme="nature"] .opp-lane.active .lane-label,
-  body.field-classic .opp-lane.active .lane-label {
-    background: linear-gradient(135deg, #be123c, #9f1239) !important;
-    color: #ffffff !important;
-    border-color: #f87171 !important;
-    box-shadow: 0 0 12px rgba(244, 63, 94, 0.7) !important;
-  }
-
-  body.field-nature .opp-lane .lane-badge,
-  body.field-nature #opp-farm-count,
-  body[data-theme="nature"] .opp-lane .lane-badge,
-  body[data-theme="nature"] #opp-farm-count,
-  body.field-classic .opp-lane .lane-badge,
-  body.field-classic #opp-farm-count {
-    background: linear-gradient(135deg, #e11d48, #9f1239) !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    border-color: #fca5a5 !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
-  }
-
-  body.field-nature .slot-frame-opp .slot-bracket,
-  body[data-theme="nature"] .slot-frame-opp .slot-bracket,
-  body.field-classic .slot-frame-opp .slot-bracket {
-    border-color: #f87171 !important;
-    box-shadow: 0 0 6px rgba(248, 113, 113, 0.6) !important;
-  }
-
-  /* 相手ストリップ（自然テーマ調） */
-  body.field-nature .opponent-strip,
-  body[data-theme="nature"] .opponent-strip,
-  body.field-classic .opponent-strip {
-    background: linear-gradient(90deg, rgba(8, 26, 14, 0.94) 0%, rgba(14, 40, 22, 0.90) 50%, rgba(8, 26, 14, 0.94) 100%) !important;
-    border-color: rgba(227, 178, 60, 0.5) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
-  }
-
-  body.field-nature .opponent-name,
-  body[data-theme="nature"] .opponent-name,
-  body.field-classic .opponent-name {
-    color: #ffe082 !important;
-  }
-
-  body.field-nature .opponent-sub,
-  body[data-theme="nature"] .opponent-sub,
-  body.field-classic .opponent-sub {
-    color: #a7f3d0 !important;
-  }
-
-  body.field-nature .opponent-hand-area,
-  body[data-theme="nature"] .opponent-hand-area,
-  body.field-classic .opponent-hand-area {
-    color: #f4f0e6 !important;
-  }
-
-  body.field-nature .opponent-hand-area .count,
-  body[data-theme="nature"] .opponent-hand-area .count,
-  body.field-classic .opponent-hand-area .count {
-    color: #34d399 !important;
-  }
-
-  body.field-nature .opponent-bubble,
-  body[data-theme="nature"] .opponent-bubble,
-  body.field-classic .opponent-bubble {
-    background: rgba(8, 28, 14, 0.95) !important;
-    border: 1.5px solid rgba(227, 178, 60, 0.7) !important;
-    color: #f4f0e6 !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
-  }
-
-  /* トップバー・トラックバー（自然テーマ調） */
-  body.field-nature .topbar,
-  body[data-theme="nature"] .topbar,
-  body.field-classic .topbar {
-    background: linear-gradient(180deg, rgba(8, 24, 12, 0.96) 0%, rgba(10, 30, 16, 0.90) 100%) !important;
-    border-bottom: 1px solid rgba(227, 178, 60, 0.45) !important;
-  }
-
-  body.field-nature .brand,
-  body[data-theme="nature"] .brand,
-  body.field-classic .brand {
-    color: #ffe082 !important;
-    text-shadow: 0 0 10px rgba(227, 178, 60, 0.5) !important;
-  }
-
-  body.field-nature .brand span,
-  body[data-theme="nature"] .brand span,
-  body.field-classic .brand span {
-    color: #a7f3d0 !important;
-  }
-
-  body.field-nature .track,
-  body[data-theme="nature"] .track,
-  body.field-classic .track {
-    background: rgba(6, 18, 10, 0.88) !important;
-    border-color: rgba(227, 178, 60, 0.45) !important;
-  }
-
-  body.field-nature .track-fill,
-  body[data-theme="nature"] .track-fill,
-  body.field-classic .track-fill {
-    background: linear-gradient(90deg, #10b981, #e3b23c) !important;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.75) !important;
-  }
-
-  body.field-nature .track-badge,
-  body[data-theme="nature"] .track-badge,
-  body.field-classic .track-badge {
-    background: rgba(16, 185, 129, 0.22) !important;
-    border-color: rgba(16, 185, 129, 0.65) !important;
-    color: #6ee7b7 !important;
-  }
-
-  body.field-nature .settings-gear,
-  body[data-theme="nature"] .settings-gear,
-  body.field-classic .settings-gear {
-    border-color: rgba(227, 178, 60, 0.5) !important;
-    background: rgba(14, 38, 20, 0.85) !important;
-    color: #ffe082 !important;
-  }
-
-  /* 設定パネル（自然テーマ調） */
-  body.field-nature .settings-panel,
-  body[data-theme="nature"] .settings-panel,
-  body.field-classic .settings-panel {
-    background: linear-gradient(180deg, rgba(12, 34, 18, 0.98) 0%, rgba(8, 24, 12, 0.98) 100%) !important;
-    border: 1.5px solid rgba(227, 178, 60, 0.5) !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.25) !important;
-  }
-
-  body.field-nature .settings-title,
-  body[data-theme="nature"] .settings-title,
-  body.field-classic .settings-title {
-    color: #ffe082 !important;
-  }
-
-  body.field-nature .settings-close,
-  body[data-theme="nature"] .settings-close,
-  body.field-classic .settings-close {
-    border-color: rgba(227, 178, 60, 0.45) !important;
-    color: #ffe082 !important;
-  }
-
-  body.field-nature .settings-tab-btn.active,
-  body[data-theme="nature"] .settings-tab-btn.active,
-  body.field-classic .settings-tab-btn.active {
-    background: linear-gradient(135deg, #10b981, #059669) !important;
-    color: #ffffff !important;
-    border-color: #34d399 !important;
-  }
-
-  body.field-nature .theme-switch,
-  body.field-nature .mode-switch,
-  body[data-theme="nature"] .theme-switch,
-  body[data-theme="nature"] .mode-switch,
-  body.field-classic .theme-switch,
-  body.field-classic .mode-switch {
-    background: rgba(6, 20, 10, 0.90) !important;
-    border-color: rgba(227, 178, 60, 0.45) !important;
-  }
-
-  body.field-nature .preset-btn,
-  body.field-nature .settings-reset,
-  body.field-nature .settings-bgm-toggle,
-  body[data-theme="nature"] .preset-btn,
-  body[data-theme="nature"] .settings-reset,
-  body[data-theme="nature"] .settings-bgm-toggle,
-  body.field-classic .preset-btn,
-  body.field-classic .settings-reset,
-  body.field-classic .settings-bgm-toggle {
-    border-color: rgba(227, 178, 60, 0.4) !important;
-    background: rgba(14, 38, 20, 0.85) !important;
-    color: #f4f0e6 !important;
-  }
-
-  body.field-nature .preset-btn.active,
-  body[data-theme="nature"] .preset-btn.active,
-  body.field-classic .preset-btn.active {
-    background: linear-gradient(135deg, #10b981, #059669) !important;
-    border-color: #34d399 !important;
-    color: #ffffff !important;
-  }
-
-  /* コマンドバー＆ボタン（自然テーマ調） */
-  body.field-nature .cmd-menu-btn,
-  body[data-theme="nature"] .cmd-menu-btn,
-  body.field-classic .cmd-menu-btn {
-    background: linear-gradient(135deg, rgba(14, 52, 28, 0.94) 0%, rgba(8, 32, 16, 0.96) 55%, rgba(4, 18, 8, 0.98) 100%) !important;
-    border-color: #e3b23c !important;
-    box-shadow: 0 0 14px rgba(227, 178, 60, 0.65), 0 0 28px rgba(74, 222, 128, 0.25), inset 0 0 12px rgba(74, 222, 128, 0.25), 0 6px 16px rgba(0, 0, 0, 0.85) !important;
-  }
-
-  body.field-nature .cmd-menu-btn .btn-sub,
-  body[data-theme="nature"] .cmd-menu-btn .btn-sub,
-  body.field-classic .cmd-menu-btn .btn-sub {
-    color: #e3b23c !important;
-    text-shadow: 0 0 6px rgba(227, 178, 60, 0.8) !important;
-  }
-
-  body.field-nature .cmd-menu-btn .btn-icon-wrap,
-  body[data-theme="nature"] .cmd-menu-btn .btn-icon-wrap,
-  body.field-classic .cmd-menu-btn .btn-icon-wrap {
-    border-color: rgba(227, 178, 60, 0.85) !important;
-    background: radial-gradient(circle at 40% 35%, rgba(227, 178, 60, 0.35) 0%, rgba(10, 36, 18, 0.85) 100%) !important;
-    box-shadow: 0 0 10px rgba(227, 178, 60, 0.6) !important;
-  }
-
-  body.field-nature .cmd-fab,
-  body[data-theme="nature"] .cmd-fab,
-  body.field-classic .cmd-fab {
-    background: radial-gradient(circle at 45% 28%, rgba(74, 222, 128, 0.35) 0%, transparent 60%), radial-gradient(circle at 50% 50%, #154522 0%, #0c2d16 55%, #051409 100%) !important;
-    border-color: #e3b23c !important;
-    box-shadow: 0 0 20px rgba(227, 178, 60, 0.65), 0 8px 24px rgba(0, 0, 0, 0.8) !important;
-  }
-
-  body.field-nature .cmd-fab-badge,
-  body[data-theme="nature"] .cmd-fab-badge,
-  body.field-classic .cmd-fab-badge {
-    background: linear-gradient(180deg, #10b981, #047857) !important;
-    color: #ffffff !important;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.8) !important;
-  }
-
-  /* ==================== CYBER 3D THEME (元々の3D電脳空間パース・フロア＆天井グリッド) ==================== */
-  body.theme-cyber,
-  body[data-theme="cyber"] {
-    background-color: #000108;
-    background: #000108 !important;
-  }
-
-  body.theme-cyber #three-bg,
-  body[data-theme="cyber"] #three-bg {
-    display: block !important;
-    opacity: 1 !important;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  /* 3D電脳グリッドを盤面下まで透過して奥行きを広げる */
-  body.theme-cyber .field-splash-bg,
-  body[data-theme="cyber"] .field-splash-bg {
-    display: none !important;
-  }
-
-  body.theme-cyber .field-image-wrap,
-  body[data-theme="cyber"] .field-image-wrap {
-    background: transparent !important;
-  }
-
-  /* 3Dサイバースロット枠（シアンの発光ブラケット） */
-  body.theme-cyber .lane,
-  body.theme-cyber .field-body,
-  body.theme-cyber .farm-pile,
-  body.theme-cyber .zone-body,
-  body[data-theme="cyber"] .lane,
-  body[data-theme="cyber"] .field-body,
-  body[data-theme="cyber"] .farm-pile,
-  body[data-theme="cyber"] .zone-body {
-    border: 1px solid rgba(0, 240, 255, 0.75) !important;
-    background: rgba(2, 16, 32, 0.35) !important;
-    box-shadow: inset 0 0 14px rgba(0, 240, 255, 0.2), 0 0 10px rgba(0, 240, 255, 0.3) !important;
-  }
-
-  body.theme-cyber .slot-bracket,
-  body[data-theme="cyber"] .slot-bracket {
-    border-color: #00f0ff !important;
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.8) !important;
-  }
-
-  body.theme-cyber .lane-label,
-  body[data-theme="cyber"] .lane-label {
-    background: rgba(1, 10, 22, 0.92) !important;
-    color: #38bdf8 !important;
-    border: 1px solid rgba(0, 240, 255, 0.6) !important;
-  }
-
-  body.theme-cyber .lane-badge,
-  body[data-theme="cyber"] .lane-badge {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.5) !important;
+    body:not(.manual-mode):has(.hand-zone.has-cards) .narrator {
+      position: fixed;
+      left: 6px;
+      right: 6px;
+      bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+      width: auto;
+      margin: 0;
+      z-index: 120;
+      transform: none;
+    }
   }

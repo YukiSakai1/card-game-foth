@@ -3,8 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
   <meta name="googlebot-news" content="noindex">
@@ -18,7 +17,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@500;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=30">
+  <link rel="stylesheet" href="style.css?v=87">
   <script type="importmap">
 {
     "imports": {
@@ -29,7 +28,7 @@
 </script>
 </head>
 
-<body class="field-3d field-cyber">
+<body class="field-3d field-cyber" data-tilt="0">
   <canvas id="three-bg"></canvas>
   <div class="app">
 
@@ -44,7 +43,7 @@
             <span class="step-prefix">STEP</span>
             <span class="step-current" id="step-current">0</span>
             <span class="step-slash">/</span>
-            <span class="step-total">16</span>
+            <span class="step-total">19</span>
           </div>
         </div>
         <div class="track">
@@ -65,92 +64,64 @@
       </div>
       <div class="race-info" id="race-info" aria-label="レース情報"></div>
       <div class="topbar-menu" id="topbar-menu">
-        <button class="settings-gear" id="settings-gear" type="button" title="設定">⚙<span class="full-label"> 設定</span></button>
+        <button class="settings-gear" id="settings-gear" type="button" title="設定を開く" aria-label="設定を開く" aria-expanded="false">
+          <svg class="settings-gear-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
       </div>
     </header>
 
     <div class="settings-overlay" id="settings-overlay">
       <div class="settings-panel">
         <div class="settings-head">
-          <div class="settings-title">SETTINGS / 設定</div>
-          <button class="settings-close" id="settings-close" type="button" aria-label="閉じる">✕</button>
+          <div class="settings-title">設定</div>
+          <button class="settings-close" id="settings-close" type="button" aria-label="設定を閉じる">✕</button>
         </div>
-
-        <div class="settings-tabs" role="tablist">
-          <button class="settings-tab-btn active" data-tab="game" type="button" role="tab" aria-selected="true">🎮 ゲーム設定</button>
-          <button class="settings-tab-btn" data-tab="camera" type="button" role="tab" aria-selected="false">🎥 視点・カメラ</button>
-        </div>
-
         <div class="settings-body">
-          <!-- TAB 1: ゲーム設定 (モード・テーマ・BGM) -->
-          <div class="settings-tab-content active" data-tab="game" id="settings-tab-game" role="tabpanel">
-            <div class="settings-group">
-              <div class="settings-label">プレイモード</div>
-              <div class="mode-switch" id="mode-switch" role="group" aria-label="プレイモード切り替え">
-                <button class="mode-opt active" data-mode="tutorial" type="button">Tutorial</button>
-                <button class="mode-opt" data-mode="manual" type="button">Manual</button>
-              </div>
-              <div class="settings-desc">チュートリアル進行、または自由対戦（マニュアル操作）を選択できます。</div>
+          <div class="settings-group" style="display:flex;flex-direction:column;gap:8px;">
+            <a href="index.html" style="color:var(--rail);font-weight:700;text-decoration:none">‹ スタート画面に戻る</a>
+            <a href="lessons.html" style="color:var(--rail);font-weight:700;text-decoration:none">‹ 遊びかたの一覧へ</a>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">プレイモード</div>
+            <div class="mode-switch" id="mode-switch" role="group" aria-label="プレイモード切り替え">
+              <button class="mode-opt active" data-mode="tutorial" type="button">チュートリアル</button>
+              <button class="mode-opt" data-mode="manual" type="button">自分で操作</button>
             </div>
-
-            <div class="settings-group">
-              <div class="settings-label">背景・UIテーマ</div>
-              <div class="theme-switch" id="theme-switch" role="group" aria-label="テーマ切り替え">
-                <button class="theme-opt active" data-theme="cyber" type="button">Cyber (電脳)</button>
-                <button class="theme-opt" data-theme="dark" type="button">Dark (標準)</button>
-                <button class="theme-opt" data-theme="white" type="button">White (白)</button>
-                <button class="theme-opt" data-theme="nature" type="button">Nature (自然・芝)</button>
-              </div>
-              <div class="settings-desc">3D電脳空間「Cyber」、白ベース「White」、全画面芝生の「Nature」など背景テーマを選択できます。</div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">画面デザイン</div>
+            <div class="theme-switch" id="theme-switch" role="group" aria-label="画面デザイン切り替え">
+              <button class="theme-opt active" data-theme="cyber" type="button">Default</button>
+              <button class="theme-opt" data-theme="classic" type="button">Cyber</button>
             </div>
-
-            <div class="settings-group">
-              <div class="settings-label">サウンド</div>
-              <button class="bgm-toggle settings-bgm-toggle" id="bgm-toggle" type="button" title="BGM切替">🔊 BGM</button>
-              <div class="settings-desc">ゲーム内BGMの再生・停止を切り替えます。</div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">フィールド角度</div>
+            <div class="preset-grid">
+              <button class="preset-btn active" data-angle="0" type="button">0°</button>
+              <button class="preset-btn" data-angle="10" type="button">10°</button>
+              <button class="preset-btn" data-angle="25" type="button">25°</button>
             </div>
           </div>
 
-          <!-- TAB 2: 視点・カメラ設定 -->
-          <div class="settings-tab-content" data-tab="camera" id="settings-tab-camera" role="tabpanel">
-            <div class="settings-group">
-              <div class="settings-label">視点プリセット</div>
-              <div class="preset-grid" id="tilt-select">
-                <button class="preset-btn tilt-opt" data-angle="0" type="button">0°(真上・平面)</button>
-                <button class="preset-btn tilt-opt" data-angle="10" type="button">10°(手前重視)</button>
-                <button class="preset-btn tilt-opt active" data-angle="25" type="button">25°(標準)</button>
-              </div>
+          <div class="settings-group">
+            <div class="settings-row">
+              <span>CAMERA ZOOM (倍率)</span>
+              <span class="settings-value" id="zoom-value">100%</span>
             </div>
-            <div class="settings-group">
-              <div class="settings-row">
-                <span>3D TILT (傾き微調整)</span>
-                <span class="settings-value" id="tilt-value">25°</span>
-              </div>
-              <input type="range" id="tilt-range" min="0" max="60" value="25" step="1">
-            </div>
-            <div class="settings-group">
-              <div class="settings-row">
-                <span>FIELD DEPTH (奥行きパース)</span>
-                <span class="settings-value" id="depth-value">1300px</span>
-              </div>
-              <input type="range" id="depth-range" min="500" max="3000" value="1300" step="50">
-            </div>
-            <div class="settings-group">
-              <div class="settings-row">
-                <span>CAMERA ZOOM (倍率)</span>
-                <span class="settings-value" id="zoom-value">114%</span>
-              </div>
-              <input type="range" id="zoom-range" min="60" max="200" value="114" step="1">
-            </div>
-            <div class="settings-group">
-              <label class="settings-toggle-row">
-                <span>タッチ/マウス 3Dチルト [縦軸のみ]</span>
-                <input type="checkbox" id="touch-tilt-toggle" checked>
-              </label>
-            </div>
-
-            <button class="settings-reset" id="settings-reset" type="button">視点をリセット</button>
+            <input type="range" id="zoom-range" min="60" max="200" value="100" step="5">
           </div>
+          <div class="settings-group">
+            <label class="settings-toggle-row">
+              <span>タッチ/マウス 3Dチルト [縦軸のみ]</span>
+              <input type="checkbox" id="touch-tilt-toggle" checked>
+            </label>
+          </div>
+
+          <button class="settings-reset" id="settings-reset" type="button">視点をリセット</button>
         </div>
       </div>
     </div>
@@ -163,9 +134,7 @@
         <div class="closeup-close-hint">タップ / クリックで閉じる</div>
       </div>
       <section class="opponent-strip" id="zone-opponent">
-        <div class="opponent-avatar">
-          <img src="images/jockey-avatar.jpg" alt="CPU" class="opponent-avatar-img">
-        </div>
+        <div class="opponent-avatar">👤</div>
         <div class="opponent-meta">
           <div class="opponent-name">あいて</div>
           <div class="opponent-sub">CPU プレイヤー</div>
@@ -181,8 +150,6 @@
           <div class="field-splash-bg" id="field-splash-bg">
             <canvas id="field-splash-canvas" class="field-splash-canvas"></canvas>
           </div>
-          <!-- 状況カード背景（field-image-wrapの背景として設置） -->
-          <div class="field-situation-bg" id="field-situation-bg"></div>
           <div class="overlay ov-opp-deck" id="zone-opp-deck">
             <div class="opp-lanes" id="opp-lanes"></div>
           </div>
@@ -210,10 +177,8 @@
               <span class="slot-bracket bl"></span><span class="slot-bracket br"></span>
             </div>
           </div>
-          <!-- 相手のファーム置き場（旧：状況カード置き場の位置） -->
-          <div class="overlay ov-opp-farm" id="zone-opp-farm">
-            <div class="farm-pile farm-pile-opp" id="opp-farm-pile"></div>
-            <div class="farm-badge" id="opp-farm-count">0</div>
+          <div class="overlay ov-situation" id="zone-situation">
+            <div class="zone-body" id="situation-body"></div>
             <div class="slot-frame" aria-hidden="true">
               <span class="slot-bracket tl"></span><span class="slot-bracket tr"></span>
               <span class="slot-bracket bl"></span><span class="slot-bracket br"></span>
@@ -234,10 +199,12 @@
                   <span class="btn-label">状況</span>
                 </div>
               </button>
-              <button class="cmd-menu-btn" data-cmd="item" type="button">
+              <button class="cmd-menu-btn" data-cmd="item" type="button"
+                aria-label="走破前にタイプ・エリアのアイテムを使う"
+                title="タイプ：エリアのアイテムを、ターン開始後・走破前に使います">
                 <div class="btn-text-wrap">
-                  <span class="btn-sub">コマンド</span>
-                  <span class="btn-label">アイテム</span>
+                  <span class="btn-sub">走破前</span>
+                  <span class="btn-label">エリアアイテム</span>
                 </div>
               </button>
               <button class="cmd-menu-btn" data-cmd="end" type="button">
@@ -249,19 +216,19 @@
             </div>
             <!-- デュエルリンクス風 丸型シルエット FAB -->
             <button class="cmd-fab" id="cmd-fab" type="button" aria-label="コマンドメニュー">
-              <span class="cmd-fab-badge" id="cmd-fab-badge">COMMAND</span>
+              <span class="cmd-fab-badge" id="cmd-fab-badge">操作メニュー</span>
               <span class="cmd-fab-icon-wrap">
                 <svg class="cmd-fab-arrow" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <!-- Dark shadow outline -->
                   <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
-                    stroke="#000000" stroke-width="6" stroke-linecap="round" />
-                  <path d="M 4.2 27.5 L 9.8 20.2 L 15.8 28.5 Z" fill="#000000" stroke="#000000" stroke-width="2.6"
-                    stroke-linejoin="round" />
+                        stroke="#000000" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M 4.2 27.5 L 9.8 20.2 L 15.8 28.5 Z"
+                        fill="#000000" stroke="#000000" stroke-width="2.6" stroke-linejoin="round"/>
                   <!-- White crisp arrow body -->
                   <path d="M 22 8 C 29.73 8 36 14.27 36 22 C 36 29.73 29.73 36 22 36 C 15.6 36 10.23 31.7 8.5 25.8"
-                    stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" />
-                  <path d="M 4.8 27.2 L 9.8 20.8 L 15.2 28 Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.8"
-                    stroke-linejoin="round" />
+                        stroke="#ffffff" stroke-width="3.6" stroke-linecap="round"/>
+                  <path d="M 4.8 27.2 L 9.8 20.8 L 15.2 28 Z"
+                        fill="#ffffff" stroke="#ffffff" stroke-width="0.8" stroke-linejoin="round"/>
                 </svg>
               </span>
             </button>
@@ -272,21 +239,35 @@
         </div>
       </div>
 
-      <footer class="narrator" id="narrator">
-        <div class="narrator-portrait"><img src="images/narrator.png" alt="ナレーター"></div>
-        <div class="narrator-bubble">
-          <div class="narrator-text" id="narrator-text">読み込み中…</div>
-          <div class="narrator-tap-hint" id="narrator-tap-hint">タップで進む <span class="tap-arrow">▼</span></div>
-        </div>
-      </footer>
-
-      <section class="hand-zone" id="zone-hand">
-        <div class="zone-label">手札</div>
-        <div class="hand-row" id="hand-row"></div>
-        <button class="hand-nav-btn hand-prev" id="hand-prev" type="button" aria-label="手札を左へスクロール">◀</button>
-        <button class="hand-nav-btn hand-next" id="hand-next" type="button" aria-label="手札を右へスクロール">▶</button>
-      </section>
     </main>
+
+    <!-- 盤面とは別の案内領域に置き、カードとの重なりを防ぐ -->
+    <footer class="narrator" id="narrator">
+      <div class="narrator-portrait"><img src="images/narrator.png" alt="ナレーター"></div>
+      <div class="narrator-bubble">
+        <div class="narrator-text" id="narrator-text">読み込み中…</div>
+        <div class="narrator-actions">
+          <div class="selection-progress" id="selection-progress" role="status" aria-live="polite" hidden></div>
+          <div class="narrator-nav">
+            <button class="narrator-back" id="narrator-back" type="button">◀ 戻る</button>
+            <button class="narrator-forward" id="narrator-forward" type="button">進む ▶</button>
+          </div>
+          <button class="narrator-next" id="narrator-next">つぎへ ▶</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 手札も盤面の外に置き、案内とカードが同じ場所を取り合わないようにする -->
+    <section class="hand-zone" id="zone-hand">
+      <div class="zone-label">手札</div>
+      <button class="selection-confirm-btn" id="selection-confirm" type="button" hidden>この内容で走破</button>
+      <button class="selection-cancel-btn" id="selection-cancel" type="button" hidden>キャンセル</button>
+      <div class="manual-selection-guide" id="manual-selection-guide" role="status" aria-live="polite" hidden></div>
+      <div class="selected-horse-preview" id="selected-horse-preview" hidden></div>
+      <div class="hand-row" id="hand-row"></div>
+      <button class="hand-nav-btn hand-prev" id="hand-prev" type="button" aria-label="手札を左へスクロール">◀</button>
+      <button class="hand-nav-btn hand-next" id="hand-next" type="button" aria-label="手札を右へスクロール">▶</button>
+    </section>
 
     <div class="banner-overlay" id="banner-overlay">
       <div class="banner-stage" id="banner-stage">
@@ -296,19 +277,13 @@
       <div class="banner-tap-hint" id="banner-tap-hint">タップして続ける</div>
     </div>
 
-    <!-- ターンチェンジ演出オーバーレイ（デュエルリンクス風） -->
-    <div class="turn-change-overlay" id="turn-change-overlay">
-      <div class="turn-change-backdrop"></div>
-      <div class="turn-change-wrap">
-        <div class="turn-change-top">TURN</div>
-        <div class="turn-change-middle">
-          <div class="turn-change-banner" id="turn-change-banner">
-            <span class="turn-change-label" id="turn-change-label">相手のターン</span>
-          </div>
-        </div>
-        <div class="turn-change-bottom">CHANGE</div>
-      </div>
-    </div>
+    <dialog class="lesson-complete" id="lesson-complete" aria-labelledby="lesson-complete-title">
+      <p class="lesson-complete-kicker">LESSON 00 · COMPLETE</p>
+      <h2 id="lesson-complete-title">バトルの基本を覚えたね！</h2>
+      <p>各エリアの役割とレース条件、勝利条件が分かったら準備完了。<br>次は「走破」で馬を走らせてみよう。</p>
+      <a class="lesson-complete-link" id="lesson-complete-next" href="tutorial.html?lesson=run">次へ：走破してみよう！ ›</a>
+      <a class="lesson-complete-back" href="lessons.html">一覧に戻る</a>
+    </dialog>
 
     <!-- ゲーム内トースト通知 -->
     <div class="game-toast" id="game-toast"></div>
@@ -327,9 +302,9 @@
       <div class="guard-horse-slot" id="guard-horse-slot"></div>
       <div class="popup-box" id="guard-popup-box">
         <div class="popup-title" id="guard-title">相手が走破！</div>
-        <div class="popup-desc" id="guard-desc">相手の走破を手札の馬カードでガードしますか？</div>
+        <div class="popup-desc" id="guard-desc">相手の走破を手札の馬カードでガードしますか？<br>ガードせず、そのまま走破を通すこともできます。</div>
         <div class="popup-btns" id="guard-btns">
-          <button class="btn-guard" id="guard-yes">🛡️ ガードする</button>
+          <button class="btn-guard" id="guard-yes">ガードする</button>
           <button class="btn-skip" id="guard-no">⏭ ガードしない</button>
         </div>
       </div>
@@ -339,7 +314,7 @@
     <div id="opponent-thinking-popup">
       <div class="popup-box">
         <div class="popup-title">🤔 相手プレイヤー</div>
-        <div class="popup-desc">ガードをするか考えています...</div>
+        <div class="popup-desc"><b>ガード</b>を使うと、相手が走破で引くカードの枚数を減らすことができます。<br>相手がガードするか考えています...</div>
       </div>
     </div>
 
@@ -359,7 +334,7 @@
     <div id="situation-hint-popup">
       <div class="popup-box">
         <div class="popup-title">☀️ 状況カード</div>
-        <div class="popup-desc" id="situation-hint-desc">使用可能な状況カードが手札にあります。状況カードを使いますか？</div>
+        <div class="popup-desc" id="situation-hint-desc">状況カードを引きました。レース全体に影響するカードです。今使いますか？<br>使わずに手札へ残し、走破前に操作メニューの「状況」から使うこともできます。</div>
         <div class="popup-btns">
           <button class="btn-guard" id="situation-hint-yes">はい</button>
           <button class="btn-skip" id="situation-hint-no">いいえ</button>
@@ -375,13 +350,13 @@
         <div class="victory-title" id="victory-title">VICTORY</div>
         <div class="victory-subtitle" id="victory-subtitle"></div>
         <div class="victory-message" id="victory-message"></div>
-        <button class="victory-restart" id="victory-restart">⟲ もう一度あそぶ</button>
+        <button class="victory-restart" id="victory-restart">⌂ ホーム画面へ</button>
       </div>
     </div>
 
   </div>
 
-  <script src="script.js?v=26"></script>
+  <script src="script.js?v=35"></script>
   <script type="module">
     import * as THREE from 'three';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -418,27 +393,20 @@
     composer.addPass(renderScene);
     composer.addPass(bloomPass);
 
-    // Procedural Seamless Digital Circuit Texture (Dark Navy & White Cyber with Fine Neon Circuitry)
-    function createCyberTexture(mode) {
-      const isWhite = (mode === 'white');
+    // Procedural Seamless Dark Digital Circuit Texture (Deep Navy & Black with Fine Neon Circuitry)
+    function createCyberTexture() {
       const size = 2048;
       const canvas = document.createElement('canvas');
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext('2d');
 
-      // 1. Base Color
-      ctx.fillStyle = isWhite ? '#f0f5fa' : '#01050f';
+      // 1. Deep Midnight Navy / Black Base
+      ctx.fillStyle = '#01050f';
       ctx.fillRect(0, 0, size, size);
 
-      // Ambient light pools
-      const ambientGlows = isWhite ? [
-        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 160, 255, 0.12)' },
-        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 180, 255, 0.10)' },
-        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(0, 140, 240, 0.11)' },
-        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(0, 170, 255, 0.10)' },
-        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(0, 130, 220, 0.08)' },
-      ] : [
+      // Saturated deep dark blue ambient light pools (Subtle cyber luminescence)
+      const ambientGlows = [
         { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(0, 30, 95, 0.30)' },
         { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(0, 45, 120, 0.28)' },
         { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(0, 35, 100, 0.26)' },
@@ -448,7 +416,7 @@
       ambientGlows.forEach(g => {
         const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
         rad.addColorStop(0, g.c);
-        rad.addColorStop(1, isWhite ? 'rgba(240, 245, 250, 0)' : 'rgba(1, 5, 15, 0)');
+        rad.addColorStop(1, 'rgba(1, 5, 15, 0)');
         ctx.fillStyle = rad;
         ctx.fillRect(0, 0, size, size);
       });
@@ -489,7 +457,7 @@
         return randSeed / 233280;
       }
 
-      // 2. IC Micro-Modules / Tech Panels
+      // 2. Subtle Dark IC Micro-Modules / Tech Panels (Refined dark plates with subtle cyan borders)
       const panelConfigs = [
         { count: 30, minW: 2, maxW: 3, minH: 2, maxH: 4 },
         { count: 50, minW: 1, maxW: 2, minH: 1, maxH: 2 },
@@ -511,32 +479,29 @@
 
           const styleRoll = pseudoRand();
           if (styleRoll < 0.45) {
-            // Style 1: Subtle translucent plate with cyan trace
+            // Style 1: Deep translucent slate-navy plate with subtle cyan trace
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(235, 244, 252, 0.90)' : 'rgba(0, 20, 60, 0.22)',
-              isWhite ? 'rgba(0, 140, 230, 0.35)' : 'rgba(0, 150, 255, 0.40)', 1.0, { color: isWhite ? '#0088ee' : '#0066dd', blur: 4 });
+              'rgba(0, 20, 60, 0.22)',
+              'rgba(0, 150, 255, 0.40)', 1.0, { color: '#0066dd', blur: 4 });
           } else if (styleRoll < 0.75) {
             // Style 2: Micro-grid IC chip with fine pins
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(228, 238, 250, 0.92)' : 'rgba(0, 14, 45, 0.28)',
-              isWhite ? 'rgba(0, 160, 255, 0.50)' : 'rgba(0, 190, 255, 0.55)', 1.2, { color: isWhite ? '#0099ff' : '#0088ff', blur: 5 });
+              'rgba(0, 14, 45, 0.28)', 'rgba(0, 190, 255, 0.55)', 1.2, { color: '#0088ff', blur: 5 });
             if (pw > step * 1.5 && ph > step * 1.5) {
               drawWrapRect(px + 6, py + 6, pw - 12, ph - 12,
-                isWhite ? 'rgba(218, 232, 248, 0.85)' : 'rgba(0, 30, 80, 0.18)',
-                isWhite ? 'rgba(0, 140, 230, 0.35)' : 'rgba(0, 140, 230, 0.35)', 0.8);
+                'rgba(0, 30, 80, 0.18)', 'rgba(0, 140, 230, 0.35)', 0.8);
             }
           } else {
             // Style 3: Accent Cyber Node Box
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
-              isWhite ? 'rgba(220, 240, 255, 0.92)' : 'rgba(0, 40, 110, 0.20)',
-              isWhite ? 'rgba(0, 180, 255, 0.65)' : 'rgba(60, 220, 255, 0.70)', 1.4, { color: '#00ccff', blur: 6 });
+              'rgba(0, 40, 110, 0.20)', 'rgba(60, 220, 255, 0.70)', 1.4, { color: '#00ccff', blur: 6 });
           }
         }
       });
 
-      // 3. Delicate Background Grid Lines
+      // 3. Delicate Background Grid Lines (Subtle & Elegant, not blinding)
       // Minor fine grid lines
-      ctx.strokeStyle = isWhite ? 'rgba(0, 120, 210, 0.14)' : 'rgba(0, 90, 190, 0.16)';
+      ctx.strokeStyle = 'rgba(0, 90, 190, 0.16)';
       ctx.lineWidth = 0.8;
       for (let i = 0; i <= gridDivs; i++) {
         const p = i * step;
@@ -551,9 +516,9 @@
         ctx.stroke();
       }
 
-      // Major grid lines (Electric blue accent)
+      // Major grid lines (Thin electric blue accent with soft glow)
       ctx.save();
-      ctx.strokeStyle = isWhite ? 'rgba(0, 140, 235, 0.32)' : 'rgba(0, 150, 255, 0.32)';
+      ctx.strokeStyle = 'rgba(0, 150, 255, 0.32)';
       ctx.lineWidth = 1.2;
       ctx.shadowColor = '#0077ee';
       ctx.shadowBlur = 4;
@@ -571,7 +536,7 @@
       }
       ctx.restore();
 
-      // 4. Intricate PCB Circuit Traces & Data Conduits
+      // 4. Intricate PCB Circuit Traces & Data Conduits (繊細な回路パターン)
       ctx.save();
       for (let t = 0; t < 70; t++) {
         const gx = Math.floor(pseudoRand() * gridDivs);
@@ -582,12 +547,10 @@
         const dirY = pseudoRand() > 0.5 ? 1 : -1;
 
         const isGlowTrace = pseudoRand() > 0.45;
-        ctx.strokeStyle = isWhite
-          ? (isGlowTrace ? 'rgba(0, 160, 245, 0.82)' : 'rgba(0, 130, 225, 0.50)')
-          : (isGlowTrace ? 'rgba(0, 210, 255, 0.75)' : 'rgba(0, 140, 240, 0.45)');
+        ctx.strokeStyle = isGlowTrace ? 'rgba(0, 210, 255, 0.75)' : 'rgba(0, 140, 240, 0.45)';
         ctx.lineWidth = isGlowTrace ? 1.5 : 1.0;
-        ctx.shadowColor = isWhite ? '#0099ff' : (isGlowTrace ? '#00bbff' : '#0066dd');
-        ctx.shadowBlur = isGlowTrace ? 5 : 3;
+        ctx.shadowColor = isGlowTrace ? '#00bbff' : '#0066dd';
+        ctx.shadowBlur = isGlowTrace ? 6 : 3;
 
         for (let ox of [-size, 0, size]) {
           for (let oy of [-size, 0, size]) {
@@ -602,21 +565,21 @@
             ctx.lineTo(midX, endY);
             ctx.stroke();
 
-            // Terminal solder pad
-            ctx.fillStyle = isWhite ? '#0284c7' : '#ffffff';
+            // Terminal solder pad (White core + Cyan glowing aura)
+            ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(midX, endY, 2.2, 0, Math.PI * 2);
             ctx.fill();
 
             // Solder pad ring
-            ctx.strokeStyle = isWhite ? 'rgba(0, 170, 250, 0.85)' : 'rgba(0, 220, 255, 0.85)';
+            ctx.strokeStyle = 'rgba(0, 220, 255, 0.85)';
             ctx.lineWidth = 1.0;
             ctx.beginPath();
             ctx.arc(midX, endY, 4.0, 0, Math.PI * 2);
             ctx.stroke();
 
             // Start node dot
-            ctx.fillStyle = isWhite ? 'rgba(0, 140, 230, 0.85)' : 'rgba(0, 180, 255, 0.80)';
+            ctx.fillStyle = 'rgba(0, 180, 255, 0.80)';
             ctx.beginPath();
             ctx.arc(startX, startY, 1.8, 0, Math.PI * 2);
             ctx.fill();
@@ -626,7 +589,7 @@
       ctx.restore();
 
       // 5. Grid intersection node dots & Data junctions
-      ctx.fillStyle = isWhite ? 'rgba(0, 140, 220, 0.70)' : 'rgba(80, 200, 255, 0.70)';
+      ctx.fillStyle = 'rgba(80, 200, 255, 0.70)';
       for (let i = 0; i <= gridDivs; i += 2) {
         for (let j = 0; j <= gridDivs; j += 2) {
           if (pseudoRand() > 0.60) {
@@ -646,13 +609,12 @@
       return texture;
     }
 
-    const darkTexture = createCyberTexture('dark');
-    let whiteTexture = null;
+    const cyberTexture = createCyberTexture();
 
     // Floor and Ceiling Planes (Symmetrical perspective expanding from center horizon)
     const planeGeo = new THREE.PlaneGeometry(8000, 8000);
     const planeMat = new THREE.MeshBasicMaterial({
-      map: darkTexture,
+      map: cyberTexture,
       transparent: true,
       opacity: 0.95,
       side: THREE.DoubleSide,
@@ -673,7 +635,7 @@
     ceiling.rotation.x = Math.PI / 2;
     scene.add(ceiling);
 
-    // Atmospheric Horizon Glow
+    // Atmospheric Dark Horizon Glow (Soft, deep navy fade)
     const horizonGlowGeo = new THREE.PlaneGeometry(10000, 24);
     const horizonGlowMat = new THREE.MeshBasicMaterial({
       color: 0x0033aa,
@@ -685,95 +647,6 @@
     const horizonGlow = new THREE.Mesh(horizonGlowGeo, horizonGlowMat);
     horizonGlow.position.set(0, 0, -1800);
     scene.add(horizonGlow);
-
-    // Dynamic Background Theme Controller
-    let currentTheme = 'dark';
-
-    function applyThreeTheme(t) {
-      currentTheme = t || 'dark';
-      if (t === 'nature' || t === 'classic') {
-        canvas.style.display = 'block';
-        floor.visible = false;
-        ceiling.visible = false;
-        horizonGlow.visible = false;
-        scene.background = null;
-        scene.fog = null;
-        renderer.setClearColor(0x000000, 0);
-        for (let i = 0; i < particleCount; i++) {
-          const pColor = new THREE.Color();
-          if (Math.random() > 0.45) {
-            pColor.setHSL(0.12 + Math.random() * 0.06, 0.95, 0.70 + Math.random() * 0.25);
-          } else {
-            pColor.setHSL(0.28 + Math.random() * 0.08, 0.90, 0.65 + Math.random() * 0.25);
-          }
-          colors[i * 3] = pColor.r;
-          colors[i * 3 + 1] = pColor.g;
-          colors[i * 3 + 2] = pColor.b;
-        }
-        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
-      } else if (t === 'white') {
-        canvas.style.display = 'block';
-        floor.visible = true;
-        ceiling.visible = true;
-        horizonGlow.visible = true;
-        if (!scene.fog) scene.fog = new THREE.Fog(0xf0f5fa, 150, 1600);
-        if (!whiteTexture) whiteTexture = createCyberTexture('white');
-        planeMat.map = whiteTexture;
-        planeMat.needsUpdate = true;
-        scene.background = new THREE.Color(0xf0f5fa);
-        scene.fog.color = new THREE.Color(0xf0f5fa);
-        scene.fog.near = 150;
-        scene.fog.far = 1600;
-        horizonGlowMat.color.setHex(0x00b0ff);
-        horizonGlowMat.opacity = 0.20;
-        bloomPass.strength = 0.24;
-        bloomPass.threshold = 0.35;
-        for (let i = 0; i < particleCount; i++) {
-          const pColor = new THREE.Color();
-          if (Math.random() > 0.4) {
-            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.70 + Math.random() * 0.25);
-          } else {
-            pColor.setRGB(0.95, 0.98, 1.0);
-          }
-          colors[i * 3] = pColor.r;
-          colors[i * 3 + 1] = pColor.g;
-          colors[i * 3 + 2] = pColor.b;
-        }
-        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
-      } else {
-        canvas.style.display = 'block';
-        floor.visible = true;
-        ceiling.visible = true;
-        horizonGlow.visible = true;
-        if (!scene.fog) scene.fog = new THREE.Fog(HORIZON_DARK, 220, 1750);
-        planeMat.map = darkTexture;
-        planeMat.needsUpdate = true;
-        scene.background = new THREE.Color(HORIZON_DARK);
-        scene.fog.color = new THREE.Color(HORIZON_DARK);
-        scene.fog.near = 220;
-        scene.fog.far = 1750;
-        horizonGlowMat.color.setHex(0x0033aa);
-        horizonGlowMat.opacity = 0.28;
-        bloomPass.strength = 0.42;
-        bloomPass.threshold = 0.35;
-        for (let i = 0; i < particleCount; i++) {
-          const pColor = new THREE.Color();
-          if (Math.random() > 0.4) {
-            pColor.setHSL(0.57 + Math.random() * 0.05, 0.90, 0.70 + Math.random() * 0.25);
-          } else {
-            pColor.setRGB(0.95, 0.98, 1.0);
-          }
-          colors[i * 3] = pColor.r;
-          colors[i * 3 + 1] = pColor.g;
-          colors[i * 3 + 2] = pColor.b;
-        }
-        if (particlesGeo.attributes.color) particlesGeo.attributes.color.needsUpdate = true;
-      }
-    }
-
-    window.addEventListener('themechange', (e) => {
-      applyThreeTheme(e.detail && e.detail.theme);
-    });
 
     // Soft glowing particle sprite texture
     function createSparkleTexture() {
@@ -857,9 +730,7 @@
       // Adapt texture repeat across X based on aspect ratio so grid cells stay square and dense on wide desktop screens
       const baseRepeatY = 4;
       const repeatX = Math.max(4, Math.round(baseRepeatY * aspect));
-      if (planeMat && planeMat.map) {
-        planeMat.map.repeat.set(repeatX, baseRepeatY);
-      }
+      cyberTexture.repeat.set(repeatX, baseRepeatY);
 
       renderer.setSize(width, height);
       composer.setSize(width, height);
@@ -875,9 +746,7 @@
       const elapsedTime = clock.getElapsedTime();
 
       // Forward flight effect
-      if (planeMat && planeMat.map) {
-        planeMat.map.offset.y -= delta * speed * 0.045;
-      }
+      cyberTexture.offset.y -= delta * speed * 0.045;
 
       // Particle forward drift and recycling
       const pPositions = particles.geometry.attributes.position.array;
@@ -893,19 +762,16 @@
       particles.geometry.attributes.position.needsUpdate = true;
 
       // Tilt responsiveness matching board tilt angle
-      const tiltStr = getComputedStyle(document.body).getPropertyValue('--tilt-angle') || '25deg';
-      const currentDeg = parseFloat(tiltStr) || 25;
+      const tiltStr = getComputedStyle(document.body).getPropertyValue('--tilt-angle') || '10deg';
+      const currentDeg = parseFloat(tiltStr) || 10;
       const targetRotX = THREE.MathUtils.degToRad(-currentDeg * 0.40);
       const targetPosY = (currentDeg / 10) * 18;
 
       camera.rotation.x += (targetRotX - camera.rotation.x) * 0.08;
       camera.position.y += (targetPosY - camera.position.y) * 0.08;
-      if (currentTheme === 'nature' || currentTheme === 'classic') {
-        renderer.clear();
-        renderer.render(scene, camera);
-      } else {
-        composer.render();
-      }
+      camera.position.x = Math.sin(elapsedTime * 0.3) * 1.5;
+
+      composer.render();
       requestAnimationFrame(animate);
     }
 

@@ -1052,7 +1052,7 @@
 
     <!-- Audio Player for Game BGM -->
     <audio id="bgmAudio" loop preload="auto">
-        <source src="Banners_in_the_Gale.mp3" type="audio/mpeg">
+        <source src="Banners_in_the_Gale_recomposed_90sec.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -1065,20 +1065,60 @@
             const soundIcon = document.getElementById('soundIcon');
             let isMuted = true;
 
+            try {
+                const savedBgmEnabled = localStorage.getItem('foth_bgm_enabled');
+                if (savedBgmEnabled !== null) {
+                    isMuted = savedBgmEnabled === '0';
+                }
+            } catch (e) { }
+            soundIcon.textContent = isMuted ? '🔇' : '🔊';
+
+            function saveBgmTime() {
+                try {
+                    if (bgm && bgm.currentTime > 0) {
+                        sessionStorage.setItem('foth_bgm_time', String(bgm.currentTime));
+                    }
+                } catch (e) { }
+            }
+
+            function restoreBgmTime() {
+                try {
+                    const savedTime = sessionStorage.getItem('foth_bgm_time');
+                    if (savedTime && bgm) {
+                        const t = parseFloat(savedTime);
+                        if (isFinite(t) && t >= 0) {
+                            bgm.currentTime = t;
+                        }
+                    }
+                } catch (e) { }
+            }
+
+            restoreBgmTime();
+            if (bgm) {
+                bgm.addEventListener('loadedmetadata', restoreBgmTime);
+                bgm.addEventListener('timeupdate', saveBgmTime);
+            }
+            window.addEventListener('beforeunload', saveBgmTime);
+            window.addEventListener('pagehide', saveBgmTime);
+
             // BGM toggle
             btnSoundToggle.addEventListener('click', () => {
                 if (bgm.paused) {
+                    restoreBgmTime();
                     bgm.volume = 0.5;
                     bgm.play().then(() => {
                         isMuted = false;
                         soundIcon.textContent = '🔊';
+                        try { localStorage.setItem('foth_bgm_enabled', '1'); } catch (e) { }
                     }).catch(err => {
                         console.log('Audio autoplay prevented:', err);
                     });
                 } else {
+                    saveBgmTime();
                     bgm.pause();
                     isMuted = true;
                     soundIcon.textContent = '🔇';
+                    try { localStorage.setItem('foth_bgm_enabled', '0'); } catch (e) { }
                 }
             });
 
@@ -1087,13 +1127,14 @@
             function launchGame(message) {
                 if (isStarting) return;
                 isStarting = true;
+                saveBgmTime();
                 const loader = document.getElementById('loadingScreen');
                 const loadingText = document.getElementById('loadingText');
                 if (message) loadingText.textContent = message;
                 loader.classList.add('active');
 
                 setTimeout(() => {
-                    window.location.href = 'foth-game/tutorial.html';
+                    window.location.href = 'foth-game/lessons.html';
                 }, 1000);
             }
 
