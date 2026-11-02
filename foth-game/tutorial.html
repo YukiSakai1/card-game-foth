@@ -36,7 +36,7 @@
     (function () {
       try {
         var t = localStorage.getItem('foth_field_theme');
-        if (t === 'classic') {
+        if (t === 'classic' || t === 'cyber2' || t === 'circuit' || t === 'turf' || t === 'track') {
           document.body.classList.remove('field-cyber');
         } else if (t === 'cyber') {
           document.body.classList.add('field-cyber');
@@ -45,6 +45,7 @@
     })();
   </script>
   <canvas id="three-bg"></canvas>
+  <canvas id="track-bg"></canvas>
   <div class="app">
 
 
@@ -342,6 +343,10 @@
           <div class="theme-switch" id="theme-switch" role="group" aria-label="画面デザイン切り替え">
             <button class="theme-opt active" data-theme="cyber" type="button">Default</button>
             <button class="theme-opt" data-theme="classic" type="button">Cyber</button>
+            <button class="theme-opt" data-theme="cyber2" type="button">Cyber 2</button>
+            <button class="theme-opt" data-theme="circuit" type="button">Circuit</button>
+            <button class="theme-opt" data-theme="turf" type="button">Turf</button>
+            <button class="theme-opt" data-theme="track" type="button">Track</button>
           </div>
         </div>
         <div class="settings-group">
@@ -387,14 +392,13 @@
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-    // Three.js Cyber Background - Simple & Dark Digital Green Base (洗練されたダークグリーンサイバー回路背景)
+    // Three.js Scene Setup
     const scene = new THREE.Scene();
-    const HORIZON_DARK = 0x05180f;
-    scene.background = new THREE.Color(HORIZON_DARK);
-    // Smooth linear fog fading seamlessly into deep dark green at the horizon
-    scene.fog = new THREE.Fog(HORIZON_DARK, 220, 1750);
+    const THEME_DARK = 0x02050e;
+    scene.background = new THREE.Color(THEME_DARK);
+    scene.fog = new THREE.Fog(THEME_DARK, 250, 2200);
 
-    const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 4000);
+    const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 4500);
     const defaultDeg = 10;
     camera.rotation.set(THREE.MathUtils.degToRad(-defaultDeg * 0.40), 0, 0);
     camera.position.set(0, (defaultDeg / 10) * 18, 300);
@@ -406,30 +410,130 @@
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
 
-    // Post-processing Bloom Pass (Subtle, refined neon glow without washing out deep dark tones)
+    // Post-processing Bloom Pass
     const renderScene = new RenderPass(scene, camera);
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.42, 0.35, 0.50
+      0.50, // strength
+      0.38, // radius
+      0.45  // threshold
     );
 
     const composer = new EffectComposer(renderer);
     composer.addPass(renderScene);
     composer.addPass(bloomPass);
 
-    // Procedural Seamless Dark Digital Circuit Texture (Deep Green & Emerald with Fine Neon Circuitry)
-    function createCyberTexture() {
+    function drawHex(ctx, x, y, radius) {
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i;
+        const hx = x + radius * Math.cos(angle);
+        const hy = y + radius * Math.sin(angle);
+        if (i === 0) ctx.moveTo(hx, hy);
+        else ctx.lineTo(hx, hy);
+      }
+      ctx.closePath();
+    }
+
+    // ----------------------------------------------------
+    // 1. Texture: Cyber (ロイヤルネイビー×シアン＆ゴールド)
+    // ----------------------------------------------------
+    function createCyber1TurfTexture() {
       const size = 2048;
       const canvas = document.createElement('canvas');
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext('2d');
 
-      // 1. Deep Midnight Dark Green Base (#05180f)
+      const grad = ctx.createLinearGradient(0, 0, 0, size);
+      grad.addColorStop(0, '#030818');
+      grad.addColorStop(0.5, '#050f26');
+      grad.addColorStop(1, '#020612');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+
+      const glows = [
+        { x: size * 0.25, y: size * 0.30, r: size * 0.45, c: 'rgba(0, 229, 255, 0.12)' },
+        { x: size * 0.75, y: size * 0.40, r: size * 0.50, c: 'rgba(212, 175, 55, 0.10)' },
+        { x: size * 0.50, y: size * 0.75, r: size * 0.45, c: 'rgba(0, 229, 255, 0.10)' },
+      ];
+      glows.forEach(g => {
+        const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
+        rad.addColorStop(0, g.c);
+        rad.addColorStop(1, 'transparent');
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, size, size);
+      });
+
+      const r = 36;
+      const h = r * Math.sqrt(3);
+      ctx.strokeStyle = 'rgba(0, 229, 255, 0.08)';
+      ctx.lineWidth = 1.0;
+
+      for (let y = -h; y < size + h; y += h) {
+        let row = Math.round(y / h);
+        let xOffset = (row % 2 === 0) ? 0 : r * 1.5;
+        for (let x = -r * 3; x < size + r * 3; x += r * 3) {
+          const cx = x + xOffset;
+          const cy = y;
+          const rand = Math.sin(cx * 12.9898 + cy * 78.233);
+          if (rand > 0.88) {
+            ctx.fillStyle = 'rgba(212, 175, 55, 0.09)';
+            drawHex(ctx, cx, cy, r - 3);
+            ctx.fill();
+          } else if (rand < -0.85) {
+            ctx.fillStyle = 'rgba(0, 229, 255, 0.08)';
+            drawHex(ctx, cx, cy, r - 3);
+            ctx.fill();
+          }
+          drawHex(ctx, cx, cy, r);
+          ctx.stroke();
+        }
+      }
+
+      const lanes = [size * 0.18, size * 0.35, size * 0.50, size * 0.65, size * 0.82];
+      lanes.forEach((lx, idx) => {
+        const isCenter = idx === 2;
+        ctx.save();
+        ctx.strokeStyle = isCenter ? 'rgba(255, 215, 0, 0.85)' : 'rgba(0, 229, 255, 0.45)';
+        ctx.lineWidth = isCenter ? 3.0 : 1.5;
+        ctx.shadowColor = isCenter ? '#ffd700' : '#00e5ff';
+        ctx.shadowBlur = isCenter ? 12 : 6;
+        ctx.beginPath();
+        ctx.moveTo(lx, 0);
+        ctx.lineTo(lx, size);
+        ctx.stroke();
+
+        for (let py = 0; py < size; py += 128) {
+          ctx.fillStyle = isCenter ? '#ffffff' : '#00e5ff';
+          ctx.beginPath();
+          ctx.arc(lx, py, isCenter ? 2.5 : 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      return texture;
+    }
+
+    // ----------------------------------------------------
+    // 2. Texture: Cyber 2 (薄いグリーンベース ＆ 水色環境光)
+    // ----------------------------------------------------
+    function createCyber2TurfTexture() {
+      const size = 2048;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // 1. 深緑の電子回路基板ベース (#05180f)
       ctx.fillStyle = '#05180f';
       ctx.fillRect(0, 0, size, size);
 
-      // Saturated deep dark green ambient light pools (Subtle cyber luminescence)
+      // アンビエント発光（エメラルドグリーンの光の溜まり）
       const ambientGlows = [
         { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(13, 58, 37, 0.30)' },
         { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(16, 185, 129, 0.22)' },
@@ -445,10 +549,221 @@
         ctx.fillRect(0, 0, size, size);
       });
 
-      const gridDivs = 32; // 32x32 grid units = 64px per unit
+      const gridDivs = 32;
       const step = size / gridDivs;
 
-      // Helper function for seamless wrap-around rectangular drawing
+      function drawWrapRect(x, y, w, h, fillStyle, strokeStyle, lineWidth, shadowGlow) {
+        for (let ox of [-size, 0, size]) {
+          for (let oy of [-size, 0, size]) {
+            const rx = x + ox;
+            const ry = y + oy;
+            if (rx + w < 0 || rx > size || ry + h < 0 || ry > size) continue;
+
+            ctx.save();
+            if (shadowGlow) {
+              ctx.shadowColor = shadowGlow.color || '#0099ff';
+              ctx.shadowBlur = shadowGlow.blur || 4;
+            }
+            if (fillStyle) {
+              ctx.fillStyle = fillStyle;
+              ctx.fillRect(rx, ry, w, h);
+            }
+            if (strokeStyle && lineWidth) {
+              ctx.strokeStyle = strokeStyle;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeRect(rx, ry, w, h);
+            }
+            ctx.restore();
+          }
+        }
+      }
+
+      let randSeed = 2024;
+      function pseudoRand() {
+        randSeed = (randSeed * 9301 + 49297) % 233280;
+        return randSeed / 233280;
+      }
+
+      // 2. PCB回路パネル（ICチップ矩形）
+      const panelConfigs = [
+        { count: 30, minW: 2, maxW: 3, minH: 2, maxH: 4 },
+        { count: 50, minW: 1, maxW: 2, minH: 1, maxH: 2 },
+        { count: 25, minW: 2, maxW: 4, minH: 1, maxH: 3 },
+        { count: 40, minW: 1, maxW: 1, minH: 1, maxH: 1 }
+      ];
+
+      panelConfigs.forEach(cfg => {
+        for (let i = 0; i < cfg.count; i++) {
+          const gw = cfg.minW === cfg.maxW ? cfg.minW : cfg.minW + Math.floor(pseudoRand() * (cfg.maxW - cfg.minW + 1));
+          const gh = cfg.minH === cfg.maxH ? cfg.minH : cfg.minH + Math.floor(pseudoRand() * (cfg.maxH - cfg.minH + 1));
+          const gx = Math.floor(pseudoRand() * gridDivs);
+          const gy = Math.floor(pseudoRand() * gridDivs);
+
+          const px = gx * step;
+          const py = gy * step;
+          const pw = gw * step;
+          const ph = gh * step;
+
+          const styleRoll = pseudoRand();
+          if (styleRoll < 0.45) {
+            drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
+              'rgba(5, 24, 15, 0.22)',
+              'rgba(63, 237, 151, 0.40)', 1.0, { color: '#10b981', blur: 4 });
+          } else if (styleRoll < 0.75) {
+            drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
+              'rgba(5, 24, 15, 0.28)', 'rgba(63, 237, 151, 0.55)', 1.2, { color: '#3eed97', blur: 5 });
+            if (pw > step * 1.5 && ph > step * 1.5) {
+              drawWrapRect(px + 6, py + 6, pw - 12, ph - 12,
+                'rgba(8, 38, 25, 0.18)', 'rgba(16, 185, 129, 0.35)', 0.8);
+            }
+          } else {
+            drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
+              'rgba(13, 58, 37, 0.20)', 'rgba(63, 237, 151, 0.70)', 1.4, { color: '#3eed97', blur: 6 });
+          }
+        }
+      });
+
+      // 3. 四角いワイヤーフレームグリッド（マイナー線）
+      ctx.strokeStyle = 'rgba(63, 237, 151, 0.04)';
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i <= gridDivs; i++) {
+        const p = i * step;
+        ctx.beginPath();
+        ctx.moveTo(p, 0); ctx.lineTo(p, size);
+        ctx.moveTo(0, p); ctx.lineTo(size, p);
+        ctx.stroke();
+      }
+
+      // メジャーグリッド線（四角いワイヤーフレーム強調線）
+      ctx.save();
+      ctx.strokeStyle = 'rgba(63, 237, 151, 0.22)';
+      ctx.lineWidth = 1.2;
+      ctx.shadowColor = '#10b981';
+      ctx.shadowBlur = 4;
+      for (let i = 0; i <= gridDivs; i += 4) {
+        const p = i * step;
+        ctx.beginPath();
+        ctx.moveTo(p, 0); ctx.lineTo(p, size);
+        ctx.moveTo(0, p); ctx.lineTo(size, p);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 4. PCB回路トレース ＆ はんだ付けの端子
+      ctx.save();
+      for (let t = 0; t < 70; t++) {
+        const gx = Math.floor(pseudoRand() * gridDivs);
+        const gy = Math.floor(pseudoRand() * gridDivs);
+        const len1 = Math.floor(pseudoRand() * 3 + 1) * step;
+        const len2 = Math.floor(pseudoRand() * 2 + 1) * step;
+        const dirX = pseudoRand() > 0.5 ? 1 : -1;
+        const dirY = pseudoRand() > 0.5 ? 1 : -1;
+
+        const isGlowTrace = pseudoRand() > 0.45;
+        ctx.strokeStyle = isGlowTrace ? 'rgba(63, 237, 151, 0.75)' : 'rgba(16, 185, 129, 0.45)';
+        ctx.lineWidth = isGlowTrace ? 1.5 : 1.0;
+        ctx.shadowColor = isGlowTrace ? '#3eed97' : '#10b981';
+        ctx.shadowBlur = isGlowTrace ? 6 : 3;
+
+        for (let ox of [-size, 0, size]) {
+          for (let oy of [-size, 0, size]) {
+            const startX = gx * step + ox;
+            const startY = gy * step + oy;
+            const midX = startX + len1 * dirX;
+            const endY = startY + len2 * dirY;
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(midX, startY);
+            ctx.lineTo(midX, endY);
+            ctx.stroke();
+
+            // はんだ付け端子（中心のシルバー／白はんだ球）
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(midX, endY, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // はんだ端子外周リング（銅箔ランド）
+            ctx.strokeStyle = 'rgba(63, 237, 151, 0.85)';
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.arc(midX, endY, 4.0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 始点ノード
+            ctx.fillStyle = 'rgba(63, 237, 151, 0.80)';
+            ctx.beginPath();
+            ctx.arc(startX, startY, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      ctx.restore();
+
+      // グリッド交差点ノードドット
+      ctx.fillStyle = 'rgba(167, 243, 208, 0.70)';
+      for (let i = 0; i <= gridDivs; i += 2) {
+        for (let j = 0; j <= gridDivs; j += 2) {
+          if (pseudoRand() > 0.60) {
+            ctx.beginPath();
+            ctx.arc(i * step, j * step, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // 中央のコース軸ライン（進行方向を示すシアン＆エメラルドライン）
+      const centerLanes = [size * 0.35, size * 0.50, size * 0.65];
+      centerLanes.forEach((lx, idx) => {
+        const isCenter = idx === 1;
+        ctx.save();
+        ctx.strokeStyle = isCenter ? 'rgba(52, 211, 153, 0.90)' : 'rgba(56, 189, 248, 0.50)';
+        ctx.lineWidth = isCenter ? 2.5 : 1.2;
+        ctx.shadowColor = isCenter ? '#34d399' : '#38bdf8';
+        ctx.shadowBlur = isCenter ? 10 : 5;
+        ctx.beginPath();
+        ctx.moveTo(lx, 0);
+        ctx.lineTo(lx, size);
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      return texture;
+    }
+
+    function createCircuitTexture() {
+      const size = 2048;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Deep Midnight Dark Green Base (#05180f)
+      ctx.fillStyle = '#05180f';
+      ctx.fillRect(0, 0, size, size);
+
+      const ambientGlows = [
+        { x: size * 0.20, y: size * 0.25, r: size * 0.45, c: 'rgba(13, 58, 37, 0.30)' },
+        { x: size * 0.80, y: size * 0.30, r: size * 0.50, c: 'rgba(16, 185, 129, 0.22)' },
+        { x: size * 0.30, y: size * 0.80, r: size * 0.45, c: 'rgba(8, 38, 25, 0.28)' },
+        { x: size * 0.75, y: size * 0.75, r: size * 0.40, c: 'rgba(63, 237, 151, 0.20)' },
+        { x: size * 0.50, y: size * 0.50, r: size * 0.45, c: 'rgba(16, 185, 129, 0.18)' },
+      ];
+      ambientGlows.forEach(g => {
+        const rad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
+        rad.addColorStop(0, g.c);
+        rad.addColorStop(1, 'rgba(5, 24, 15, 0)');
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, size, size);
+      });
+
+      const gridDivs = 32;
+      const step = size / gridDivs;
+
       function drawWrapRect(x, y, w, h, fillStyle, strokeStyle, lineWidth, shadowGlow) {
         for (let ox of [-size, 0, size]) {
           for (let oy of [-size, 0, size]) {
@@ -481,7 +796,6 @@
         return randSeed / 233280;
       }
 
-      // 2. Subtle Dark IC Micro-Modules / Tech Panels (Refined dark plates with subtle cyan borders)
       const panelConfigs = [
         { count: 30, minW: 2, maxW: 3, minH: 2, maxH: 4 },
         { count: 50, minW: 1, maxW: 2, minH: 1, maxH: 2 },
@@ -503,12 +817,10 @@
 
           const styleRoll = pseudoRand();
           if (styleRoll < 0.45) {
-            // Style 1: Deep translucent emerald plate with subtle green trace
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
               'rgba(5, 24, 15, 0.22)',
               'rgba(63, 237, 151, 0.40)', 1.0, { color: '#10b981', blur: 4 });
           } else if (styleRoll < 0.75) {
-            // Style 2: Micro-grid IC chip with fine pins
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
               'rgba(5, 24, 15, 0.28)', 'rgba(63, 237, 151, 0.55)', 1.2, { color: '#3eed97', blur: 5 });
             if (pw > step * 1.5 && ph > step * 1.5) {
@@ -516,31 +828,24 @@
                 'rgba(8, 38, 25, 0.18)', 'rgba(16, 185, 129, 0.35)', 0.8);
             }
           } else {
-            // Style 3: Accent Cyber Node Box
             drawWrapRect(px + 2, py + 2, pw - 4, ph - 4,
               'rgba(13, 58, 37, 0.20)', 'rgba(63, 237, 151, 0.70)', 1.4, { color: '#3eed97', blur: 6 });
           }
         }
       });
 
-      // 3. Delicate Background Grid Lines (Subtle & Elegant, matching specified green palette)
-      // Minor fine grid lines
+      // Minor grid lines
       ctx.strokeStyle = 'rgba(63, 237, 151, 0.035)';
       ctx.lineWidth = 0.8;
       for (let i = 0; i <= gridDivs; i++) {
         const p = i * step;
         ctx.beginPath();
-        ctx.moveTo(p, 0);
-        ctx.lineTo(p, size);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(0, p);
-        ctx.lineTo(size, p);
+        ctx.moveTo(p, 0); ctx.lineTo(p, size);
+        ctx.moveTo(0, p); ctx.lineTo(size, p);
         ctx.stroke();
       }
 
-      // Major grid lines (Thin neon green accent with soft glow)
+      // Major grid lines
       ctx.save();
       ctx.strokeStyle = 'rgba(63, 237, 151, 0.20)';
       ctx.lineWidth = 1.2;
@@ -549,18 +854,13 @@
       for (let i = 0; i <= gridDivs; i += 4) {
         const p = i * step;
         ctx.beginPath();
-        ctx.moveTo(p, 0);
-        ctx.lineTo(p, size);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(0, p);
-        ctx.lineTo(size, p);
+        ctx.moveTo(p, 0); ctx.lineTo(p, size);
+        ctx.moveTo(0, p); ctx.lineTo(size, p);
         ctx.stroke();
       }
       ctx.restore();
 
-      // 4. Intricate PCB Circuit Traces & Data Conduits (繊細な回路パターン)
+      // PCB Circuit Traces & Solder Pads
       ctx.save();
       for (let t = 0; t < 70; t++) {
         const gx = Math.floor(pseudoRand() * gridDivs);
@@ -589,7 +889,7 @@
             ctx.lineTo(midX, endY);
             ctx.stroke();
 
-            // Terminal solder pad (White core + Green glowing aura)
+            // Terminal solder pad
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(midX, endY, 2.2, 0, Math.PI * 2);
@@ -612,7 +912,7 @@
       }
       ctx.restore();
 
-      // 5. Grid intersection node dots & Data junctions
+      // Intersection node dots
       ctx.fillStyle = 'rgba(167, 243, 208, 0.70)';
       for (let i = 0; i <= gridDivs; i += 2) {
         for (let j = 0; j <= gridDivs; j += 2) {
@@ -627,52 +927,326 @@
       const texture = new THREE.CanvasTexture(canvas);
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      if (renderer.capabilities && renderer.capabilities.getMaxAnisotropy) {
-        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-      }
       return texture;
     }
 
-    const cyberTexture = createCyberTexture();
+    const turfTexture1 = createCyber1TurfTexture();
+    const turfTexture2 = createCyber2TurfTexture();
+    const circuitTexture = createCircuitTexture();
 
-    // Floor and Ceiling Planes (Symmetrical perspective expanding from center horizon)
-    const planeGeo = new THREE.PlaneGeometry(8000, 8000);
+    // ----------------------------------------------------
+    // 4. Texture: Real Turf (添付画像から再現したリアル競馬場コース)
+    // ----------------------------------------------------
+    const textureLoader = new THREE.TextureLoader();
+    const realTurfTexture = textureLoader.load('asset/real-turf-seamless.jpg');
+    realTurfTexture.wrapS = THREE.RepeatWrapping;
+    realTurfTexture.wrapT = THREE.RepeatWrapping;
+
+    // ----------------------------------------------------
+    // Floor & Ceiling Planes (Circuitでは上下対称グリッド)
+    // ----------------------------------------------------
+    const planeGeo = new THREE.PlaneGeometry(9000, 9000);
     const planeMat = new THREE.MeshBasicMaterial({
-      map: cyberTexture,
+      map: turfTexture1,
       transparent: true,
       opacity: 0.95,
-      side: THREE.DoubleSide,
-      blending: THREE.NormalBlending,
-      color: 0xffffff,
-      depthWrite: true
+      side: THREE.DoubleSide
     });
 
-    // Floor plane (Bottom half)
     const floor = new THREE.Mesh(planeGeo, planeMat);
     floor.position.set(0, -95, -1100);
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Ceiling plane (Top half)
-    const ceiling = new THREE.Mesh(planeGeo, planeMat);
-    ceiling.position.set(0, 95, -1100);
-    ceiling.rotation.x = Math.PI / 2;
-    scene.add(ceiling);
+    // ----------------------------------------------------
+    // Cyber 2 スクショ再現: 左右の薄い茶色ダート ＆ 白い立体レーンフェンス
+    // ----------------------------------------------------
+    function createBrownDirtTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 512);
+      grad.addColorStop(0.0, '#6d4c25');
+      grad.addColorStop(0.5, '#8c6b45');
+      grad.addColorStop(1.0, '#6d4c25');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
 
-    // Atmospheric Dark Horizon Glow (Soft, deep green fade)
-    const horizonGlowGeo = new THREE.PlaneGeometry(10000, 24);
-    const horizonGlowMat = new THREE.MeshBasicMaterial({
-      color: 0x10b981,
+      ctx.strokeStyle = 'rgba(255, 235, 195, 0.12)';
+      ctx.lineWidth = 1.0;
+      for (let i = 0; i <= 512; i += 64) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 8);
+      return tex;
+    }
+    const brownDirtTex = createBrownDirtTexture();
+
+    const cyber2TrackGroup = new THREE.Group();
+    cyber2TrackGroup.visible = false;
+    scene.add(cyber2TrackGroup);
+
+    // コース幅（カードスロットのすぐ外側: X = ±460）
+    const trackHalfW = 460;
+    const dirtPlaneW = 4000;
+    const trackLength = 5000;
+
+    const dirtGeo = new THREE.PlaneGeometry(dirtPlaneW, trackLength);
+    const dirtMat = new THREE.MeshBasicMaterial({
+      map: brownDirtTex,
       transparent: true,
-      opacity: 0.35,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.96,
       side: THREE.DoubleSide
     });
+
+    // 左外側プレーン（青く塗られた領域）
+    const leftDirt = new THREE.Mesh(dirtGeo, dirtMat);
+    leftDirt.position.set(-trackHalfW - dirtPlaneW * 0.5, -94.3, -1000);
+    leftDirt.rotation.x = -Math.PI / 2;
+    cyber2TrackGroup.add(leftDirt);
+
+    // 右外側プレーン（青く塗られた領域）
+    const rightDirt = new THREE.Mesh(dirtGeo, dirtMat);
+    rightDirt.position.set(trackHalfW + dirtPlaneW * 0.5, -94.3, -1000);
+    rightDirt.rotation.x = -Math.PI / 2;
+    cyber2TrackGroup.add(rightDirt);
+
+    // 白い立体レーン（白く塗られた境界線）
+    const railRadius = 3.2;
+    const railGeo = new THREE.CylinderGeometry(railRadius, railRadius, trackLength, 12);
+    const railMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+    const leftRail = new THREE.Mesh(railGeo, railMat);
+    leftRail.position.set(-trackHalfW, -89.0, -1000);
+    leftRail.rotation.x = Math.PI / 2;
+    cyber2TrackGroup.add(leftRail);
+
+    const rightRail = new THREE.Mesh(railGeo, railMat);
+    rightRail.position.set(trackHalfW, -89.0, -1000);
+    rightRail.rotation.x = Math.PI / 2;
+    cyber2TrackGroup.add(rightRail);
+
+    // 影ライン
+    const shadowLineGeo = new THREE.PlaneGeometry(14, trackLength);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.35,
+      side: THREE.DoubleSide
+    });
+    const leftShadow = new THREE.Mesh(shadowLineGeo, shadowMat);
+    leftShadow.position.set(-trackHalfW + 5, -94.0, -1000);
+    leftShadow.rotation.x = -Math.PI / 2;
+    cyber2TrackGroup.add(leftShadow);
+
+    const rightShadow = new THREE.Mesh(shadowLineGeo, shadowMat);
+    rightShadow.position.set(trackHalfW + 5, -94.0, -1000);
+    rightShadow.rotation.x = -Math.PI / 2;
+    cyber2TrackGroup.add(rightShadow);
+
+    // 支柱ポスト
+    const postGeo = new THREE.CylinderGeometry(2.0, 2.0, 7.0, 8);
+    for (let pz = 300; pz >= -2300; pz -= 140) {
+      const pL = new THREE.Mesh(postGeo, railMat);
+      pL.position.set(-trackHalfW, -92.0, pz);
+      cyber2TrackGroup.add(pL);
+
+      const pR = new THREE.Mesh(postGeo, railMat);
+      pR.position.set(trackHalfW, -92.0, pz);
+      cyber2TrackGroup.add(pR);
+    }
+
+    // Ceiling plane (Circuit選択時のみ上下対称に表示)
+    const ceilingMat = new THREE.MeshBasicMaterial({
+      map: circuitTexture,
+      transparent: true,
+      opacity: 0.95,
+      side: THREE.DoubleSide
+    });
+    const ceiling = new THREE.Mesh(planeGeo, ceilingMat);
+    ceiling.position.set(0, 95, -1100);
+    ceiling.rotation.x = Math.PI / 2;
+    ceiling.visible = false;
+    scene.add(ceiling);
+
+    // ----------------------------------------------------
+    // 上空の星辰（Cyber / Cyber 2用）
+    // ----------------------------------------------------
+    const starCount = 360;
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      starPos[i * 3]     = (Math.random() - 0.5) * 5000;
+      starPos[i * 3 + 1] = Math.random() * 850 + 90;
+      starPos[i * 3 + 2] = -Math.random() * 3200 + 200;
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({
+      size: 2.5,
+      color: 0x90e0ef,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+    const stars = new THREE.Points(starGeo, starMat);
+    scene.add(stars);
+
+    // ----------------------------------------------------
+    // 地平線回転リング（Cyber / Cyber 2用）
+    // ----------------------------------------------------
+    const gateGroup = new THREE.Group();
+    gateGroup.position.set(0, 35, -2000);
+
+    const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xd4af37, side: THREE.DoubleSide, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+    const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x00e5ff, side: THREE.DoubleSide, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending });
+    const ringMat3 = new THREE.MeshBasicMaterial({ color: 0xd4af37, side: THREE.DoubleSide, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+
+    const ring1 = new THREE.Mesh(new THREE.RingGeometry(420, 426, 64), ringMat1);
+    const ring2 = new THREE.Mesh(new THREE.RingGeometry(620, 624, 64), ringMat2);
+    const ring3 = new THREE.Mesh(new THREE.RingGeometry(850, 853, 64), ringMat3);
+    gateGroup.add(ring1, ring2, ring3);
+    scene.add(gateGroup);
+
+    // 地平線グラデーションオーラ（奥の隙間を満たすスカイブルー発光体）
+    function createHorizonAuraTexture() {
+      const w = 512;
+      const h = 512;
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0)');
+      grad.addColorStop(0.32, 'rgba(56, 189, 248, 0.40)');
+      grad.addColorStop(0.50, 'rgba(186, 230, 253, 0.95)'); // 中心は明るいスカイホワイト
+      grad.addColorStop(0.68, 'rgba(56, 189, 248, 0.40)');
+      grad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+      return new THREE.CanvasTexture(c);
+    }
+
+    const horizonAuraGeo = new THREE.PlaneGeometry(10000, 380);
+    const horizonAuraMat = new THREE.MeshBasicMaterial({
+      map: createHorizonAuraTexture(),
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const horizonAura = new THREE.Mesh(horizonAuraGeo, horizonAuraMat);
+    horizonAura.position.set(0, 0, -1790);
+    scene.add(horizonAura);
+
+    // 水平線シャープグローライン
+    const horizonGlowGeo = new THREE.PlaneGeometry(10000, 28);
+    const horizonGlowMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.70,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
     const horizonGlow = new THREE.Mesh(horizonGlowGeo, horizonGlowMat);
-    horizonGlow.position.set(0, 0, -1800);
+    horizonGlow.position.set(0, 0, -1780);
     scene.add(horizonGlow);
 
-    // Soft glowing particle sprite texture
+    // ----------------------------------------------------
+    // パーティクル1: Cyber用「光速スピードストリーム」
+    // ----------------------------------------------------
+    const streakCount = 180;
+    const streakPositions = new Float32Array(streakCount * 6);
+    const streakSpeeds = new Float32Array(streakCount);
+
+    for (let i = 0; i < streakCount; i++) {
+      const sx = (Math.random() - 0.5) * 3600;
+      const sy = (Math.random() - 0.5) * 220;
+      const sz = -Math.random() * 2200;
+      const length = 45 + Math.random() * 95;
+
+      streakPositions[i * 6]     = sx;
+      streakPositions[i * 6 + 1] = sy;
+      streakPositions[i * 6 + 2] = sz;
+
+      streakPositions[i * 6 + 3] = sx;
+      streakPositions[i * 6 + 4] = sy;
+      streakPositions[i * 6 + 5] = sz - length;
+
+      streakSpeeds[i] = 450 + Math.random() * 600;
+    }
+
+    const streakGeo = new THREE.BufferGeometry();
+    streakGeo.setAttribute('position', new THREE.BufferAttribute(streakPositions, 3));
+    const streakMat = new THREE.LineBasicMaterial({
+      color: 0x6ee7b7,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+    const speedStreaks = new THREE.LineSegments(streakGeo, streakMat);
+    scene.add(speedStreaks);
+
+    // ----------------------------------------------------
+    // パーティクル2: Cyber 2用「大粒・少数の水色光子オーブ」
+    // ----------------------------------------------------
+    function createOrbTexture() {
+      const pSize = 128;
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = pSize;
+      pCanvas.height = pSize;
+      const pCtx = pCanvas.getContext('2d');
+
+      const rad = pCtx.createRadialGradient(pSize / 2, pSize / 2, 0, pSize / 2, pSize / 2, pSize / 2);
+      rad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      rad.addColorStop(0.2, 'rgba(186, 230, 253, 0.9)');
+      rad.addColorStop(0.5, 'rgba(56, 189, 248, 0.45)');
+      rad.addColorStop(0.8, 'rgba(52, 211, 153, 0.15)');
+      rad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      pCtx.fillStyle = rad;
+      pCtx.fillRect(0, 0, pSize, pSize);
+
+      return new THREE.CanvasTexture(pCanvas);
+    }
+
+    const orbTexture = createOrbTexture();
+    const orbCount = 42;
+    const orbGeo = new THREE.BufferGeometry();
+    const orbPositions = new Float32Array(orbCount * 3);
+    const orbSpeeds = new Float32Array(orbCount);
+
+    for (let i = 0; i < orbCount; i++) {
+      orbPositions[i * 3]     = (Math.random() - 0.5) * 3500;
+      orbPositions[i * 3 + 1] = (Math.random() - 0.5) * 230 + 10;
+      orbPositions[i * 3 + 2] = -Math.random() * 2200;
+      orbSpeeds[i] = 160 + Math.random() * 240;
+    }
+    orbGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
+
+    const orbMat = new THREE.PointsMaterial({
+      size: 24,
+      map: orbTexture,
+      transparent: true,
+      opacity: 0.88,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true
+    });
+    const cyber2Orbs = new THREE.Points(orbGeo, orbMat);
+    scene.add(cyber2Orbs);
+
+    // ----------------------------------------------------
+    // パーティクル3: Circuit用「元々のサイバーダスト微粒子（320個）」
+    // ----------------------------------------------------
     function createSparkleTexture() {
       const pSize = 64;
       const pCanvas = document.createElement('canvas');
@@ -692,20 +1266,17 @@
     }
 
     const sparkleTexture = createSparkleTexture();
+    const sparkleCount = 320;
+    const sparkleGeo = new THREE.BufferGeometry();
+    const sPositions = new Float32Array(sparkleCount * 3);
+    const sColors = new Float32Array(sparkleCount * 3);
+    const sparkleSpeeds = new Float32Array(sparkleCount);
 
-    // Floating 3D Sparkle / Cyber Dust Particles (Gentle ambient data motes)
-    const particleCount = 320;
-    const particlesGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const speeds = new Float32Array(particleCount);
-
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 4000; // X
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 190; // Y: floating in the corridor
-      positions[i * 3 + 2] = -Math.random() * 2000 + 200; // Z
-
-      speeds[i] = 25 + Math.random() * 55;
+    for (let i = 0; i < sparkleCount; i++) {
+      sPositions[i * 3]     = (Math.random() - 0.5) * 4000;
+      sPositions[i * 3 + 1] = (Math.random() - 0.5) * 190;
+      sPositions[i * 3 + 2] = -Math.random() * 2000 + 200;
+      sparkleSpeeds[i] = 25 + Math.random() * 55;
 
       const pColor = new THREE.Color();
       if (Math.random() > 0.4) {
@@ -713,15 +1284,15 @@
       } else {
         pColor.setRGB(0.95, 0.98, 1.0);
       }
-      colors[i * 3] = pColor.r;
-      colors[i * 3 + 1] = pColor.g;
-      colors[i * 3 + 2] = pColor.b;
+      sColors[i * 3]     = pColor.r;
+      sColors[i * 3 + 1] = pColor.g;
+      sColors[i * 3 + 2] = pColor.b;
     }
 
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particlesGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    sparkleGeo.setAttribute('position', new THREE.BufferAttribute(sPositions, 3));
+    sparkleGeo.setAttribute('color', new THREE.BufferAttribute(sColors, 3));
 
-    const particlesMat = new THREE.PointsMaterial({
+    const sparkleMat = new THREE.PointsMaterial({
       size: 11,
       map: sparkleTexture,
       vertexColors: true,
@@ -731,30 +1302,211 @@
       depthWrite: false,
       sizeAttenuation: true
     });
+    const sparkleParticles = new THREE.Points(sparkleGeo, sparkleMat);
+    scene.add(sparkleParticles);
 
-    const particles = new THREE.Points(particlesGeo, particlesMat);
-    scene.add(particles);
+    // ----------------------------------------------------
+    // パーティクル4: Turf用「舞い散るリアル芝生片＆陽光粒子」
+    // ----------------------------------------------------
+    const grassCount = 65;
+    const grassGeo = new THREE.BufferGeometry();
+    const gPositions = new Float32Array(grassCount * 3);
+    const gColors = new Float32Array(grassCount * 3);
+    const gSpeeds = new Float32Array(grassCount);
 
-    // Responsive Desktop & Mobile Layout Handler
+    for (let i = 0; i < grassCount; i++) {
+      gPositions[i * 3]     = (Math.random() - 0.5) * 3200;
+      gPositions[i * 3 + 1] = (Math.random() - 0.5) * 160 - 20; // 芝生のすぐ上
+      gPositions[i * 3 + 2] = -Math.random() * 2000;
+      gSpeeds[i] = 180 + Math.random() * 240;
+
+      const c = new THREE.Color();
+      if (Math.random() > 0.4) {
+        c.setRGB(0.25 + Math.random() * 0.3, 0.85 + Math.random() * 0.15, 0.35); // 鮮やかな芝の緑
+      } else {
+        c.setRGB(0.95, 0.90, 0.50); // 陽光のゴールド
+      }
+      gColors[i * 3]     = c.r;
+      gColors[i * 3 + 1] = c.g;
+      gColors[i * 3 + 2] = c.b;
+    }
+    grassGeo.setAttribute('position', new THREE.BufferAttribute(gPositions, 3));
+    grassGeo.setAttribute('color', new THREE.BufferAttribute(gColors, 3));
+
+    const grassMat = new THREE.PointsMaterial({
+      size: 14,
+      map: orbTexture,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true
+    });
+    const turfGrassParticles = new THREE.Points(grassGeo, grassMat);
+    turfGrassParticles.visible = false;
+    scene.add(turfGrassParticles);
+
+    // ----------------------------------------------------
+    // テーマ切り替えシステム (Cyber vs Cyber 2 vs Circuit)
+    // ----------------------------------------------------
+    let current3DTheme = 'classic';
+    try {
+      const savedTheme = localStorage.getItem('foth_field_theme');
+      if (savedTheme === 'cyber2' || savedTheme === 'circuit') current3DTheme = savedTheme;
+    } catch(e) {}
+
+    function apply3DTheme(themeName) {
+      if (themeName !== 'classic' && themeName !== 'cyber2' && themeName !== 'circuit' && themeName !== 'turf' && themeName !== 'track') return;
+      current3DTheme = themeName;
+      if (typeof cyber2TrackGroup !== 'undefined') {
+        cyber2TrackGroup.visible = (themeName === 'cyber2');
+      }
+
+
+      if (themeName === 'circuit') {
+        // --- 1. Circuit: 奥はスカイブルーの地平線 ＆ 上下対称の緑色PCB基板 ---
+        scene.background.setHex(0x041b29); // 澄んだ暗いスカイブルー
+        scene.fog.color.setHex(0x06283c); // 奥へ向かって溶け込むスカイブルーフォグ
+        scene.fog.near = 220;
+        scene.fog.far = 1750;
+
+        floor.material.map = circuitTexture;
+        floor.material.needsUpdate = true;
+        ceiling.visible = true; // 上下の四角いワイヤーフレームグリッド
+
+        gateGroup.visible = false;
+        stars.visible = false;
+
+        // 一番奥をスカイブルーに発光
+        horizonAura.visible = true;
+        horizonAura.material.color.setHex(0x38bdf8);
+        horizonAura.material.opacity = 0.90;
+
+        horizonGlow.material.color.setHex(0x7dd3fc);
+        horizonGlow.material.opacity = 0.85;
+
+        speedStreaks.visible = false;
+        cyber2Orbs.visible = false;
+        sparkleParticles.visible = true;
+        turfGrassParticles.visible = false;
+      } else if (themeName === 'cyber2') {
+        // --- 2. Cyber 2: 深緑PCB回路 ＆ 白色立体レーン ＆ 左右薄茶ダート ＆ 上部は薄い青白の空 ---
+        scene.background.setHex(0xb5daf0); // 上部は爽やかな「薄い青白」
+        scene.fog.color.setHex(0xc5e7fa);      // 地平線へ向かって溶け込む淡い青白フォグ
+        scene.fog.near = 280;
+        scene.fog.far = 2300;
+
+        floor.material.map = turfTexture2;
+        floor.material.needsUpdate = true;
+        ceiling.visible = false;
+
+        gateGroup.visible = true;
+        stars.visible = true;
+        stars.material.color.setHex(0x0284c7); // 薄い青白の空に映えるシアンブルーの星
+
+        ring1.material.color.setHex(0x0ea5e9);
+        ring2.material.color.setHex(0x10b981);
+        ring3.material.color.setHex(0x0ea5e9);
+
+        // 地平線の純白〜淡い水色発光
+        horizonAura.visible = true;
+        horizonAura.material.color.setHex(0xffffff);
+        horizonAura.material.opacity = 0.90;
+        horizonGlow.material.color.setHex(0xbae6fd);
+        horizonGlow.material.opacity = 0.85;
+
+        speedStreaks.visible = false;
+        cyber2Orbs.visible = false;
+        sparkleParticles.visible = true; // サイバー微粒子
+        turfGrassParticles.visible = false;
+      } else if (themeName === 'turf') {
+        // --- 4. Turf: 添付画像を再現したリアル競馬場コース ＆ 快晴の青空 ---
+        scene.background.setHex(0x2980b9); // 澄み渡る昼間の青空
+        scene.fog.color.setHex(0x7ec8e3); // 爽やかな大気フォグ
+        scene.fog.near = 320;
+        scene.fog.far = 2400;
+
+        floor.material.map = realTurfTexture;
+        floor.material.needsUpdate = true;
+        ceiling.visible = false;
+
+        gateGroup.visible = false;
+        stars.visible = false;
+
+        // 地平線の柔らかな陽光
+        horizonAura.visible = true;
+        horizonAura.material.color.setHex(0xfef08a);
+        horizonAura.material.opacity = 0.55;
+
+        horizonGlow.material.color.setHex(0xffffff);
+        horizonGlow.material.opacity = 0.65;
+
+        speedStreaks.visible = false;
+        cyber2Orbs.visible = false;
+        sparkleParticles.visible = false;
+        turfGrassParticles.visible = true;
+      } else {
+        // --- 3. Cyber (Classic): 濃紺×シアン×ゴールド ＆ スピード光条 ---
+        scene.background.setHex(0x02050e);
+        scene.fog.color.setHex(0x02050e);
+        scene.fog.near = 250;
+        scene.fog.far = 2200;
+
+        floor.material.map = turfTexture1;
+        floor.material.needsUpdate = true;
+        ceiling.visible = false;
+
+        gateGroup.visible = true;
+        stars.visible = true;
+        stars.material.color.setHex(0x90e0ef);
+
+        ring1.material.color.setHex(0xd4af37);
+        ring2.material.color.setHex(0x00e5ff);
+        ring3.material.color.setHex(0xd4af37);
+
+        horizonAura.visible = true;
+        horizonAura.material.color.setHex(0x00e5ff);
+        horizonAura.material.opacity = 0.35;
+        horizonGlow.material.color.setHex(0x00e5ff);
+        horizonGlow.material.opacity = 0.50;
+
+        speedStreaks.visible = true;
+        cyber2Orbs.visible = false;
+        sparkleParticles.visible = false;
+        turfGrassParticles.visible = false;
+      }
+    }
+
+    apply3DTheme(current3DTheme);
+
+    window.addEventListener('foth_theme_changed', (e) => {
+      if (e.detail && e.detail.theme) {
+        apply3DTheme(e.detail.theme);
+      }
+    });
+
+    // Responsive Layout Handler
     function updateLayout() {
       const width = window.innerWidth;
       const height = window.innerHeight;
       const aspect = width / height;
 
-      // Desktop / Landscape: keep moderate FOV (46°) to prevent extreme side stretching
-      // Mobile / Portrait: 62° for good vertical depth
       if (aspect >= 1.0) {
         camera.fov = 46;
       } else {
-        camera.fov = 62;
+        camera.fov = 60;
       }
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
 
-      // Adapt texture repeat across X based on aspect ratio so grid cells stay square and dense on wide desktop screens
       const baseRepeatY = 4;
       const repeatX = Math.max(4, Math.round(baseRepeatY * aspect));
-      cyberTexture.repeat.set(repeatX, baseRepeatY);
+      turfTexture1.repeat.set(repeatX, baseRepeatY);
+      turfTexture2.repeat.set(repeatX, baseRepeatY);
+      circuitTexture.repeat.set(repeatX, baseRepeatY);
+      // Real turf repeat: 画面中央に鮮やかな緑のゼブラ芝生が広がる比率
+      realTurfTexture.repeat.set(Math.max(1.8, Math.round(1.8 * aspect)), 3.2);
 
       renderer.setSize(width, height);
       composer.setSize(width, height);
@@ -763,27 +1515,88 @@
 
     // Animation Loop
     const clock = new THREE.Clock();
-    const speed = 0.4;
+    const flightSpeed = 0.55;
 
     function animate() {
       const delta = Math.min(clock.getDelta(), 0.1);
       const elapsedTime = clock.getElapsedTime();
 
-      // Forward flight effect
-      cyberTexture.offset.y -= delta * speed * 0.045;
+      if (current3DTheme === 'turf') {
+        // Turf: リアル芝生テクスチャのスクロール ＆ 芝生粒子の舞い散り
+        realTurfTexture.offset.y -= delta * flightSpeed * 0.16;
 
-      // Particle forward drift and recycling
-      const pPositions = particles.geometry.attributes.position.array;
-      for (let i = 0; i < particleCount; i++) {
-        pPositions[i * 3 + 2] += delta * speeds[i];
-
-        if (pPositions[i * 3 + 2] > 300) {
-          pPositions[i * 3 + 2] = -1900 - Math.random() * 200;
-          pPositions[i * 3] = (Math.random() - 0.5) * 4000;
-          pPositions[i * 3 + 1] = (Math.random() - 0.5) * 190;
+        const gPos = turfGrassParticles.geometry.attributes.position.array;
+        for (let i = 0; i < grassCount; i++) {
+          gPos[i * 3 + 2] += delta * gSpeeds[i];
+          if (gPos[i * 3 + 2] > 350) {
+            gPos[i * 3 + 2] = -2000 - Math.random() * 200;
+            gPos[i * 3]     = (Math.random() - 0.5) * 3200;
+            gPos[i * 3 + 1] = (Math.random() - 0.5) * 160 - 20;
+          }
         }
+        turfGrassParticles.geometry.attributes.position.needsUpdate = true;
+      } else if (current3DTheme === 'circuit') {
+        // Circuit: 前進スクロール ＆ 320個のサイバー微粒子の循環
+        circuitTexture.offset.y -= delta * flightSpeed * 0.08;
+
+        const pPositions = sparkleParticles.geometry.attributes.position.array;
+        for (let i = 0; i < sparkleCount; i++) {
+          pPositions[i * 3 + 2] += delta * sparkleSpeeds[i];
+          if (pPositions[i * 3 + 2] > 300) {
+            pPositions[i * 3 + 2] = -1900 - Math.random() * 200;
+            pPositions[i * 3]     = (Math.random() - 0.5) * 4000;
+            pPositions[i * 3 + 1] = (Math.random() - 0.5) * 190;
+          }
+        }
+        sparkleParticles.geometry.attributes.position.needsUpdate = true;
+      } else if (current3DTheme === 'cyber2') {
+        // Cyber 2: 深緑PCB ＆ 薄茶ダート前進 ＆ 320個のサイバー微粒子の循環
+        turfTexture2.offset.y -= delta * flightSpeed * 0.10;
+        brownDirtTex.offset.y -= delta * flightSpeed * 0.10;
+
+        // サイバー微粒子の前進循環
+        const pPositions = sparkleParticles.geometry.attributes.position.array;
+        for (let i = 0; i < sparkleCount; i++) {
+          pPositions[i * 3 + 2] += delta * sparkleSpeeds[i];
+          if (pPositions[i * 3 + 2] > 300) {
+            pPositions[i * 3 + 2] = -1900 - Math.random() * 200;
+            pPositions[i * 3]     = (Math.random() - 0.5) * 4000;
+            pPositions[i * 3 + 1] = (Math.random() - 0.5) * 190;
+          }
+        }
+        sparkleParticles.geometry.attributes.position.needsUpdate = true;
+
+        ring1.rotation.z += delta * 0.08;
+        ring2.rotation.z -= delta * 0.05;
+        ring3.rotation.z += delta * 0.03;
+      } else {
+        // Cyber: 濃紺ターフ ＆ スピードストリーム
+        turfTexture1.offset.y -= delta * flightSpeed * 0.12;
+
+        const pos = speedStreaks.geometry.attributes.position.array;
+        for (let i = 0; i < streakCount; i++) {
+          const speed = streakSpeeds[i] * delta;
+          pos[i * 6 + 2] += speed;
+          pos[i * 6 + 5] += speed;
+          if (pos[i * 6 + 2] > 350) {
+            const resetZ = -2200 - Math.random() * 300;
+            const len = 45 + Math.random() * 95;
+            const rx = (Math.random() - 0.5) * 3600;
+            const ry = (Math.random() - 0.5) * 220;
+            pos[i * 6]     = rx;
+            pos[i * 6 + 1] = ry;
+            pos[i * 6 + 2] = resetZ;
+            pos[i * 6 + 3] = rx;
+            pos[i * 6 + 4] = ry;
+            pos[i * 6 + 5] = resetZ - len;
+          }
+        }
+        speedStreaks.geometry.attributes.position.needsUpdate = true;
+
+        ring1.rotation.z += delta * 0.08;
+        ring2.rotation.z -= delta * 0.05;
+        ring3.rotation.z += delta * 0.03;
       }
-      particles.geometry.attributes.position.needsUpdate = true;
 
       // Tilt responsiveness matching board tilt angle
       const tiltStr = getComputedStyle(document.body).getPropertyValue('--tilt-angle') || '10deg';
@@ -802,6 +1615,614 @@
     window.addEventListener('resize', updateLayout);
     updateLayout();
     animate();
+  </script>
+
+  <!-- Track theme: procedural aerial racecourse scrolling canvas renderer (Cyber Turf Edition) -->
+  <script>
+  (function () {
+    var canvas = document.getElementById('track-bg');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    var animId = null;
+    var isRunning = false;
+    var lastTime = 0;
+    var offsetY = 0;
+
+    // スクロール速度 (px/秒) - 少しスピードダウンして心地よい疾走感 (500 -> 340)
+    var SCROLL_SPEED = 190; // 落ち着いた心地よい流速に調整 (340 -> 190)
+
+    // 舞い散るサイバー芝草光子（デジタイズド・ターフチップ）
+    var particles = [];
+    var MAX_PARTICLES = 45;
+    for (var i = 0; i < MAX_PARTICLES; i++) {
+      particles.push({
+        xRel: 0.20 + Math.random() * 0.68,
+        y: Math.random(),
+        size: 3.0 + Math.random() * 5.0,
+        speedMult: 1.1 + Math.random() * 0.7,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 8,
+        opacity: 0.45 + Math.random() * 0.50,
+        type: Math.random() > 0.4 ? 'chip' : 'diamond', // 菱形または四角形チップ
+        color: Math.random() > 0.4 ? '#34d399' : (Math.random() > 0.5 ? '#38bdf8' : '#a7f3d0') // シアン/エメラルド発光
+      });
+    }
+
+    // サイバースピードライン（風切りネオンライン）
+    var speedLines = [];
+    var MAX_LINES = 18;
+    for (var j = 0; j < MAX_LINES; j++) {
+      speedLines.push({
+        x: Math.random(),
+        y: Math.random(),
+        len: 70 + Math.random() * 140,
+        speedMult: 1.35 + Math.random() * 0.75,
+        alpha: 0.12 + Math.random() * 0.20,
+        color: Math.random() > 0.35 ? '#38bdf8' : '#ffffff',
+        width: 1.0 + Math.random() * 1.5
+      });
+    }
+
+    // ダート（砂利）用のプロシージャル小石（固定パターンのスクロール）
+    var dirtPebbles = [];
+    for (var k = 0; k < 50; k++) {
+      dirtPebbles.push({
+        relX: Math.random(),
+        relY: Math.random(),
+        r: 1 + Math.random() * 2,
+        alpha: 0.15 + Math.random() * 0.25,
+        color: Math.random() > 0.5 ? '#8d6e43' : '#d7ba8d'
+      });
+    }
+
+    function resize() {
+      // CSS の 112vw / 118vh に合わせた高精細バッファサイズ
+      canvas.width = Math.round(window.innerWidth * 1.15);
+      canvas.height = Math.round(window.innerHeight * 1.20);
+    }
+
+    // 角丸四角形描画ヘルパー（標準API対応・安全フォールバック）
+    function roundRect(c, x, y, w, h, r) {
+      if (typeof c.roundRect === 'function') {
+        c.beginPath();
+        c.roundRect(x, y, w, h, r);
+        c.closePath();
+        return;
+      }
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      c.beginPath();
+      c.moveTo(x + r, y);
+      c.arcTo(x + w, y, x + w, y + h, r);
+      c.arcTo(x + w, y + h, x, y + h, r);
+      c.arcTo(x, y + h, x, y, r);
+      c.arcTo(x, y, x + w, y, r);
+      c.closePath();
+    }
+
+    function draw(now) {
+      if (!isRunning) return;
+      if (!lastTime) lastTime = now;
+      var dt = (now - lastTime) / 1000;
+      if (dt > 0.1) dt = 0.1;
+      lastTime = now;
+
+      var W = canvas.width;
+      var H = canvas.height;
+      if (W === 0 || H === 0) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
+
+      // スクロールオフセット更新（スピードダウン: 340px/s）
+      offsetY = (offsetY + SCROLL_SPEED * dt);
+
+      // ─────────────────────────────────────────────
+      // ゾーン幅の計算（フィールド左シフト）
+      // ─────────────────────────────────────────────
+      var standW   = Math.max(24, W * 0.045);
+      var curbW    = Math.max(4, W * 0.008);
+      var dirtStart= standW + curbW;
+      var dirtW    = Math.max(40, W * 0.085);
+      var rail1X   = dirtStart + dirtW;
+      var rail2X   = Math.max(rail1X + 200, W * 0.88);
+      var turfW    = rail2X - rail1X;
+      var outerW   = W - rail2X;
+
+      // ─────────────────────────────────────────────
+      // 1. 左側：緑の観客席（スタジアムシート）
+      // ─────────────────────────────────────────────
+      var standBg = ctx.createLinearGradient(0, 0, standW, 0);
+      standBg.addColorStop(0.0, '#103318');
+      standBg.addColorStop(0.5, '#184722');
+      standBg.addColorStop(1.0, '#0f3016');
+      ctx.fillStyle = standBg;
+      ctx.fillRect(0, 0, standW, H);
+
+      var cols = Math.max(1, Math.min(3, Math.floor(standW / 18)));
+      var seatMarginX = 4;
+      var seatW = Math.max(6, (standW - seatMarginX * (cols + 1)) / cols);
+      var seatH = seatW * 1.15;
+      var rowPitch = seatH + 8;
+
+      var seatOffY = offsetY % rowPitch;
+      var startRowY = seatOffY - rowPitch * 2;
+
+      ctx.save();
+      for (var y = startRowY; y < H + rowPitch; y += rowPitch) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.30)';
+        ctx.fillRect(0, y + seatH + 2, standW, 2);
+
+        for (var c = 0; c < cols; c++) {
+          var sx = seatMarginX + c * (seatW + seatMarginX);
+
+          // シート
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+          roundRect(ctx, sx + 1.5, y + 2.5, seatW, seatH, 2.5);
+          ctx.fill();
+
+          var seatGrad = ctx.createLinearGradient(sx, y, sx, y + seatH);
+          seatGrad.addColorStop(0.0, '#10562e');
+          seatGrad.addColorStop(0.5, '#1e7d43');
+          seatGrad.addColorStop(1.0, '#0e4a27');
+          ctx.fillStyle = seatGrad;
+          roundRect(ctx, sx, y, seatW, seatH, 2.5);
+          ctx.fill();
+
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.fillRect(sx + 1.5, y + 1, seatW - 3, 1.2);
+        }
+      }
+      ctx.restore();
+
+      // ─────────────────────────────────────────────
+      // 2. スタンドとダートの境目（コンクリート縁石）
+      // ─────────────────────────────────────────────
+      var curbGrad = ctx.createLinearGradient(standW, 0, dirtStart, 0);
+      curbGrad.addColorStop(0.0, '#5f695c');
+      curbGrad.addColorStop(0.5, '#8f9a8b');
+      curbGrad.addColorStop(1.0, '#4b5448');
+      ctx.fillStyle = curbGrad;
+      ctx.fillRect(standW, 0, curbW, H);
+
+      // ─────────────────────────────────────────────
+      // 3. ダート（薄い茶色の砂利・サイバーダート通路）
+      // ─────────────────────────────────────────────
+      var dirtGrad = ctx.createLinearGradient(dirtStart, 0, rail1X, 0);
+      dirtGrad.addColorStop(0.00, '#664c2e');
+      dirtGrad.addColorStop(0.10, '#8c6b45');
+      dirtGrad.addColorStop(0.40, '#a68357');
+      dirtGrad.addColorStop(0.70, '#a8855a');
+      dirtGrad.addColorStop(0.92, '#8f6f47');
+      dirtGrad.addColorStop(1.00, '#694f31');
+      ctx.fillStyle = dirtGrad;
+      ctx.fillRect(dirtStart, 0, dirtW, H);
+
+      // ダートのレーキ跡
+      ctx.save();
+      for (var rx = dirtStart + 4; rx < rail1X - 4; rx += 10) {
+        ctx.fillStyle = (rx % 20 === 0) ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.05)';
+        ctx.fillRect(rx, 0, 1.5, H);
+      }
+
+      var pebbleH = 160;
+      var pebbleOffY = offsetY % pebbleH;
+      for (var p = 0; p < dirtPebbles.length; p++) {
+        var pb = dirtPebbles[p];
+        var pbx = dirtStart + pb.relX * dirtW;
+        var pby = (pb.relY * pebbleH + pebbleOffY) % H;
+        ctx.fillStyle = pb.color;
+        ctx.globalAlpha = pb.alpha;
+        ctx.beginPath();
+        ctx.arc(pbx, pby, pb.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // ─────────────────────────────────────────────
+      // 4. 中央：電子空間調のサイバー芝生コース（Cyber Turf）
+      // ─────────────────────────────────────────────
+      var numStripes = 9;
+      var stripeW = turfW / numStripes;
+
+      // 芝コースのベース深緑
+      ctx.fillStyle = '#062012';
+      ctx.fillRect(rail1X, 0, turfW, H);
+
+      // 芝生ストライプ（サイバーエメラルド ＆ ネオン走査線）
+      for (var s = 0; s < numStripes; s++) {
+        var stX = rail1X + s * stripeW;
+        var isLight = (s % 2 === 0);
+
+        var sGrad = ctx.createLinearGradient(stX, 0, stX + stripeW, 0);
+        if (isLight) {
+          // 明るいサイバーエメラルド
+          sGrad.addColorStop(0.00, '#1a5c2d');
+          sGrad.addColorStop(0.40, '#267b3e');
+          sGrad.addColorStop(0.50, '#318c49'); // ネオンハイライト
+          sGrad.addColorStop(0.60, '#267b3e');
+          sGrad.addColorStop(1.00, '#1a5c2d');
+        } else {
+          // 深いサイバーフォレスト
+          sGrad.addColorStop(0.00, '#0d381c');
+          sGrad.addColorStop(0.50, '#134724');
+          sGrad.addColorStop(1.00, '#0d381c');
+        }
+        ctx.fillStyle = sGrad;
+        ctx.fillRect(stX, 0, stripeW, H);
+
+        // --- 電子空間演出 1: 縦のサイバーデジタルトレースライン ---
+        ctx.save();
+        ctx.strokeStyle = isLight ? 'rgba(52, 211, 153, 0.22)' : 'rgba(16, 185, 129, 0.12)';
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.moveTo(stX, 0);
+        ctx.lineTo(stX, H);
+        ctx.stroke();
+
+        // ストライプ中央の光る細線
+        ctx.strokeStyle = isLight ? 'rgba(125, 211, 252, 0.18)' : 'rgba(52, 211, 153, 0.08)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(stX + stripeW * 0.5, 0);
+        ctx.lineTo(stX + stripeW * 0.5, H);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // --- 電子空間演出 2: スクロールするサイバーグリッド・走査線（スキャンライン） ---
+      var cyberGridY = 70;
+      var cyberOffY = offsetY % cyberGridY;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.10)';
+      ctx.lineWidth = 1.0;
+      for (var gy = cyberOffY - cyberGridY; gy < H + cyberGridY; gy += cyberGridY) {
+        ctx.beginPath();
+        ctx.moveTo(rail1X, gy);
+        ctx.lineTo(rail2X, gy);
+        ctx.stroke();
+
+        // グリッド交点の微小な発光データノード
+        for (var sn = 0; sn <= numStripes; sn++) {
+          var nx = rail1X + sn * stripeW;
+          ctx.fillStyle = 'rgba(125, 211, 252, 0.40)';
+          ctx.fillRect(nx - 1.5, gy - 1.5, 3, 3);
+        }
+      }
+      ctx.restore();
+
+      // --- 電子空間演出 3: 芝生面をゆっくり波打つサイバーパルス波 ---
+      var pulseY = (offsetY * 1.5) % (H * 1.2) - (H * 0.2);
+      var pulseGrad = ctx.createLinearGradient(0, pulseY - 80, 0, pulseY + 80);
+      pulseGrad.addColorStop(0.0, 'rgba(56, 189, 248, 0)');
+      pulseGrad.addColorStop(0.5, 'rgba(52, 211, 153, 0.12)'); // 爽やかな光の波
+      pulseGrad.addColorStop(1.0, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = pulseGrad;
+      ctx.fillRect(rail1X, Math.max(0, pulseY - 80), turfW, 160);
+
+      // ─────────────────────────────────────────────
+      // 5. 右側：外側の草地 ＆ 添付スクショの「右側の白い枠（二重レール＋緑の連結ブラケット）」
+      // ─────────────────────────────────────────────
+      var outerGrad = ctx.createLinearGradient(rail2X, 0, W, 0);
+      outerGrad.addColorStop(0.0, '#103d1c');
+      outerGrad.addColorStop(0.2, '#184f25');
+      outerGrad.addColorStop(0.7, '#13421f');
+      outerGrad.addColorStop(1.0, '#0c2d15');
+      ctx.fillStyle = outerGrad;
+      ctx.fillRect(rail2X, 0, outerW, H);
+
+      // ─────────────────────────────────────────────
+      // 6. 白い内ラチ＆外ラチ（立体的フェンス・流れる支柱・リアルシャドウ）
+      // ─────────────────────────────────────────────
+      var railPitch = 90;
+      var railOffY = offsetY % railPitch;
+
+      // ── [A] 内ラチの立体描画 ──
+      ctx.save();
+      var railShadowGrad = ctx.createLinearGradient(rail1X + 2, 0, rail1X + 14, 0);
+      railShadowGrad.addColorStop(0.0, 'rgba(0, 0, 0, 0.50)');
+      railShadowGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.25)');
+      railShadowGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0.00)');
+      ctx.fillStyle = railShadowGrad;
+      ctx.fillRect(rail1X + 2, 0, 12, H);
+
+      for (var r1y = railOffY - railPitch; r1y < H + railPitch; r1y += railPitch) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(rail1X + 1, r1y + 2);
+        ctx.lineTo(rail1X + 20, r1y + 17);
+        ctx.lineTo(rail1X + 16, r1y + 21);
+        ctx.lineTo(rail1X - 2, r1y + 5);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#10381e';
+        ctx.fillRect(rail1X + 4, r1y + 5, 6, 6);
+
+        ctx.fillStyle = '#64748b';
+        ctx.beginPath();
+        ctx.moveTo(rail1X, r1y);
+        ctx.lineTo(rail1X + 6, r1y + 6);
+        ctx.lineTo(rail1X + 4, r1y + 8);
+        ctx.lineTo(rail1X - 2, r1y + 2);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(rail1X - 1, r1y + 1);
+        ctx.lineTo(rail1X + 5, r1y + 6);
+        ctx.lineTo(rail1X + 4, r1y + 7);
+        ctx.lineTo(rail1X - 2, r1y + 2);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#cbd5e1';
+        roundRect(ctx, rail1X - 4.5, r1y - 3, 9, 6, 1.5);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(rail1X - 3.5, r1y - 2, 7, 1.5);
+      }
+
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(rail1X - 4, 0, 8, H);
+
+      var pipeGrad1 = ctx.createLinearGradient(rail1X - 4, 0, rail1X + 4, 0);
+      pipeGrad1.addColorStop(0.00, '#64748b');
+      pipeGrad1.addColorStop(0.20, '#94a3b8');
+      pipeGrad1.addColorStop(0.35, '#e2e8f0');
+      pipeGrad1.addColorStop(0.50, '#ffffff');
+      pipeGrad1.addColorStop(0.68, '#f1f5f9');
+      pipeGrad1.addColorStop(0.85, '#cbd5e1');
+      pipeGrad1.addColorStop(1.00, '#64748b');
+      ctx.fillStyle = pipeGrad1;
+      ctx.fillRect(rail1X - 3.5, 0, 7, H);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillRect(rail1X - 0.5, 0, 1.2, H);
+
+      var jointPitch = 270;
+      var jointOffY = offsetY % jointPitch;
+      for (var jy = jointOffY - jointPitch; jy < H + jointPitch; jy += jointPitch) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.fillRect(rail1X - 5, jy - 1, 10, 4);
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(rail1X - 4.5, jy, 9, 2);
+      }
+      ctx.restore();
+
+      // ── [B] 右側の白い枠（添付スクショの二重レール ＆ 緑色連結ブラケット） ──
+      ctx.save();
+      // 2本目の外側白レールX座標（添付スクショと同じ間隔）
+      var outerRailX = Math.min(W - 12, rail2X + Math.max(36, outerW * 0.60));
+      var bracketW = outerRailX - rail2X;
+
+      // 1. レール直下のドロップシャドウ
+      var railShadowGrad2 = ctx.createLinearGradient(rail2X + 2, 0, rail2X + 13, 0);
+      railShadowGrad2.addColorStop(0.0, 'rgba(0, 0, 0, 0.45)');
+      railShadowGrad2.addColorStop(0.5, 'rgba(0, 0, 0, 0.20)');
+      railShadowGrad2.addColorStop(1.0, 'rgba(0, 0, 0, 0.00)');
+      ctx.fillStyle = railShadowGrad2;
+      ctx.fillRect(rail2X + 2, 0, 11, H);
+
+      var railShadowGrad3 = ctx.createLinearGradient(outerRailX + 2, 0, outerRailX + 13, 0);
+      railShadowGrad3.addColorStop(0.0, 'rgba(0, 0, 0, 0.45)');
+      railShadowGrad3.addColorStop(0.5, 'rgba(0, 0, 0, 0.20)');
+      railShadowGrad3.addColorStop(1.0, 'rgba(0, 0, 0, 0.00)');
+      ctx.fillStyle = railShadowGrad3;
+      ctx.fillRect(outerRailX + 2, 0, 11, H);
+
+      // 2. 添付スクショの「等間隔の緑色連結ブラケット／支柱脚（コの字型アーム）」
+      var bracketPitch = 120;
+      var bracketOffY = offsetY % bracketPitch;
+      for (var by = bracketOffY - bracketPitch; by < H + bracketPitch; by += bracketPitch) {
+        // (a) 地面に落ちるブラケットのリアルな斜め影
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(rail2X + 2, by + 4);
+        ctx.lineTo(outerRailX + 8, by + 16);
+        ctx.lineTo(outerRailX + 5, by + 24);
+        ctx.lineTo(rail2X - 1, by + 12);
+        ctx.closePath();
+        ctx.fill();
+
+        // (b) 緑色の連結アームバー（フォレストグリーンの角型ブラケット）
+        var armGrad = ctx.createLinearGradient(0, by, 0, by + 12);
+        armGrad.addColorStop(0.0, '#388e3c'); // 上部ハイライト
+        armGrad.addColorStop(0.3, '#2e7d32');
+        armGrad.addColorStop(0.7, '#1b5e20'); // メインボディ
+        armGrad.addColorStop(1.0, '#103d16'); // 下部アンダーシャドウ
+        ctx.fillStyle = armGrad;
+        ctx.fillRect(rail2X - 2, by, bracketW + 4, 10);
+
+        // アーム中央のくぼみ・スリット（写真の立体パーツ感）
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.fillRect(rail2X + 6, by + 3, bracketW - 12, 4);
+
+        // 左右のパイプ接合部金具（丸みを帯びたクランププレート）
+        ctx.fillStyle = '#205928';
+        ctx.fillRect(rail2X - 3.5, by - 2, 7, 14);
+        ctx.fillRect(outerRailX - 3.5, by - 2, 7, 14);
+
+        // 金具のボルト・ハイライト
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.fillRect(rail2X - 1.5, by + 2, 3, 6);
+        ctx.fillRect(outerRailX - 1.5, by + 2, 3, 6);
+      }
+
+      // 3. 1本目の白い手すりパイプ（芝コース側）
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(rail2X - 4, 0, 8, H);
+
+      var pipeGrad2 = ctx.createLinearGradient(rail2X - 4, 0, rail2X + 4, 0);
+      pipeGrad2.addColorStop(0.00, '#64748b');
+      pipeGrad2.addColorStop(0.20, '#94a3b8');
+      pipeGrad2.addColorStop(0.35, '#e2e8f0');
+      pipeGrad2.addColorStop(0.50, '#ffffff');
+      pipeGrad2.addColorStop(0.68, '#f1f5f9');
+      pipeGrad2.addColorStop(0.85, '#cbd5e1');
+      pipeGrad2.addColorStop(1.00, '#64748b');
+      ctx.fillStyle = pipeGrad2;
+      ctx.fillRect(rail2X - 3.5, 0, 7, H);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillRect(rail2X - 0.5, 0, 1.2, H);
+
+      // 4. 2本目の白い手すりパイプ（右端の白い枠レール・スクショ再現）
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(outerRailX - 4, 0, 8, H);
+
+      var pipeGrad3 = ctx.createLinearGradient(outerRailX - 4, 0, outerRailX + 4, 0);
+      pipeGrad3.addColorStop(0.00, '#64748b');
+      pipeGrad3.addColorStop(0.20, '#94a3b8');
+      pipeGrad3.addColorStop(0.35, '#e2e8f0');
+      pipeGrad3.addColorStop(0.50, '#ffffff');
+      pipeGrad3.addColorStop(0.68, '#f1f5f9');
+      pipeGrad3.addColorStop(0.85, '#cbd5e1');
+      pipeGrad3.addColorStop(1.00, '#64748b');
+      ctx.fillStyle = pipeGrad3;
+      ctx.fillRect(outerRailX - 3.5, 0, 7, H);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillRect(outerRailX - 0.5, 0, 1.2, H);
+
+      ctx.restore();
+
+// ─────────────────────────────────────────────
+      // 7. 演出エフェクト：舞い散るサイバー光子・デジタイズドターフ破片
+      // ─────────────────────────────────────────────
+      ctx.save();
+      for (var p = 0; p < particles.length; p++) {
+        var pt = particles[p];
+        pt.y += (SCROLL_SPEED * pt.speedMult * dt) / H;
+        if (pt.y > 1.05) {
+          pt.y = -0.05;
+          pt.xRel = (rail1X / W) + Math.random() * (turfW / W);
+          pt.rot = Math.random() * Math.PI * 2;
+        }
+        pt.rot += pt.rotSpeed * dt;
+
+        var px = pt.xRel * W;
+        var py = pt.y * H;
+
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(pt.rot);
+        ctx.fillStyle = pt.color;
+        ctx.shadowColor = pt.color;
+        ctx.shadowBlur = 6;
+        ctx.globalAlpha = pt.opacity;
+
+        if (pt.type === 'diamond') {
+          // 発光するサイバー菱形データチップ
+          ctx.beginPath();
+          ctx.moveTo(0, -pt.size * 0.7);
+          ctx.lineTo(pt.size * 0.45, 0);
+          ctx.lineTo(0, pt.size * 0.7);
+          ctx.lineTo(-pt.size * 0.45, 0);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          // 発光するサイバー四角形データチップ
+          ctx.fillRect(-pt.size * 0.4, -pt.size * 0.4, pt.size * 0.8, pt.size * 0.8);
+        }
+        ctx.restore();
+      }
+      ctx.restore();
+
+      // ─────────────────────────────────────────────
+      // 8. 演出エフェクト：サイバースピードライン（シアン＆白）
+      // ─────────────────────────────────────────────
+      ctx.save();
+      for (var l = 0; l < speedLines.length; l++) {
+        var line = speedLines[l];
+        line.y += (SCROLL_SPEED * line.speedMult * dt) / H;
+        if (line.y > 1.15) {
+          line.y = -0.15;
+          line.x = Math.random();
+        }
+        var lx = line.x * W;
+        var ly = line.y * H;
+        ctx.strokeStyle = line.color;
+        ctx.shadowColor = line.color;
+        ctx.shadowBlur = 4;
+        ctx.globalAlpha = line.alpha;
+        ctx.lineWidth = line.width;
+        ctx.beginPath();
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(lx, ly + line.len);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // ─────────────────────────────────────────────
+      // 9. ビネット＆陰影（UI視認性と奥から手前への奥行き強化）
+      // ─────────────────────────────────────────────
+      var vignette = ctx.createLinearGradient(0, 0, 0, H);
+      vignette.addColorStop(0.00, 'rgba(0, 0, 0, 0.48)'); // 奥はやや深めのサイバー空間
+      vignette.addColorStop(0.15, 'rgba(0, 0, 0, 0.08)');
+      vignette.addColorStop(0.85, 'rgba(0, 0, 0, 0.05)');
+      vignette.addColorStop(1.00, 'rgba(0, 0, 0, 0.45)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, W, H);
+
+      animId = requestAnimationFrame(draw);
+    }
+
+    function start() {
+      if (isRunning) return;
+      isRunning = true;
+      lastTime = 0;
+      resize();
+      canvas.style.display = 'block';
+      animId = requestAnimationFrame(draw);
+    }
+
+    function stop() {
+      if (!isRunning) return;
+      isRunning = false;
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+      canvas.style.display = 'none';
+    }
+
+    function checkTheme() {
+      var theme = (document.body.dataset.fieldTheme || 'cyber');
+      if (theme === 'track') {
+        start();
+      } else {
+        stop();
+      }
+    }
+
+    window.addEventListener('resize', function () {
+      if (isRunning) resize();
+    });
+
+    window.addEventListener('foth_theme_changed', function () {
+      checkTheme();
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (animId) {
+          cancelAnimationFrame(animId);
+          animId = null;
+        }
+      } else {
+        if (isRunning && !animId) {
+          lastTime = 0;
+          animId = requestAnimationFrame(draw);
+        }
+      }
+    });
+
+    // 初期化チェック
+    checkTheme();
+  })();
   </script>
 </body>
 

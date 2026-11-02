@@ -4741,7 +4741,7 @@
     function getSavedTheme() {
       try {
         var saved = localStorage.getItem(STORAGE_KEY);
-        if (saved === 'cyber' || saved === 'classic') return saved;
+        if (saved === 'cyber' || saved === 'classic' || saved === 'cyber2' || saved === 'circuit' || saved === 'turf' || saved === 'track') return saved;
       } catch (e) {}
       return 'cyber'; // 未設定時の初期値
     }
@@ -4749,9 +4749,13 @@
     function applyTheme(theme, save) {
       var isCyber = (theme === 'cyber');
       document.body.classList.toggle('field-cyber', isCyber);
+      document.body.dataset.fieldTheme = theme;
       opts.forEach(function (opt) {
         opt.classList.toggle('active', opt.dataset.theme === theme);
       });
+      try {
+        window.dispatchEvent(new CustomEvent('foth_theme_changed', { detail: { theme: theme } }));
+      } catch (e) {}
       if (save !== false) {
         try {
           localStorage.setItem(STORAGE_KEY, theme);
