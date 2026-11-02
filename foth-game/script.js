@@ -4740,8 +4740,11 @@
 
     function getSavedTheme() {
       try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlTheme = urlParams.get('theme');
+        if (urlTheme && (urlTheme === 'cyber' || urlTheme === 'cyber2' || urlTheme === 'track')) return urlTheme;
         var saved = localStorage.getItem(STORAGE_KEY);
-        if (saved === 'cyber' || saved === 'classic' || saved === 'cyber2' || saved === 'circuit' || saved === 'turf' || saved === 'track') return saved;
+        if (saved === 'cyber' || saved === 'cyber2' || saved === 'track') return saved;
       } catch (e) {}
       return 'cyber'; // 未設定時の初期値
     }
