@@ -4749,6 +4749,7 @@
     function applyTheme(theme, save) {
       var isCyber = (theme === 'cyber');
       document.body.classList.toggle('field-cyber', isCyber);
+      document.body.dataset.fieldTheme = theme;
       opts.forEach(function (opt) {
         opt.classList.toggle('active', opt.dataset.theme === theme);
       });
